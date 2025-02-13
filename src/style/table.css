@@ -1,0 +1,293 @@
+table {
+	width: 750px;
+	border-collapse: collapse;
+	margin: 50px auto;
+}
+
+/* Zebra striping */
+/* tr:nth-of-type(odd) { 
+	background: #eee; 
+	} */
+
+th {
+	background: #3498db;
+	color: white;
+	font-weight: bold;
+}
+
+td,
+th {
+	padding: 10px;
+	border: 1px solid #ccc;
+	text-align: left;
+	font-size: 18px;
+}
+
+/* 
+Max width before this PARTICULAR table gets nasty
+This query will take effect for any screen smaller than 760px
+and also iPads specifically.
+*/
+@media only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px) {
+
+	table {
+		width: 100%;
+	}
+
+	/* Force table to not be like tables anymore */
+	table,
+	thead,
+	tbody,
+	th,
+	td,
+	tr {
+		display: block;
+	}
+
+	/* Hide table headers (but not display: none;, for accessibility) */
+	thead tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+
+	tr {
+		border: 1px solid #ccc;
+	}
+
+	td {
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee;
+		position: relative;
+		padding-left: 50%;
+	}
+
+	td:before {
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%;
+		padding-right: 10px;
+		white-space: nowrap;
+		/* Label the data */
+		content: attr(data-column);
+
+		color: #000;
+		font-weight: bold;
+	}
+
+}
+
+iframe {
+	display: none !important;
+}
+
+/* tr:nth-of-type(odd) {
+    background: #ffffff;
+} */
+.basic-multi-select {
+	background-color: #f0f0f0;
+	/* Light gray background on hover */
+	cursor: pointer;
+
+	/* Ensure pointer cursor on hover */
+	.select__control {
+		display: flex;
+		flex-direction: column;
+		max-height: 30px;
+		scrollbar-width: none;
+		align-content: space-between;
+		width: 100%;
+
+		.css-1dyz3mf {
+			display: flex;
+			width: 70%;
+			height: 36px;
+			overflow: overlay;
+			scrollbar-width: none;
+			flex-direction: column;
+			align-content: flex-start;
+
+			.select__multi-value {
+
+				min-width: auto
+			}
+
+			.css-19bb58m {
+				.select__input {
+					color: inherit;
+					background: 0px center;
+					opacity: 1;
+					width: 100%;
+					grid-area: 1 / 2;
+					font: inherit;
+					min-width: 2px;
+					border: 0px;
+					margin: 0px;
+					outline: 0px;
+					padding: 0px;
+					border: 0px;
+					outline: none;
+					box-shadow: none;
+					border-color: white;
+					--tw-ring-color: white;
+					--tw-ring-shadow: none;
+					--tw-ring-offset-color: none;
+					--tw-ring-offset-shadow: none;
+				}
+			}
+
+			.select__indicators {
+				width: 31%;
+				justify-content: center;
+			}
+		}
+	}
+}
+
+
+
+.rotated-text {
+
+	writing-mode: vertical-rl !important;
+	/* text-orientation: unset; */
+	font-size: 16px;
+	color: #fbfbfb !important;
+	line-height: 1.5;
+	transform: rotate(180deg) !important;
+}
+
+/* Add this CSS to your styles */
+.css-13cymwt-control {
+	-webkit-align-items: center;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	cursor: default;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-flex-wrap: wrap;
+	-webkit-flex-wrap: wrap;
+	-ms-flex-wrap: wrap;
+	flex-wrap: wrap;
+	-webkit-box-pack: justify;
+	-webkit-justify-content: space-between;
+	justify-content: space-between;
+	min-height: 38px;
+	outline: 0 !important;
+	position: relative;
+	-webkit-transition: all 100ms;
+	transition: all 100ms;
+	background-color: hsl(0, 0%, 100%);
+	border-color: hsl(0, 0%, 80%);
+	border-radius: 4px;
+	border-style: solid;
+	border-width: 1px;
+	box-sizing: border-box;
+	height: 22px;
+	overflow: auto;
+	overflow-x: auto;
+}
+
+[type='text']:focus,
+[type='email']:focus,
+[type='url']:focus,
+[type='password']:focus,
+[type='number']:focus,
+[type='date']:focus,
+[type='datetime-local']:focus,
+[type='month']:focus,
+[type='search']:focus,
+[type='tel']:focus,
+[type='time']:focus,
+[type='week']:focus,
+[multiple]:focus,
+textarea:focus,
+select:focus {
+
+	
+	outline: none;
+	box-shadow: none;
+	border-color: white;
+	--tw-ring-color: white;
+	--tw-ring-shadow: none;
+	--tw-ring-offset-color: none;
+	--tw-ring-offset-shadow: none;
+}
+
+
+
+/* Background overlay */
+.error-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Popup container */
+.error-popup {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Title */
+.error-popup-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #d32f2f;
+  margin-bottom: 10px;
+}
+
+/* Message */
+.error-popup-message {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Close button */
+.error-popup-button {
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.error-popup-button:hover {
+  background-color: #b71c1c;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

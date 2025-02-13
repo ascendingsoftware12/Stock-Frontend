@@ -1,0 +1,56 @@
+/* Add this to your existing styles or create a new CSS file */
+/* .bg-white {
+  background-color: #F5F5DC !important; 
+  
+} */
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  /* background: #034694; */
+  background: linear-gradient(135deg, #034694, #4b79a1); 
+
+}
+
+.login-card {
+  width: 350px;
+  border-radius: 10%;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+  background-color: #F5F5DC;
+}
+
+.login-img {
+  height: 100px;
+  width: 150px;
+}
+
+.login-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button-submit {
+  background-color: #034694 !important;
+  color: white !important;
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.button-submit:hover {
+  background-color: #82c4d4 !important; /* Change to desired hover color */
+  color: white !important; /* Change text color on hover if needed */
+}
+
+
+
+iframe
+{
+    display: none !important;
+}

@@ -1,0 +1,9 @@
+.checkbox {
+    border: 1px solid !important;
+    /* margin-top: -2 !important; */
+}
+
+iframe
+{
+    display: none !important;
+}

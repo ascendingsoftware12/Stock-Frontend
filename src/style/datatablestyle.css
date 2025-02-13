@@ -1,0 +1,55 @@
+.bg-gray-900 {
+  --tw-bg-opacity: 0;
+  background-color: rgba(0, 0, 0, .1);
+}
+
+
+div .rdt_TableHeadRow {
+  background-color: #457b9d;
+  /* background-color:#076f3c; */
+  color: white;
+
+}
+.cvdizt {
+  padding: 0px !important;
+}
+.kJxENh {
+   padding: 0px !important;
+}
+
+.YgTtW svg { display: none !important;} 
+
+.kzZBXj
+{
+  white-space: unset !important;
+}
+.rdt_TableCell {
+  font-size: 12px;
+}
+
+.rdt_TableHeadRow {
+  font-size: 12px;
+ 
+}
+
+.chip {
+  background: #fd8b11;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+.setBold{
+  font-weight: bold;
+}
+/* .pagination-first-page:disabled{
+  
+} */
+[type="checkbox"]:disabled {
+  background-color: gray !important;
+}
+
+iframe
+{
+    display: none !important;
+}

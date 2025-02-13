@@ -1,0 +1,31 @@
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+.node circle {
+  fill: #12cb2b;
+}
+
+.node text {
+  /* font: 10px sans-serif; */
+}
+
+.big-dot {
+  fill: red !important; /* Change color as needed */
+  stroke: black;
+  stroke-width: 1px;
+}
+
+iframe
+{
+    display: none !important;
+}

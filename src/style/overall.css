@@ -1,0 +1,68 @@
+.iIzCTJ 
+{
+    padding: 0 !important;
+    min-height: 0px !important;
+}
+
+.kEVxWd {
+    padding: 0 !important;
+    min-height:100%;
+}
+iframe
+{
+    display: none !important;
+}
+.custom-table {
+    font-size: 12px; /* Optional: Adjust font size */
+    border-collapse: collapse; /* Ensure borders are rendered properly */
+    width: 50%; /* Optional: Make the table take full width */
+  }
+  
+  .custom-th,
+  .custom-td {
+    padding: 4px 8px; /* Reduce padding for cells */
+    border: 1px solid #ddd; /* Add borders to all table cells */
+    text-align: left; /* Optional: Align text to the left */
+    padding: 0;
+  }
+  
+  .custom-tr {
+    height: 30px;
+    padding: 0; /* Optional: Reduce row height */
+    border: 1px dashed white;
+  }
+  
+  .custom-table thead .custom-th {
+    background-color: #f8f9fa;
+    padding: 0; /* Optional: Light background for the header */
+  }
+  .table-bordered > :not(caption) > * {
+    /* border-width: var(--bs-border-width) 0; */
+  }
+  .custom-table {
+    background-color: white; /* Set table background to white */
+    border-collapse: collapse; /* Ensure borders render correctly */
+  }
+  .custom-table {
+    width: 80%; /* Adjust width as needed */
+    margin: 0 auto; /* Center the table */
+    background-color: white; /* Ensure white background */
+    border-collapse: collapse; /* Optional for clean borders */
+  }
+  .col-md-2 {
+    flex: 0 0 auto;
+    width: 13.666667%;
+  }
+  .no-border {
+    border: none !important;
+  }
+  
+  .table.no-border th,
+  .table.no-border td {
+    border: none !important;
+  }
+  
+  .table.no-border thead th {
+    border-bottom: none !important;
+  }
+  
