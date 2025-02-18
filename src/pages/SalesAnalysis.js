@@ -39,7 +39,10 @@ const SalesAnalysis = () => {
   const [DiscountBrand, setDiscountBrand] = useState([]);
   const [DiscountModelNo, setDiscountModelNo] = useState([]);
   const [top10BrandItems, settop10BrandItems] = useState([]);
-
+  const [dateRange, setDateRange] = useState({
+    start_date: "",
+    end_date: "",
+  });
   const [asm, setasm] = useState(null);
   let lastScrollTop = 0;
   // const sortedBrandSales = [...BrandSales].sort(
@@ -57,7 +60,10 @@ const SalesAnalysis = () => {
     key: "total_sales",
     direction: "desc",
   });
-
+  const maxSalesValue = Math.max(
+    ...SalesType.map((item) => Math.abs(item.total_sales)),
+    1
+  );
   const handleSort6 = (key) => {
     let direction = "asc";
     if (sortConfig5.key === key && sortConfig5.direction === "asc") {
@@ -108,12 +114,14 @@ const SalesAnalysis = () => {
     to: "",
   });
 
+  const [periodtemp, setPeriodtemp] = useState({ from: "", to: "" });
   const [tempPeriod1, setTempPeriod1] = useState({ from: "", to: "" });
   const [tempPeriod2, setTempPeriod2] = useState({
     from: "",
     to: "",
   });
   const handleButtonClick = () => {
+    setIsApplyDisabled(false);
     setClickedButton("LMTD vs MTD");
     const today = new Date();
 
@@ -122,14 +130,55 @@ const SalesAnalysis = () => {
       today.getMonth(),
       1
     );
+
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
     const period1From = formatDate(firstDayCurrentMonth);
-    const period1To = formatDate(today);
+    const period1To = formatDate(yesterday);
+    setPeriodtemp({ from: period1From, to: period1To });
     setPeriod1({ from: period1From, to: period1To });
 
-    setIsDisabled(true);
+    setIsDisabled(false);
     setActiveButton("LMTD");
   };
 
+  const handleButtonClickYtd = () => {
+    setActiveButton("LYTD");
+    setIsDisabled(false);
+    setClickedButton("LYTD vs YTD");
+
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1;
+
+    // Get yesterday's date
+    const yesterday = new Date();
+    yesterday.setDate(currentDate.getDate() - 1);
+    const formattedYesterday = yesterday.toISOString().split("T")[0];
+
+    // Determine financial year start (April 1st)
+    const financialYearStart =
+      currentMonth < 4 ? `${currentYear - 1}-04-01` : `${currentYear}-04-01`;
+    setPeriodtemp({ from: financialYearStart, to: formattedYesterday });
+    setPeriod1({ from: financialYearStart, to: formattedYesterday });
+    setIsApplyDisabled(false);
+  };
+
+  const handleButtonClickyday = () => {
+    setIsApplyDisabled(false);
+    setActiveButton("YDAY");
+    setIsDisabled(false);
+    setClickedButton("YDAY");
+
+    // Get yesterday's date
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const formattedYesterday = yesterday.toISOString().split("T")[0];
+    setPeriodtemp({ from: formattedYesterday, to: formattedYesterday });
+    setPeriod1({ from: formattedYesterday, to: formattedYesterday });
+  };
   const formatDate = (date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -139,34 +188,52 @@ const SalesAnalysis = () => {
   const handlePeriodChange = (e, setPeriod1) => {
     const { id, value } = e.target;
     setPeriod1((prev) => ({ ...prev, [id]: value }));
+    setIsApplyDisabled(false);
   };
+  const checkIfDatesAreValid = () => {
+    if (period1.from && period1.to) {
+      setIsApplyDisabled(false);
+    } else {
+      setIsApplyDisabled(true);
+    }
+  };
+  // useEffect(() => {
+  //   handleButtonClickyday();
+  // }, []);
   useEffect(() => {
-    handleButtonClick();
+    initializePageData();
   }, []);
-  useEffect(() => {
-    // const asm = sessionStorage.getItem("asm");
 
-    // setasm(asm);
-    // if (period1.from && period1.to) {
-    fetchDropdownData();
-    fetchSalesType();
-    fetchSections(1, true);
-    fetchItemCategory(1, true);
-    fetchSalesProduct(1, true);
-    fetchSalesBranch(1, true);
-    fetchSalesCity(1, true);
-    fetchBrandSales(1, true);
-    fetchBrandItem(1, true);
-    fetchDiscountBranch(1, true);
-    fetchDiscountCity(1, true);
-    fetchDiscountSection(1, true);
-    fetchDiscountBrand(1, true);
-    fetchDiscountModelNo(2, true);
-    fetchSales1();
-    fetchSales2();
-    fetchSales3();
-    // }
-  }, []);
+  const initializePageData = () => {
+    setIsFiltersUpdated(true);
+    handleButtonClickyday();
+  };
+
+  // useEffect(() => {
+  //   // const asm = sessionStorage.getItem("asm");
+
+  //   // setasm(asm);
+  //   // if (period1.from && period1.to) {
+  //   fetchDropdownData();
+  //   fetchSalesType();
+  //   fetchSections(1, true);
+  //   fetchItemCategory(1, true);
+  //   fetchSalesProduct(1, true);
+  //   fetchSalesBranch(1, true);
+  //   fetchSalesCity(1, true);
+  //   fetchBrandSales(1, true);
+  //   fetchBrandItem(1, true);
+  //   fetchDiscountBranch(1, true);
+  //   fetchDiscountCity(1, true);
+  //   fetchDiscountSection(1, true);
+  //   fetchDiscountBrand(1, true);
+  //   fetchDiscountModelNo(2, true);
+  //   fetchSales1();
+  //   fetchSales2();
+  //   fetchSales3();
+  //   fetchliveData();
+  //   // }
+  // }, []);
   // useEffect(() => {
   //   if (period1.from && period1.to) {
   //     setSections([]);
@@ -247,6 +314,7 @@ const SalesAnalysis = () => {
     setDiscountModelNo([]);
     setBrandSales([]);
     setSalesCity([]);
+    setIsApplyDisabled(true);
     // setPeriod1(tempPeriod1);
     // setPeriod1(tempPeriod2);
     setIsFiltersUpdated(true);
@@ -262,9 +330,10 @@ const SalesAnalysis = () => {
     setDiscountSectionPage(1);
     setDiscountBrandpage(1);
     setDiscountModelPage(1);
-    fetchDropdownData();
+    // fetchDropdownData();
     setInitialFilters(filters);
     setInitialPeriod(period1);
+    // setIsApplyDisabled(false);
   };
   useEffect(() => {
     if (isFiltersUpdated) {
@@ -303,6 +372,7 @@ const SalesAnalysis = () => {
       setsalesData2([]);
       setsalesData3([]);
       fetchDropdownData();
+      fetchliveData();
       // setHasMoreDataDiscountModel(true);
       // fetchDiscountModelNo(1, true);
       // setHasMoreDataDiscountBrand(true);
@@ -312,7 +382,7 @@ const SalesAnalysis = () => {
       const baseUrl = "sales_analysis/";
       const clearedUrl = `${baseUrl}?${queryString}`;
       console.log("API URL being called:", clearedUrl);
-      fetchDropdownData();
+      // fetchDropdownData();
       fetchSales1();
       fetchSales2();
       fetchSales3();
@@ -329,11 +399,11 @@ const SalesAnalysis = () => {
       fetchDiscountSection();
       fetchDiscountBrand();
       fetchDiscountModelNo();
-      fetchDropdownData();
+      fetchliveData();
     }
   }, [filters, isFiltersUpdated]);
   const reloadRefresh = () => {
-    handleButtonClick();
+    handleButtonClickyday();
     setIsFiltersUpdated(true);
     console.log("discountbranch1", DiscountBranchpage);
     console.log("discountcity1", DiscountCitypage);
@@ -943,18 +1013,18 @@ const SalesAnalysis = () => {
   const [appliedFilters, setAppliedFilters] = useState(true);
   const [initialFilters, setInitialFilters] = useState(filters);
   const [isApplyDisabled, setIsApplyDisabled] = useState(true);
-  
-
   useEffect(() => {
     const filtersChanged = Object.keys(filters).some(
       (key) => filters[key] !== initialFilters[key]
     );
+    setIsApplyDisabled(!filtersChanged);
+  }, [filters]);
 
-    const hasFromChanged = period1.from !== initialPeriod.from;
-    const hasToChanged = period1.to !== initialPeriod.to;
-
-    setIsApplyDisabled(!(filtersChanged || hasFromChanged || hasToChanged));
-  }, [filters, period1.from, period1.to, initialPeriod]);
+  // useEffect(() => {
+  //   const hasFromChanged = period1.from !== initialPeriod.from;
+  //   const hasToChanged = period1.to !== initialPeriod.to;
+  //   setIsApplyDisabled(hasFromChanged || hasToChanged);
+  // }, [period1.from, period1.to, initialPeriod]);
 
   const fetchDropdownData = async () => {
     try {
@@ -1857,18 +1927,79 @@ const SalesAnalysis = () => {
     // setTempPeriod1({ from: period1From, to: period1To });
     setPeriod1({ from: period1From, to: period1To });
     setActiveButton("LYTD");
-    setIsDisabled(true);
+    setIsDisabled(false);
+    // setIsApplyDisabled(false);
   };
 
   // setPeriod1({ from: period1From, to: period1To });
   // setIsFiltersUpdated(true);
+
+  const fetchData = async () => {
+    const storedAsm = sessionStorage.getItem("asm");
+    const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+    const cleanEncode = (value) => {
+      let decodedValue = value || "";
+      while (decodedValue !== decodeURIComponent(decodedValue)) {
+        decodedValue = decodeURIComponent(decodedValue);
+      }
+      return encodeURIComponent(decodedValue);
+    };
+
+    const encodedFilters = {
+      city: cleanEncode(filters.city),
+      store_name: cleanEncode(filters.store_name),
+      sale_type: cleanEncode(filters.sale_type),
+      item_description: cleanEncode(filters.item_description),
+      brand_name: cleanEncode(filters.brand_name),
+      product_group: cleanEncode(filters.product_group),
+      section: cleanEncode(filters.section),
+      model_no: cleanEncode(filters.model_no),
+      demo_flag: cleanEncode(filters.demo_flag),
+      PriceBreakup2: cleanEncode(filters.PriceBreakup2),
+      item_category: cleanEncode(filters.item_category),
+      srn_flag: cleanEncode(filters.srn_flag),
+    };
+    try {
+      const response = await axios.get(
+        `sales_all_in_one_live/date?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountBranchpage}&limit=${DiscountBranchlimit}&srn_flag=${encodedFilters.srn_flag}`
+      );
+
+      const responseData = response.data.data[0];
+      if (responseData) {
+        const formattedStartDate = responseData.start_date
+          ?.split(" -")
+          .reverse()
+          .join("-");
+        const formattedEndDate = responseData.end_date
+          ?.split(" -")
+          .reverse()
+          .join("-");
+
+        setPeriod1({
+          from: formattedStartDate,
+          to: formattedEndDate,
+        });
+        setDateRange({
+          start_date: formattedStartDate,
+          end_date: formattedEndDate,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsApplyDisabled(false);
+    }
+  };
   const handleCustomClick = () => {
-    setPeriod1({ from: "2025-02-01", to: "2025-02-12" });
-    // setTempPeriod2({ from: "", to: "" });
     setClickedButton("Custom");
     setActiveButton("Customs");
     setIsDisabled(false);
+    setIsApplyDisabled(true);
+    fetchData();
   };
+  // setIsApplyDisabled(true);
+  // setPeriod1({ from: "2025-02-01", to: "2025-02-12" });
+  // setTempPeriod2({ from: "", to: "" });
   const [isDisabled, setIsDisabled] = useState(false);
   const [clickedButton, setClickedButton] = useState(null);
   const [salesData1, setsalesData1] = useState();
@@ -2156,28 +2287,67 @@ const SalesAnalysis = () => {
     setSortConfig11({ key, direction });
     setDiscountModelNo(sortedData);
   };
-  const [currentDateTime, setCurrentDateTime] = useState("");
-
-  useEffect(() => {
-    const updateDateTime = () => {
-      const now = new Date();
-      const formattedDateTime = now.toLocaleString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false,
-      });
-      setCurrentDateTime(formattedDateTime);
+  function getMonthNumber(monthName) {
+    const months = {
+      Jan: "01",
+      Feb: "02",
+      Mar: "03",
+      Apr: "04",
+      May: "05",
+      Jun: "06",
+      Jul: "07",
+      Aug: "08",
+      Sep: "09",
+      Oct: "10",
+      Nov: "11",
+      Dec: "12",
     };
+    return months[monthName] || "01";
+  }
+  const [currentDateTime, setCurrentDateTime] = useState("");
+  const [formatteddate, setformatteddate] = useState();
+  const fetchliveData = async () => {
+    try {
+      const response = await axios.get("/stock_analysis/table_modificatio");
 
-    updateDateTime(); // Initial call
-    const intervalId = setInterval(updateDateTime, 1000); // Update every second
+      const LiveData = response?.data?.last_modified;
 
-    return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  }, []);
+      if (LiveData) {
+        const [dayOfWeek, day, month, year, time] = LiveData.split(" ");
+        const formattedDate = `${day}/${getMonthNumber(month)}/${year}`;
+        setCurrentDateTime(formattedDate);
+        setformatteddate(time);
+
+        console.log("Date:", formattedDate);
+        console.log("Time:", time);
+      } else {
+        console.error("Missing or invalid 'last_modified' data");
+      }
+    } catch (error) {
+      console.error("Error fetching Live Data:", error);
+    }
+  };
+
+  // useEffect(() => {
+  //   const updateDateTime = () => {
+  //     const now = new Date();
+  //     const formattedDateTime = now.toLocaleString("en-GB", {
+  //       day: "2-digit",
+  //       month: "2-digit",
+  //       year: "numeric",
+  //       hour: "2-digit",
+  //       minute: "2-digit",
+  //       second: "2-digit",
+  //       hour12: false,
+  //     });
+  //     setCurrentDateTime(formattedDateTime);
+  //   };
+
+  //   updateDateTime(); // Initial call
+  //   const intervalId = setInterval(updateDateTime, 1000); // Update every second
+
+  //   return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  // }, []);
   // const formatNumber = (value) => {
   //   if (value !== undefined && value !== null) {
   //     return new Intl.NumberFormat().format(value);
@@ -2791,7 +2961,7 @@ const SalesAnalysis = () => {
                   }}
                   // onClick={reloadWithFilters}
                   onClick={!isApplyDisabled ? reloadWithFilters : null}
-                  disabled={isApplyDisabled}
+                  disabled={isApplyDisabled ? reloadWithFilters : null}
                 >
                   <span
                     className="me-2"
@@ -2807,16 +2977,17 @@ const SalesAnalysis = () => {
 
                 <button
                   className={`btn btn-sm ${
-                    activeButton === "Customs" ? "btn-light" : "btn-secondary"
+                    activeButton === "Customs" ? "btn-secondary" : "btn-light"
                   }`}
-                  onClick={handleCustomClick}
+                  // onClick={handleCustomClick}
+                  onClick={() => handleCustomClick("Customs")}
                 >
                   Custom
                 </button>
 
                 <button
                   className={`btn btn-sm ${
-                    activeButton === "LMTD" ? "btn-light" : "btn-secondary"
+                    activeButton === "LMTD" ? "btn-secondary" : "btn-light"
                   }`}
                   onClick={() => handleButtonClick("LMTD")}
                 >
@@ -2825,17 +2996,17 @@ const SalesAnalysis = () => {
 
                 <button
                   className={`btn btn-sm ${
-                    activeButton === "LMTD" ? "btn-light" : "btn-secondary"
+                    activeButton === "YDAY" ? "btn-secondary" : "btn-light"
                   }`}
-                  onClick={() => handleButtonClick("LMTD")}
+                  onClick={() => handleButtonClickyday("YDAY")}
                 >
                   YDay
                 </button>
                 <button
                   className={`btn btn-sm ${
-                    activeButton === "LYTD" ? "btn-light" : "btn-secondary"
+                    activeButton === "LYTD" ? "btn-secondary" : "btn-light"
                   }`}
-                  onClick={() => handleButtonClick1("LYTD")}
+                  onClick={() => handleButtonClickYtd("LYTD")}
                 >
                   YTD
                 </button>
@@ -2887,6 +3058,8 @@ const SalesAnalysis = () => {
                   }}
                 >
                   {currentDateTime}
+                  <br></br>
+                  {formatteddate}
                 </span>
               </div>
             </div>
@@ -2930,8 +3103,9 @@ const SalesAnalysis = () => {
                 <TextInput
                   id="from"
                   type="date"
-                  max={period1.to}
-                  min={period1.from}
+                  max={dateRange.end_date || periodtemp.to}
+                  // min={period1.from}
+                  min={dateRange.start_date || periodtemp.from}
                   value={
                     clickedButton === "Custom" ? period1.from : period1.from
                   }
@@ -2941,7 +3115,9 @@ const SalesAnalysis = () => {
                     backgroundColor: "#F1F1F1",
                   }}
                   disabled={isDisabled}
-                  onChange={(e) => handlePeriodChange(e, setPeriod1)}
+                  onChange={(e) =>
+                    handlePeriodChange(e, setPeriod1) || dateRange.start_date
+                  }
                   // readOnly
 
                   // disabled
@@ -2960,8 +3136,9 @@ const SalesAnalysis = () => {
                 <TextInput
                   id="to"
                   type="date"
-                  min={period1.from}
-                  max={period1.to}
+                  min={dateRange.start_date || periodtemp.from}
+                  // max={period1.to}
+                  max={dateRange.end_date || periodtemp.to}
                   value={clickedButton === "Custom" ? period1.to : period1.to}
                   style={{
                     width: "156px",
@@ -2970,7 +3147,9 @@ const SalesAnalysis = () => {
                   }}
                   // readOnly
                   disabled={isDisabled}
-                  onChange={(e) => handlePeriodChange(e, setPeriod1)}
+                  onChange={(e) =>
+                    handlePeriodChange(e, setPeriod1) || dateRange.end_date
+                  }
                   // disabled
                 />
               </div>
@@ -3927,11 +4106,11 @@ const SalesAnalysis = () => {
                         marginTop: "10px",
                       }}
                     >
-                      {SalesType.map((item, index) => {
-                        // Calculate background color
+                      {/* {SalesType.map((item, index) => {
+                     
                         const backgroundColor =
                           item.total_sales >= 0
-                            ? `rgba(4, 126, 163, ${(10 - index) / 10})` // For top 10 items
+                            ? `rgba(4, 126, 163, ${(10 - index) / 10})` 
                             : "transparent";
 
                         return (
@@ -3963,7 +4142,7 @@ const SalesAnalysis = () => {
                                   className="position-relative"
                                   style={{
                                     height: "24px",
-                                    backgroundColor: backgroundColor, // Set background color dynamically
+                                    backgroundColor: backgroundColor, 
                                   }}
                                 >
                                   <div
@@ -4010,8 +4189,7 @@ const SalesAnalysis = () => {
                                     }}
                                   >
                                     {item.total_sales?.toFixed(2)}{" "}
-                                    {/* {formatNumber(item.total_sales)}  */}
-                                    {/* Safe fallback */}
+                               
                                   </span>
                                 </div>
                                 <div
@@ -4025,14 +4203,126 @@ const SalesAnalysis = () => {
                                   }}
                                 >
                                   {item.sub_value?.toFixed(2)}{" "}
-                                  {/* Safe fallback */}
+                               
                                 </div>
                               </div>
                             </div>
                           </div>
                         );
-                      })}
+                      })} */}
+                      {SalesType.map((item, index) => {
+                        const barWidth =
+                          (Math.abs(item.total_sales) / maxSalesValue) * 50;
 
+                        const opacity =
+                          0.1 +
+                          (Math.abs(item.total_sales) / maxSalesValue) * 0.9;
+
+                        return (
+                          <div
+                            key={index}
+                            className=""
+                            style={{ marginBottom: "3px" }}
+                          >
+                            <div className="d-flex align-items-center">
+                              <div className="w-16 " style={{}}>
+                                <span
+                                  style={{
+                                    color: "#605F5D",
+                                    fontFamily: "Inter",
+                                    fontSize: "11px",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  {item.sale_type}
+                                </span>
+                              </div>
+
+                              <div
+                                className="d-flex w-100 position-relative"
+                                style={{
+                                  height: "24px",
+                                  display: "flex",
+                                  marginLeft: "-26%",
+                                }}
+                              >
+                                {item.total_sales < 0 && (
+                                  <div
+                                    className="position-absolute"
+                                    style={{
+                                      width: `${barWidth}%`,
+
+                                      height: "100%",
+                                      right: "50%",
+                                      backgroundColor: "transparent",
+                                      // borderRight: "2px solid rgba(200, 0, 0, 1)",
+                                    }}
+                                  ></div>
+                                )}
+
+                                {item.total_sales >= 0 && (
+                                  <div
+                                    className="position-absolute"
+                                    style={{
+                                      width: `${barWidth}%`,
+                                      height: "100%",
+                                      left: "50%",
+                                      backgroundColor: `rgba(4, 126, 163, ${opacity})`,
+                                    }}
+                                  ></div>
+                                )}
+
+                                <div
+                                  className="position-absolute"
+                                  style={{
+                                    width: "2px",
+                                    height: "100%",
+                                    left: "50%",
+                                    backgroundColor: "rgb(204, 204, 204)",
+                                    zIndex: 10,
+                                  }}
+                                >
+                                  <span
+                                    className="position-absolute"
+                                    style={{
+                                      left:
+                                        item.total_sales >= 0
+                                          ? `calc(50% + ${barWidth}%)`
+                                          : `calc(50% - ${barWidth}%)`,
+                                      transform:
+                                        item.total_sales >= 0
+                                          ? "translateX(8px)"
+                                          : "translateX(-100%)",
+                                      fontFamily: "Inter",
+                                      fontWeight: "bold",
+                                      fontSize: "11px",
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    {/* {item.total_sales?.toFixed(2)} */}
+                                    {formatNumber(item.total_sales)}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div
+                              className="sub-value"
+                              style={{
+                                color: "#605F5D",
+                                fontFamily: "Inter",
+                                fontSize: "11px",
+                                fontWeight: "normal",
+                                textAlign: "right",
+                              }}
+                            >
+                              {item.sub_value?.toFixed(2)}
+                              {/* {formatNumber(item.sub_value)} */}
+                            </div>
+                          </div>
+                        );
+                      })}
                       {SalesTypeloading ? (
                         <div className="text-center text-gray-600 py-2">
                           <div

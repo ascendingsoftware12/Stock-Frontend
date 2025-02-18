@@ -25,6 +25,7 @@ function BrandAchievement() {
 
   const [sortColumnsection, setSortColumnsection] = useState("value");
   const [sortDirectionsection, setSortDirectionsection] = useState("desc");
+  const [Disable, setDisable] = useState();
 
   const handleSortsecond = (column) => {
     if (sortColumnsection === column) {
@@ -34,6 +35,7 @@ function BrandAchievement() {
       setSortDirectionsection("desc");
     }
   };
+
   const loadMoreData = async () => {
     if (loading) return; // Prevent multiple calls
     setLoading(true);
@@ -58,6 +60,9 @@ function BrandAchievement() {
     fontFamily: "Inter",
     fontWeight: "bold",
     padding: "5px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   };
 
   // useEffect(() => {
@@ -124,7 +129,8 @@ function BrandAchievement() {
     if (hasFetchedData.current) return;
     hasFetchedData.current = true;
     // fetchsetOverALLDetails(1);
-    fetchDropdownData();
+    fetchDropdownData(true);
+    setDisable(true);
     // fetchsetBrandWise(1);
   }, []);
 
@@ -247,7 +253,7 @@ function BrandAchievement() {
   const lastFetchedPage = useRef(0);
 
   const fetchsetOverALLDetails = async (OverAllpage, selectedTimeValue) => {
-    console.log("fetchsetOverALLDetails");
+    console.log("fetchsetOverALLDetails", selectedTimeValue);
     setSummaryloading(true);
     try {
       const storedAsm = sessionStorage.getItem("asm");
@@ -268,7 +274,7 @@ function BrandAchievement() {
       };
 
       const response = await axios.get(
-        `brand_achievement_analysis/brandachivementsummary?asm=${asm}&page=${OverAllpage}&limit=${Summarylimit}&brand=${encodedFilters.BRAND}&tgt_timeline=${encodedFilters.TGT_TIMELINE}&store_name=${encodedFilters.STORE_NAME}`
+        `brand_achievement_analysis/brandachivementsummary?asm=${asm}&page=${OverAllpage}&limit=${Summarylimit}&brand=${encodedFilters.BRAND}&tgt_timeline=${encodedFilters.TGT_TIMELINE}`
       );
 
       const size = Object.keys(response.data?.values || {}).length;
@@ -334,6 +340,7 @@ function BrandAchievement() {
         const newData = response.data.data;
         const brandOrder = ["OPPO", "VIVO", "SAMSUNG"];
 
+        // ✅ Merge previous & new data
         setBrandWise((prevData) => {
           const combinedData = [...prevData, ...newData];
           const groupedData = combinedData.reduce((acc, item) => {
@@ -342,8 +349,9 @@ function BrandAchievement() {
             return acc;
           }, {});
 
+          // ✅ Convert grouped data to sorted array
           const sortedData = Object.keys(groupedData)
-            .sort()
+            .sort() // Sort store names alphabetically
             .flatMap((storeName) =>
               brandOrder.flatMap((brand) =>
                 groupedData[storeName].filter((item) => item.brand === brand)
@@ -351,7 +359,7 @@ function BrandAchievement() {
             );
 
           console.log("BrandWise updated:", sortedData);
-          return sortedData;
+          return sortedData; // ✅ Must return updated state
         });
 
         if (newData.length < BrandWiselimit) {
@@ -436,28 +444,80 @@ function BrandAchievement() {
   //   }
   // };
 
+  //  const fetchDropdownData = async () => {
+  //     setSummaryloading(true);
+  //     setBrandWiseloading(true);
+
+  //     try {
+  //       const storedAsm = sessionStorage.getItem("asm");
+  //       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+
+  //       const response = await axios.get(
+  //         `/brand_achievement_analysis/brandachivementcolumn?&asm=${asm}&brand=${filters.BRAND}&tgt_timeline=${filters.TGT_TIMELINE}&store_name=${filters.STORE_NAME}`
+  //       );
+
+  //       console.log("API Response:", response.data);
+
+  //       setDropdownData(response.data);
+
+  //       if (response.data.TGT_TIMELINE?.length > 0) {
+  //         const selectedTimeValue = response.data.TGT_TIMELINE[3];
+
+  //         setSelectedOptiontime({
+  //           label: selectedTimeValue,
+  //           value: selectedTimeValue,
+  //         });
+
+  //         fetchsetOverALLDetails(1, selectedTimeValue);
+  //         fetchsetBrandWise(1, selectedTimeValue);
+  //       } else {
+  //         console.warn("TGT_TIMELINE is empty or undefined.");
+  //       }
+
+  //       console.log("Dropdown Data Fetched:", response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching Stocksummary Data:", error);
+  //     }
+  //   };
+
   const fetchDropdownData = async () => {
     setSummaryloading(true);
     setBrandWiseloading(true);
+
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+
       const response = await axios.get(
         `/brand_achievement_analysis/brandachivementcolumn?&asm=${asm}&brand=${filters.BRAND}&tgt_timeline=${filters.TGT_TIMELINE}&store_name=${filters.STORE_NAME}`
       );
-      console.log(response.data);
+
+      console.log("API Response:", response.data);
 
       setDropdownData(response.data);
 
       if (response.data.TGT_TIMELINE?.length > 0) {
-        const selectedTimeValue = response.data.TGT_TIMELINE[1];
-        setSelectedOptiontime({
-          label: selectedTimeValue,
-          value: selectedTimeValue,
-        });
+        const timelineArray = response.data.TGT_TIMELINE;
+        const targetValue = "01 OCT 2024 - 10 NOV 2024";
+        const selectedIndex = timelineArray.findIndex(
+          (item) => item === targetValue
+        );
 
-        fetchsetOverALLDetails(1, selectedTimeValue);
-        fetchsetBrandWise(1, selectedTimeValue);
+        if (selectedIndex !== -1) {
+          const selectedTimeValue = timelineArray[selectedIndex];
+
+          setSelectedOptiontime({
+            label: selectedTimeValue,
+            value: selectedTimeValue,
+          });
+
+          fetchsetOverALLDetails(1, selectedTimeValue);
+          fetchsetBrandWise(1, selectedTimeValue);
+        } else {
+          console.warn("Target timeline value not found.");
+        }
+      } else {
+        console.warn("TGT_TIMELINE is empty or undefined.");
       }
 
       console.log("Dropdown Data Fetched:", response.data);
@@ -504,6 +564,7 @@ function BrandAchievement() {
     setrefresh(false);
     setBrandWisePage(1);
     setSummaryPage(1);
+    setDisable(true);
     // fetchsetOverALLDetails();
     // fetchsetBrandWise();
   };
@@ -515,7 +576,7 @@ function BrandAchievement() {
       setSummaryPage(1);
       setOverALLDetails([]);
       setBrandWise([]);
-      fetchDropdownData();
+      fetchDropdownData(true);
 
       setSelectedOptionbranch(null);
       setSelectedOptionbrand("");
@@ -527,25 +588,27 @@ function BrandAchievement() {
   }, [reload]);
 
   const [Filter, setFilter] = useState(false);
+
+  const [initialFilters, setInitialFilters] = useState(filters);
+  const [isApplyDisabled, setIsApplyDisabled] = useState(true);
+
   const reloadWithFilters = () => {
     console.log("filter");
-    if (filters?.TGT_TIMELINE !== "") {
-      setrefresh(true);
-      setFilter(true);
-      setBrandWisePage(1);
-      setSummaryPage(1);
-      // setBrandWisePage(1);
-      // setSummaryPage(1);
-      // fetchDropdownData();
-      // fetchsetOverALLDetails();
-      setOverALLDetails([]);
-      setBrandWise([]);
-    }
+    setrefresh(true);
+    setBrandWisePage(1);
+    setSummaryPage(1);
+    // fetchDropdownData();
+    // fetchsetOverALLDetails();
+    // fetchsetBrandWise();
+    // setOverALLDetails([]);
+    setBrandWise([]);
+    setInitialFilters(filters);
+    setFilter(true);
   };
-
   useEffect(() => {
     if (Filter) {
       console.log("reload triggered");
+      // setInitialFilters(filters);
       setBrandWisePage(1);
       setSummaryPage(1);
       setOverALLDetails([]);
@@ -558,7 +621,7 @@ function BrandAchievement() {
       // setSelectedOptiontime(null);
       // fetchsetBrandWise(1);
       // fetchsetOverALLDetails(1);
-      fetchDropdownData();
+      fetchDropdownData(false);
       // Reset reload after operations
       setFilter(false);
     }
@@ -636,16 +699,38 @@ function BrandAchievement() {
       value: store,
     }));
 
-  const handletimeChange = (selectedOptions) => {
+  // const handletimeChange = (selectedOptions) => {
+  //   setDisable(true);
+  //   setSelectedOptiontime(selectedOptions);
+
+  //   console.log("Selected item options:", selectedOptions);
+  //   if (selectedOptions) {
+  //     const selectedValues = selectedOptions.map((option) => option.value);
+  //     const selectedValuesString = selectedValues.join(",");
+  //     setFilters((prevFilters) => ({
+  //       ...prevFilters,
+  //       TGT_TIMELINE: selectedValuesString,
+  //     }));
+  //     setDisable();
+  //   } else {
+  //     setFilters((prevFilters) => ({
+  //       ...prevFilters,
+  //       TGT_TIMELINE: "",
+  //     }));
+  //   }
+  //   setDisable(true);
+  // };
+  const handletimeChange = (selectedOptions = []) => {
+    setDisable(false);
     setSelectedOptiontime(selectedOptions);
     console.log("Selected item options:", selectedOptions);
+
     if (selectedOptions) {
-      const selectedValues = selectedOptions.map((option) => option.value);
-      const selectedValuesString = selectedValues.join(",");
       setFilters((prevFilters) => ({
         ...prevFilters,
-        TGT_TIMELINE: selectedValuesString,
+        TGT_TIMELINE: selectedOptions.value,
       }));
+      console.log(filters);
     } else {
       setFilters((prevFilters) => ({
         ...prevFilters,
@@ -653,8 +738,11 @@ function BrandAchievement() {
       }));
     }
   };
-  const handlebrandChange = (selectedOptions) => {
+
+  const handlebrandChange = (selectedOptions = []) => {
+    setDisable(false);
     setSelectedOptionbrand(selectedOptions);
+
     console.log("Selected item options:", selectedOptions);
     if (selectedOptions) {
       const selectedValues = selectedOptions.map((option) => option.value);
@@ -670,9 +758,46 @@ function BrandAchievement() {
       }));
     }
   };
+  useEffect(() => {
+    const filtersChanged = Object.keys(filters).some(
+      (key) => filters[key] !== initialFilters[key]
+    );
+    setIsApplyDisabled(!filtersChanged);
+  }, [filters, initialFilters]);
+  //   const handlebrandChange = (selectedOptions = []) => {
+  //     setDisable(false);
+  //     setSelectedOptionbrand(selectedOptions);
+  //     console.log("Selected item options:", selectedOptions);
 
-  const handlebranchChange = (selectedOptions) => {
+  //     if (selectedOptions.length > 0) {
+  //         const selectedValues = selectedOptions.map((option) => option.value);
+  //         const selectedValuesString = selectedValues.join(",");
+
+  //         setFilters((prevFilters) => {
+  //             const updatedFilters = { ...prevFilters, BRAND: selectedValuesString };
+
+  //             if (updatedFilters.TGT_TIMELINE && updatedFilters.TGT_TIMELINE.length > 0) {
+  //                 // setDisable(false);
+  //             }
+
+  //             return updatedFilters;
+  //         });
+  //     } else {
+  //         setFilters((prevFilters) => {
+  //             const updatedFilters = { ...prevFilters, BRAND: "" };
+  //             if (!updatedFilters.TGT_TIMELINE || updatedFilters.TGT_TIMELINE.length === 0) {
+  //                 setDisable(true);
+  //             }
+
+  //             return updatedFilters;
+  //         });
+  //     }
+  // };
+
+  const handlebranchChange = (selectedOptions = []) => {
+    setDisable(false);
     setSelectedOptionbranch(selectedOptions);
+
     console.log("Selected item options:", selectedOptions);
     if (selectedOptions) {
       const selectedValues = selectedOptions.map((option) => option.value);
@@ -1124,7 +1249,8 @@ function BrandAchievement() {
                   <button
                     className="btn btn-outline-light btn-sm d-flex align-items-center"
                     style={{
-                      backgroundColor: "white",
+                      backgroundColor:
+                        !isApplyDisabled && !Disable ? "white" : "gray",
                       width: "116px",
                       height: "31px",
                       clipPath:
@@ -1134,11 +1260,14 @@ function BrandAchievement() {
                       cursor: "pointer",
                       padding: "7px",
                       color: "black",
+                      opacity: !isApplyDisabled && !Disable ? 1 : 0.6,
                     }}
-                    onClick={reloadWithFilters}
-                    disabled={
-                      !filters?.TGT_TIMELINE || filters.TGT_TIMELINE === ""
+                    onClick={
+                      !isApplyDisabled && !Disable
+                        ? reloadWithFilters
+                        : undefined
                     }
+                    disabled={isApplyDisabled || Disable}
                   >
                     <span
                       className="me-2"
@@ -1151,7 +1280,9 @@ function BrandAchievement() {
                     ></span>{" "}
                     Apply Filter
                   </button>
-
+                  {/* // disabled={
+                    //   !filters?.TGT_TIMELINE || filters.TGT_TIMELINE === ""
+                    // } */}
                   {refresh && (
                     <div
                       // style={{ backgroundColor: "#fff", color: "#000", padding: '8px', borderRadius: '8px' ,cursor:'pointer' }}
@@ -1280,7 +1411,7 @@ function BrandAchievement() {
                     options={optionstime} // Dropdown options
                     value={dropdownValueoptiontime} // Controlled value
                     onChange={handletimeChange} // Handle selection changes
-                    isMulti // Enable multi-select
+                    isMulti={false} // Enable multi-select
                     defaultValue={
                       dropdownData.TGT_TIMELINE.slice() // Create a copy of the array
                         .sort((a, b) => a.localeCompare(b))?.length > 2
@@ -1943,7 +2074,8 @@ function BrandAchievement() {
                                     {/* {section?.Cur_Target_Ach || "0"} */}
                                     {section.Cur_Target_Ach === null
                                       ? ""
-                                      : formatNumber(section?.Cur_Target_Ach)}
+                                      : section?.Cur_Target_Ach?.toFixed(2) +
+                                        "%"}
                                   </span>
                                   <span
                                     style={{
@@ -1954,7 +2086,8 @@ function BrandAchievement() {
                                     {/* {section?.Proj_Target_Ach || "0"} */}
                                     {section.Proj_Target_Ach === null
                                       ? ""
-                                      : formatNumber(section?.Proj_Target_Ach)}
+                                      : section?.Proj_Target_Ach?.toFixed(2) +
+                                        "%"}
                                   </span>
                                 </div>
                               );
@@ -2044,364 +2177,362 @@ function BrandAchievement() {
                     // className="scroll"
                     >
                       <div
-                        style={{ overflow: "scroll", height: "341px" }}
-                        onScroll={(e) => handleScroll1(e, "BranchWiseDetails")}
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          marginBottom: "10px",
+                          borderBottom: "2px solid black",
+                          paddingBottom: "5px",
+                          alignItems: "center",
+                          paddingTop: "9px",
+                          // minWidth: "2000px",
+                        }}
                       >
-                        <div
+                        <span
                           style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            marginBottom: "10px",
-                            borderBottom: "2px solid black",
-                            paddingBottom: "5px",
-                            alignItems: "center",
-                            paddingTop: "9px",
-                            // minWidth: "2000px",
+                            flex: 1,
+                            textAlign: "center",
+                            fontFamily: "Inter",
+                            fontSize: 12,
+                            fontWeight: "bold",
                           }}
                         >
-                          <span
-                            style={{
-                              flex: 1,
-                              textAlign: "center",
-                              fontFamily: "Inter",
-                              fontSize: 12,
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Branch
-                          </span>
+                          Branch
+                        </span>
 
-                          <img
-                            src={
-                              sortConfig1.key === "section" &&
-                              sortConfig1.direction === "asc"
-                                ? SelectArrow
-                                : SelectArrow
-                            }
-                            alt=""
-                            style={{
-                              width: "10px",
-                              height: "15px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => handleSortsecond("store_name")}
-                          />
-                          <span
-                            style={{
-                              flex: 1,
-                              textAlign: "center",
-                              fontFamily: "Inter",
-                              fontSize: 12,
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Brand
-                          </span>
+                        <img
+                          src={
+                            sortConfig1.key === "section" &&
+                            sortConfig1.direction === "asc"
+                              ? SelectArrow
+                              : SelectArrow
+                          }
+                          alt=""
+                          style={{
+                            width: "10px",
+                            height: "15px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleSortsecond("store_name")}
+                        />
+                        <span
+                          style={{
+                            flex: 1,
+                            textAlign: "center",
+                            fontFamily: "Inter",
+                            fontSize: 12,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Brand
+                        </span>
 
-                          <img
-                            src={
-                              sortConfig1.key === "section" &&
-                              sortConfig1.direction === "asc"
-                                ? SelectArrow
-                                : SelectArrow
-                            }
-                            alt=""
-                            style={{
-                              width: "10px",
-                              height: "15px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => handleSortsecond("brand")}
-                          />
-                          <span
-                            style={{
-                              flex: 1,
-                              textAlign: "center",
-                              fontFamily: "Inter",
-                              fontSize: 12,
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Slab
-                          </span>
+                        <img
+                          src={
+                            sortConfig1.key === "section" &&
+                            sortConfig1.direction === "asc"
+                              ? SelectArrow
+                              : SelectArrow
+                          }
+                          alt=""
+                          style={{
+                            width: "10px",
+                            height: "15px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleSortsecond("brand")}
+                        />
+                        <span
+                          style={{
+                            flex: 1,
+                            textAlign: "center",
+                            fontFamily: "Inter",
+                            fontSize: 12,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Slab
+                        </span>
 
-                          <img
-                            src={
-                              sortConfig1.key === "section" &&
-                              sortConfig1.direction === "asc"
-                                ? SelectArrow
-                                : SelectArrow
-                            }
-                            alt=""
-                            style={{
-                              width: "10px",
-                              height: "15px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => handleSortsecond("Slab")}
-                          />
-                          <span
-                            style={{
-                              flex: 1,
-                              textAlign: "center",
-                              fontFamily: "Inter",
-                              fontSize: 12,
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Target
-                          </span>
+                        <img
+                          src={
+                            sortConfig1.key === "section" &&
+                            sortConfig1.direction === "asc"
+                              ? SelectArrow
+                              : SelectArrow
+                          }
+                          alt=""
+                          style={{
+                            width: "10px",
+                            height: "15px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleSortsecond("Slab")}
+                        />
+                        <span
+                          style={{
+                            flex: 1,
+                            textAlign: "center",
+                            fontFamily: "Inter",
+                            fontSize: 12,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Target
+                        </span>
 
-                          <img
-                            src={
-                              sortConfig1.key === "section" &&
-                              sortConfig1.direction === "asc"
-                                ? SelectArrow
-                                : SelectArrow
-                            }
-                            alt=""
-                            style={{
-                              width: "10px",
-                              height: "15px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => handleSortsecond("target")}
-                          />
-                          <span
-                            style={{
-                              flex: 1,
-                              textAlign: "center",
-                              fontFamily: "Inter",
-                              fontSize: 12,
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Current Qty
-                          </span>
+                        <img
+                          src={
+                            sortConfig1.key === "section" &&
+                            sortConfig1.direction === "asc"
+                              ? SelectArrow
+                              : SelectArrow
+                          }
+                          alt=""
+                          style={{
+                            width: "10px",
+                            height: "15px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleSortsecond("target")}
+                        />
+                        <span
+                          style={{
+                            flex: 1,
+                            textAlign: "center",
+                            fontFamily: "Inter",
+                            fontSize: 12,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Current Qty
+                        </span>
 
-                          <img
-                            src={
-                              sortConfig1.key === "section" &&
-                              sortConfig1.direction === "asc"
-                                ? SelectArrow
-                                : SelectArrow
-                            }
-                            alt=""
-                            style={{
-                              width: "10px",
-                              height: "15px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => handleSortsecond("Current_Qty")}
-                          />
-                          <span
-                            style={{
-                              flex: 1,
-                              textAlign: "center",
-                              fontFamily: "Inter",
-                              fontSize: 12,
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Current Sales
-                          </span>
+                        <img
+                          src={
+                            sortConfig1.key === "section" &&
+                            sortConfig1.direction === "asc"
+                              ? SelectArrow
+                              : SelectArrow
+                          }
+                          alt=""
+                          style={{
+                            width: "10px",
+                            height: "15px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleSortsecond("Current_Qty")}
+                        />
+                        <span
+                          style={{
+                            flex: 1,
+                            textAlign: "center",
+                            fontFamily: "Inter",
+                            fontSize: 12,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Current Sales
+                        </span>
 
-                          <img
-                            src={
-                              sortConfig1.key === "section" &&
-                              sortConfig1.direction === "asc"
-                                ? SelectArrow
-                                : SelectArrow
-                            }
-                            alt=""
-                            style={{
-                              width: "10px",
-                              height: "15px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => handleSortsecond("current_Sales")}
-                          />
-                          <span
-                            style={{
-                              flex: 1,
-                              textAlign: "center",
-                              fontFamily: "Inter",
-                              fontSize: 12,
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Sales Projection
-                          </span>
+                        <img
+                          src={
+                            sortConfig1.key === "section" &&
+                            sortConfig1.direction === "asc"
+                              ? SelectArrow
+                              : SelectArrow
+                          }
+                          alt=""
+                          style={{
+                            width: "10px",
+                            height: "15px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleSortsecond("current_Sales")}
+                        />
+                        <span
+                          style={{
+                            flex: 1,
+                            textAlign: "center",
+                            fontFamily: "Inter",
+                            fontSize: 12,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Sales Projection
+                        </span>
 
-                          <img
-                            src={
-                              sortConfig1.key === "section" &&
-                              sortConfig1.direction === "asc"
-                                ? SelectArrow
-                                : SelectArrow
-                            }
-                            alt=""
-                            style={{
-                              width: "10px",
-                              height: "15px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => handleSortsecond("Sales_Projection")}
-                          />
-                          {/*  */}
+                        <img
+                          src={
+                            sortConfig1.key === "section" &&
+                            sortConfig1.direction === "asc"
+                              ? SelectArrow
+                              : SelectArrow
+                          }
+                          alt=""
+                          style={{
+                            width: "10px",
+                            height: "15px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleSortsecond("Sales_Projection")}
+                        />
+                        {/*  */}
 
-                          {/*  */}
+                        {/*  */}
 
-                          <span
-                            style={{
-                              flex: 1,
-                              textAlign: "center",
-                              fontFamily: "Inter",
-                              fontSize: 12,
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Current Discount
-                          </span>
+                        <span
+                          style={{
+                            flex: 1,
+                            textAlign: "center",
+                            fontFamily: "Inter",
+                            fontSize: 12,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Current Discount
+                        </span>
 
-                          <img
-                            src={
-                              sortConfig1.key === "section" &&
-                              sortConfig1.direction === "asc"
-                                ? SelectArrow
-                                : SelectArrow
-                            }
-                            alt=""
-                            style={{
-                              width: "10px",
-                              height: "15px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => handleSortsecond("Current_Discount")}
-                          />
-                          {/*  */}
+                        <img
+                          src={
+                            sortConfig1.key === "section" &&
+                            sortConfig1.direction === "asc"
+                              ? SelectArrow
+                              : SelectArrow
+                          }
+                          alt=""
+                          style={{
+                            width: "10px",
+                            height: "15px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleSortsecond("Current_Discount")}
+                        />
+                        {/*  */}
 
-                          <span
-                            style={{
-                              flex: 1,
-                              textAlign: "center",
-                              fontFamily: "Inter",
-                              fontSize: 12,
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Discount Projection
-                          </span>
+                        <span
+                          style={{
+                            flex: 1,
+                            textAlign: "center",
+                            fontFamily: "Inter",
+                            fontSize: 12,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Discount Projection
+                        </span>
 
-                          <img
-                            src={
-                              sortConfig1.key === "section" &&
-                              sortConfig1.direction === "asc"
-                                ? SelectArrow
-                                : SelectArrow
-                            }
-                            alt=""
-                            style={{
-                              width: "10px",
-                              height: "15px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() =>
-                              handleSortsecond("Discount_Projection")
-                            }
-                          />
-                          {/*  */}
+                        <img
+                          src={
+                            sortConfig1.key === "section" &&
+                            sortConfig1.direction === "asc"
+                              ? SelectArrow
+                              : SelectArrow
+                          }
+                          alt=""
+                          style={{
+                            width: "10px",
+                            height: "15px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() =>
+                            handleSortsecond("Discount_Projection")
+                          }
+                        />
+                        {/*  */}
 
-                          <span
-                            style={{
-                              flex: 1,
-                              textAlign: "center",
-                              fontFamily: "Inter",
-                              fontSize: 12,
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Avg Qty/Value to Ach Target
-                          </span>
+                        <span
+                          style={{
+                            flex: 1,
+                            textAlign: "center",
+                            fontFamily: "Inter",
+                            fontSize: 12,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Avg Qty/Value to Ach Target
+                        </span>
 
-                          <img
-                            src={
-                              sortConfig1.key === "section" &&
-                              sortConfig1.direction === "asc"
-                                ? SelectArrow
-                                : SelectArrow
-                            }
-                            alt=""
-                            style={{
-                              width: "10px",
-                              height: "15px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => handleSortsecond("Avg_Qty_Value")}
-                          />
-                          {/*  */}
+                        <img
+                          src={
+                            sortConfig1.key === "section" &&
+                            sortConfig1.direction === "asc"
+                              ? SelectArrow
+                              : SelectArrow
+                          }
+                          alt=""
+                          style={{
+                            width: "10px",
+                            height: "15px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleSortsecond("Avg_Qty_Value")}
+                        />
+                        {/*  */}
 
-                          <span
-                            style={{
-                              flex: 1,
-                              textAlign: "center",
-                              fontFamily: "Inter",
-                              fontSize: 12,
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Cur Target Ach%
-                          </span>
+                        <span
+                          style={{
+                            flex: 1,
+                            textAlign: "center",
+                            fontFamily: "Inter",
+                            fontSize: 12,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Cur Target Ach%
+                        </span>
 
-                          <img
-                            src={
-                              sortConfig1.key === "section" &&
-                              sortConfig1.direction === "asc"
-                                ? SelectArrow
-                                : SelectArrow
-                            }
-                            alt=""
-                            style={{
-                              width: "10px",
-                              height: "15px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() =>
-                              handleSortsecond("target_ach_percent")
-                            }
-                          />
-                          {/*  */}
+                        <img
+                          src={
+                            sortConfig1.key === "section" &&
+                            sortConfig1.direction === "asc"
+                              ? SelectArrow
+                              : SelectArrow
+                          }
+                          alt=""
+                          style={{
+                            width: "10px",
+                            height: "15px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleSortsecond("target_ach_percent")}
+                        />
+                        {/*  */}
 
-                          <span
-                            style={{
-                              flex: 1,
-                              textAlign: "center",
-                              fontFamily: "Inter",
-                              fontSize: 12,
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Proj Taget Ach%
-                          </span>
+                        <span
+                          style={{
+                            flex: 1,
+                            textAlign: "center",
+                            fontFamily: "Inter",
+                            fontSize: 12,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          Proj Taget Ach%
+                        </span>
 
-                          <img
-                            src={
-                              sortConfig1.key === "section" &&
-                              sortConfig1.direction === "asc"
-                                ? SelectArrow
-                                : SelectArrow
-                            }
-                            alt=""
-                            style={{
-                              width: "10px",
-                              height: "15px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() => handleSortsecond("Proj_Target_Ach")}
-                          />
-                        </div>
+                        <img
+                          src={
+                            sortConfig1.key === "section" &&
+                            sortConfig1.direction === "asc"
+                              ? SelectArrow
+                              : SelectArrow
+                          }
+                          alt=""
+                          style={{
+                            width: "10px",
+                            height: "15px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleSortsecond("Proj_Target_Ach")}
+                        />
+                      </div>
 
-                        {/* Table Rows */}
+                      {/* Table Rows */}
+                      <div
+                        style={{ overflow: "scroll", height: "290px" }}
+                        onScroll={(e) => handleScroll1(e, "BranchWiseDetails")}
+                      >
                         <div
                           style={{
                             display: "flex",
@@ -2475,10 +2606,12 @@ function BrandAchievement() {
                                       <span
                                         style={{
                                           flex: 1,
-                                          textAlign: "left",
+                                          // textAlign: "left",
                                           fontSize: 11,
                                           fontWeight: "bold",
                                           lineBreak: "anywhere",
+                                          display: "flex",
+                                          alignItems: "center",
                                         }}
                                       >
                                         {cleanedSection?.store_name}
@@ -2490,6 +2623,9 @@ function BrandAchievement() {
                                           fontSize: 11,
                                           fontWeight: "bold",
                                           padding: "5px",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
                                         }}
                                       >
                                         {cleanedSection?.brand}
@@ -2501,6 +2637,9 @@ function BrandAchievement() {
                                           fontSize: 11,
                                           fontWeight: "bold",
                                           padding: "5px",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
                                         }}
                                       >
                                         {cleanedSection?.Slab !== "BLANK"
@@ -2516,6 +2655,9 @@ function BrandAchievement() {
                                             CurTargetBackgroundColor,
                                           padding: "5px",
                                           fontWeight: "bold",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
                                         }}
                                       >
                                         {cleanedSection?.target != null
@@ -2531,6 +2673,9 @@ function BrandAchievement() {
                                             CurTargetBackgroundColor,
                                           padding: "5px",
                                           fontWeight: "bold",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
                                         }}
                                       >
                                         {cleanedSection?.Current_Qty != null
@@ -2547,6 +2692,9 @@ function BrandAchievement() {
                                           backgroundColor:
                                             CurTargetBackgroundColor,
                                           fontWeight: "bold",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
                                         }}
                                       >
                                         {cleanedSection?.current_Sales != null
@@ -2563,6 +2711,9 @@ function BrandAchievement() {
                                           backgroundColor:
                                             CurTargetBackgroundColor,
                                           fontWeight: "bold",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
                                         }}
                                       >
                                         {/* {formatNumber(cleanedSection?.Sales_Projection || "")} */}
@@ -2581,6 +2732,9 @@ function BrandAchievement() {
                                           backgroundColor:
                                             CurTargetBackgroundColor,
                                           fontWeight: "bold",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
                                         }}
                                       >
                                         {/* {formatNumber(cleanedSection?.Current_Discount || "")} */}
@@ -2599,6 +2753,9 @@ function BrandAchievement() {
                                           backgroundColor:
                                             CurTargetBackgroundColor,
                                           fontWeight: "bold",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
                                         }}
                                       >
                                         {/* {formatNumber(cleanedSection?.Discount_Projection || "")} */}
@@ -2617,15 +2774,23 @@ function BrandAchievement() {
                                           backgroundColor:
                                             CurTargetBackgroundColor,
                                           fontWeight: "bold",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
                                         }}
                                       >
                                         {/* {Number(cleanedSection?.Avg_Qty_Value || 0).toFixed(2)} */}
-                                        {!isNaN(
+                                        {/* {!isNaN(
                                           Number(cleanedSection?.Avg_Qty_Value)
                                         )
                                           ? Number(
                                               cleanedSection?.Avg_Qty_Value
                                             ).toFixed(2)
+                                          : ""} */}
+                                        {cleanedSection?.Avg_Qty_Value != null
+                                          ? formatNumber(
+                                              cleanedSection.Avg_Qty_Value
+                                            )
                                           : ""}
                                       </span>
                                       <span
@@ -2636,6 +2801,9 @@ function BrandAchievement() {
                                           backgroundColor:
                                             CurTargetBackgroundColor,
                                           fontWeight: "bold",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
                                         }}
                                       >
                                         {/* {`${Number(cleanedSection?.target_ach_percent || 0).toFixed(2)}%`} */}
@@ -2659,6 +2827,9 @@ function BrandAchievement() {
                                           backgroundColor:
                                             CurTargetBackgroundColor,
                                           fontWeight: "bold",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
                                         }}
                                       >
                                         {/* {`${Number(cleanedSection?.Proj_Target_Ach || 0).toFixed(2)}%`} */}

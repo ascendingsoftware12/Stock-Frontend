@@ -36,7 +36,7 @@ export default function Sidebar() {
     fetchState();
     const flag = sessionStorage.getItem("flag");
     const asm = sessionStorage.getItem("asm");
-    
+
     setasm(asm);
     setflag(flag);
     if (!flag) {
@@ -57,7 +57,6 @@ export default function Sidebar() {
   const toggleDropdownEx = () => setIsDropdownExOpen(!isDropdownExOpen);
   const toggleDropdownEy = () => setIsDropdownEyOpen(!isDropdownEyOpen);
   const toggleDropdownEZ = () => setIsDropdownEZOpen(!isDropdownEZOpen);
-
 
   const [showModal, setShowModal] = useState(false);
   const [selectedState, setSelectedState] = useState([]);
@@ -471,98 +470,97 @@ export default function Sidebar() {
               </>
             )}
 
-           
             {flag == 2 && (
               <>
-               {asm === "null" && (
-                <li data-drawer-hide="drawer-navigation">
-                  <button
-                    data-drawer-hide="drawer-navigation"
-                    type="button"
-                    className="flex items-center w-full p-2 text-base  text-slate-100 transition duration-75 rounded-lg group hover:bg-blue-700  dark:text-white dark:hover:bg-gray-700"
-                    aria-controls="dropdown-example"
-                    data-collapse-toggle="dropdown-example"
-                    onClick={toggleDropdownEy}
-                  >
-                    <FaBoxOpen className="w-5 h-5 text-lightblue-custom transition duration-75 dark:text-gray-400 group-hover:text-slate-100 dark:group-hover:text-white" />
-
-                    <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">
-                      Optimize Stock
-                    </span>
-                    <svg
-                      className="w-3 h-3"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 10 6"
+                {asm === "null" && (
+                  <li data-drawer-hide="drawer-navigation">
+                    <button
+                      data-drawer-hide="drawer-navigation"
+                      type="button"
+                      className="flex items-center w-full p-2 text-base  text-slate-100 transition duration-75 rounded-lg group hover:bg-blue-700  dark:text-white dark:hover:bg-gray-700"
+                      aria-controls="dropdown-example"
+                      data-collapse-toggle="dropdown-example"
+                      onClick={toggleDropdownEy}
                     >
-                      <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="m1 1 4 4 4-4"
-                      />
-                    </svg>
-                  </button>
-                  <ul
-                    id="dropdown-ey"
-                    className={`${
-                      isDropdownEyOpen ? "" : "hidden"
-                    } py-2 space-y-2`}
-                  >
-                    <li data-drawer-hide="drawer-navigation">
-                      <Link
-                        data-drawer-hide="drawer-navigation"
-                        to="/TransferSummaryStore"
-                        data-drawer-dismiss="drawer-navigation"
+                      <FaBoxOpen className="w-5 h-5 text-lightblue-custom transition duration-75 dark:text-gray-400 group-hover:text-slate-100 dark:group-hover:text-white" />
+
+                      <span className="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">
+                        Optimize Stock
+                      </span>
+                      <svg
+                        className="w-3 h-3"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 10 6"
                       >
-                        {" "}
-                        <div
+                        <path
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="m1 1 4 4 4-4"
+                        />
+                      </svg>
+                    </button>
+                    <ul
+                      id="dropdown-ey"
+                      className={`${
+                        isDropdownEyOpen ? "" : "hidden"
+                      } py-2 space-y-2`}
+                    >
+                      <li data-drawer-hide="drawer-navigation">
+                        <Link
                           data-drawer-hide="drawer-navigation"
+                          to="/TransferSummaryStore"
                           data-drawer-dismiss="drawer-navigation"
-                          className="flex items-center w-full p-2  text-slate-100 transition duration-75 rounded-lg pl-11 group hover:bg-blue-700 dark:text-white dark:hover:bg-gray-700"
                         >
-                          Transfer Summary
-                        </div>{" "}
-                      </Link>
-                    </li>
-                    <li data-drawer-hide="drawer-navigation">
-                      <Link
-                        data-drawer-hide="drawer-navigation"
-                        to="/TransferRecieveSummary"
-                        data-drawer-dismiss="drawer-navigation"
-                      >
-                        {" "}
-                        <div
+                          {" "}
+                          <div
+                            data-drawer-hide="drawer-navigation"
+                            data-drawer-dismiss="drawer-navigation"
+                            className="flex items-center w-full p-2  text-slate-100 transition duration-75 rounded-lg pl-11 group hover:bg-blue-700 dark:text-white dark:hover:bg-gray-700"
+                          >
+                            Transfer Summary
+                          </div>{" "}
+                        </Link>
+                      </li>
+                      <li data-drawer-hide="drawer-navigation">
+                        <Link
                           data-drawer-hide="drawer-navigation"
+                          to="/TransferRecieveSummary"
                           data-drawer-dismiss="drawer-navigation"
-                          className="flex items-center w-full p-2  text-slate-100 transition duration-75 rounded-lg pl-11 group hover:bg-blue-700 dark:text-white dark:hover:bg-gray-700"
                         >
-                          Transfer Receive Summary
-                        </div>{" "}
-                      </Link>
-                    </li>
-                    <li data-drawer-hide="drawer-navigation">
-                      <Link
-                        data-drawer-hide="drawer-navigation"
-                        to="/StockSummaryStore"
-                        data-drawer-dismiss="drawer-navigation"
-                      >
-                        {" "}
-                        <div
+                          {" "}
+                          <div
+                            data-drawer-hide="drawer-navigation"
+                            data-drawer-dismiss="drawer-navigation"
+                            className="flex items-center w-full p-2  text-slate-100 transition duration-75 rounded-lg pl-11 group hover:bg-blue-700 dark:text-white dark:hover:bg-gray-700"
+                          >
+                            Transfer Receive Summary
+                          </div>{" "}
+                        </Link>
+                      </li>
+                      <li data-drawer-hide="drawer-navigation">
+                        <Link
                           data-drawer-hide="drawer-navigation"
+                          to="/StockSummaryStore"
                           data-drawer-dismiss="drawer-navigation"
-                          className="flex items-center w-full p-2  text-slate-100 transition duration-75 rounded-lg pl-11 group hover:bg-blue-700 dark:text-white dark:hover:bg-gray-700"
                         >
-                        Stock Summary
-                        </div>{" "}
-                      </Link>
-                    </li>
-                  </ul>
-                </li>
-              )}
-            <li data-drawer-hide="drawer-navigation">
+                          {" "}
+                          <div
+                            data-drawer-hide="drawer-navigation"
+                            data-drawer-dismiss="drawer-navigation"
+                            className="flex items-center w-full p-2  text-slate-100 transition duration-75 rounded-lg pl-11 group hover:bg-blue-700 dark:text-white dark:hover:bg-gray-700"
+                          >
+                            Stock Summary
+                          </div>{" "}
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
+                )}
+                <li data-drawer-hide="drawer-navigation">
                   <button
                     data-drawer-hide="drawer-navigation"
                     type="button"
@@ -610,7 +608,7 @@ export default function Sidebar() {
                           data-drawer-dismiss="drawer-navigation"
                           className="flex items-center w-full p-2  text-slate-100 transition duration-75 rounded-lg pl-11 group hover:bg-blue-700 dark:text-white dark:hover:bg-gray-700"
                         >
-                        Sales- All in One
+                          Sales- All in One
                         </div>{" "}
                       </Link>
                     </li>
@@ -642,7 +640,8 @@ export default function Sidebar() {
                           data-drawer-dismiss="drawer-navigation"
                           className="flex items-center w-full p-2  text-slate-100 transition duration-75 rounded-lg pl-11 group hover:bg-blue-700 dark:text-white dark:hover:bg-gray-700"
                         >
-                          Sales Analysis
+                          {/* Sales Analysis */}
+                          Sales Analysis-Yesterday / MTD/ YTD Summary
                         </div>{" "}
                       </Link>
                     </li>
@@ -658,13 +657,11 @@ export default function Sidebar() {
                           data-drawer-dismiss="drawer-navigation"
                           className="flex items-center w-full p-2  text-slate-100 transition duration-75 rounded-lg pl-11 group hover:bg-blue-700 dark:text-white dark:hover:bg-gray-700"
                         >
-                          AllinoneStock
+                          {/* AllinoneStock */}
+                          Stock-All In One Summary
                         </div>{" "}
-
                       </Link>
                     </li>
-
-
 
                     <li data-drawer-hide="drawer-navigation">
                       <Link
@@ -680,11 +677,8 @@ export default function Sidebar() {
                         >
                           Target Achievement Analysis
                         </div>{" "}
-
                       </Link>
                     </li>
-
-
 
                     <li data-drawer-hide="drawer-navigation">
                       <Link
@@ -700,11 +694,8 @@ export default function Sidebar() {
                         >
                           BrandAchievement
                         </div>{" "}
-
                       </Link>
                     </li>
-
-
                   </ul>
                 </li>
                 {/* <li data-drawer-hide="drawer-navigation">

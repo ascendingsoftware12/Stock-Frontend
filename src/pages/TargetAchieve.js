@@ -80,6 +80,39 @@ function TargetAchieve() {
   //BrandWiseGrowth
   const [sortConfig2, setSortConfig2] = useState({ key: "", direction: "asc" });
 
+  const handleSort4 = (key) => {
+    const direction =
+      sortConfig4.key === key && sortConfig4.direction === "asc" ? "desc" : "asc";
+  
+    const sortedData = [...BrandWise].sort((a, b) => {
+      const valueA = parseFloat(a[key]) || 0; // Convert to number, default to 0 if NaN
+      const valueB = parseFloat(b[key]) || 0;
+  
+      return direction === "asc" ? valueA - valueB : valueB - valueA;
+    });
+  
+    setSortConfig4({ key, direction });
+    setBrandWise(sortedData);
+  };
+  const [sortConfig4, setSortConfig4] = useState({ key: "", direction: "asc" });
+
+  const handleSort5 = (key) => {
+    const direction =
+      sortConfig5.key === key && sortConfig5.direction === "asc" ? "desc" : "asc";
+  
+    const sortedData = [...BrandWiseGrowth].sort((a, b) => {
+      const valueA = parseFloat(a[key]) || 0; // Convert to number, default to 0 if NaN
+      const valueB = parseFloat(b[key]) || 0;
+  
+      return direction === "asc" ? valueA - valueB : valueB - valueA;
+    });
+  
+    setSortConfig5({ key, direction });
+    setBrandWiseGrowth(sortedData);
+  };
+  const [sortConfig5, setSortConfig5] = useState({ key: "", direction: "asc" });
+  
+
   const handleSort3 = (key) => {
     const direction =
       sortConfig2.key === key && sortConfig2.direction === "asc"
@@ -97,7 +130,7 @@ function TargetAchieve() {
   useEffect(() => {
     if (hasFetchedData.current) return;
     hasFetchedData.current = true;
-
+    setfirsttym(true);
     const asm = sessionStorage.getItem("asm");
     setasm(asm);
     // fetchsetOverALLDetails();
@@ -187,32 +220,27 @@ function TargetAchieve() {
         `target_achievement_analysis/targetachievementOverallDetails??&asm=${asm}&tgt_timeline=${encodedFilters.tgt_timeline}&section=${encodedFilters.section}`
       );
       const data = response.data.data;
-      
+
       const sortedData = [...data].sort((a, b) => {
-        const specialCharRegex = /^[^a-zA-Z0-9]/; 
-        const containsAmpersand = /&/; 
-      
+        const specialCharRegex = /^[^a-zA-Z0-9]/;
+        const containsAmpersand = /&/;
+
         const aSpecial = specialCharRegex.test(a.section);
         const bSpecial = specialCharRegex.test(b.section);
-        
+
         const aContainsAmpersand = containsAmpersand.test(a.section);
         const bContainsAmpersand = containsAmpersand.test(b.section);
-      
-       
+
         if (aSpecial && !bSpecial) return -1;
         if (!aSpecial && bSpecial) return 1;
-      
-        
+
         if (aContainsAmpersand && !bContainsAmpersand) return -1;
         if (!aContainsAmpersand && bContainsAmpersand) return 1;
-      
-        
-        return a.section.localeCompare(b.section, "en", { sensitivity: "base" });
+
+        return a.section.localeCompare(b.section, "en", {
+          sensitivity: "base",
+        });
       });
-      
-      
-      
-      
 
       const size = Object.keys(data).length;
       console.log("hili", data);
@@ -323,29 +351,30 @@ function TargetAchieve() {
         `target_achievement_analysis/targetachievementBranchWiseDetails?&asm=${asm}&page=${pagenum1}&limit=${BrandWiselimit}&tgt_timeline=${encodedFilters.tgt_timeline}&store_name=${encodedFilters.store_name}&section=${encodedFilters.section}`
       );
       const data = response.data.data;
-      
+
       const sortSections = (sectionsArray) => {
         return sectionsArray.sort((a, b) => {
-          const specialCharRegex = /^[^a-zA-Z0-9]/; 
-          const containsAmpersand = /&/; 
-  
+          const specialCharRegex = /^[^a-zA-Z0-9]/;
+          const containsAmpersand = /&/;
+
           const aSpecial = specialCharRegex.test(a.section);
           const bSpecial = specialCharRegex.test(b.section);
-  
+
           const aContainsAmpersand = containsAmpersand.test(a.section);
           const bContainsAmpersand = containsAmpersand.test(b.section);
-  
+
           if (aSpecial && !bSpecial) return -1;
           if (!aSpecial && bSpecial) return 1;
-  
+
           if (aContainsAmpersand && !bContainsAmpersand) return -1;
           if (!aContainsAmpersand && bContainsAmpersand) return 1;
-  
-          return a.section.localeCompare(b.section, "en", { sensitivity: "base" });
+
+          return a.section.localeCompare(b.section, "en", {
+            sensitivity: "base",
+          });
         });
       };
-  
-      
+
       const groupedData = data.reduce((acc, item) => {
         if (!acc[item.store_name]) {
           acc[item.store_name] = [];
@@ -353,12 +382,11 @@ function TargetAchieve() {
         acc[item.store_name].push(item);
         return acc;
       }, {});
-  
-      
+
       const sortedData = Object.keys(groupedData)
         .sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" }))
         .flatMap((storeName) => sortSections(groupedData[storeName]));
-      
+
       const size = Object.keys(data).length;
       console.log("hili", data);
       console.log("pagenum", BrandWisepage);
@@ -377,8 +405,14 @@ function TargetAchieve() {
                   return acc;
                 }, {})
               )
-                .sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" }))
-                .flatMap((storeName) => sortSections(mergedData.filter((i) => i.store_name === storeName)));
+                .sort((a, b) =>
+                  a.localeCompare(b, "en", { sensitivity: "base" })
+                )
+                .flatMap((storeName) =>
+                  sortSections(
+                    mergedData.filter((i) => i.store_name === storeName)
+                  )
+                );
             });
           } else {
             setBrandWise((prevData) => {
@@ -390,8 +424,14 @@ function TargetAchieve() {
                   return acc;
                 }, {})
               )
-                .sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" }))
-                .flatMap((storeName) => sortSections(mergedData.filter((i) => i.store_name === storeName)));
+                .sort((a, b) =>
+                  a.localeCompare(b, "en", { sensitivity: "base" })
+                )
+                .flatMap((storeName) =>
+                  sortSections(
+                    mergedData.filter((i) => i.store_name === storeName)
+                  )
+                );
             });
           }
           setBrandWisePage(pagenum1);
@@ -523,29 +563,30 @@ function TargetAchieve() {
         `target_achievement_analysis/targetachievementBranchWiseGrowth?&asm=${asm}&page=${pagenum}&limit=${BrandWiseGrowthlimit}&tgt_timeline=${encodedFilters.tgt_timeline}&store_name=${encodedFilters.store_name}&section=${encodedFilters.section}`
       );
       const data = response.data.data;
-     
+
       const sortSections = (sectionsArray) => {
         return sectionsArray.sort((a, b) => {
-          const specialCharRegex = /^[^a-zA-Z0-9]/; 
-          const containsAmpersand = /&/; 
-  
+          const specialCharRegex = /^[^a-zA-Z0-9]/;
+          const containsAmpersand = /&/;
+
           const aSpecial = specialCharRegex.test(a.section);
           const bSpecial = specialCharRegex.test(b.section);
-  
+
           const aContainsAmpersand = containsAmpersand.test(a.section);
           const bContainsAmpersand = containsAmpersand.test(b.section);
-  
+
           if (aSpecial && !bSpecial) return -1;
           if (!aSpecial && bSpecial) return 1;
-  
+
           if (aContainsAmpersand && !bContainsAmpersand) return -1;
           if (!aContainsAmpersand && bContainsAmpersand) return 1;
-  
-          return a.section.localeCompare(b.section, "en", { sensitivity: "base" });
+
+          return a.section.localeCompare(b.section, "en", {
+            sensitivity: "base",
+          });
         });
       };
-  
-      
+
       const groupedData = data.reduce((acc, item) => {
         if (!acc[item.store_name]) {
           acc[item.store_name] = [];
@@ -553,8 +594,7 @@ function TargetAchieve() {
         acc[item.store_name].push(item);
         return acc;
       }, {});
-  
-      
+
       const sortedData = Object.keys(groupedData)
         .sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" }))
         .flatMap((storeName) => sortSections(groupedData[storeName]));
@@ -577,8 +617,14 @@ function TargetAchieve() {
                   return acc;
                 }, {})
               )
-                .sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" }))
-                .flatMap((storeName) => sortSections(mergedData.filter((i) => i.store_name === storeName)));
+                .sort((a, b) =>
+                  a.localeCompare(b, "en", { sensitivity: "base" })
+                )
+                .flatMap((storeName) =>
+                  sortSections(
+                    mergedData.filter((i) => i.store_name === storeName)
+                  )
+                );
             });
           } else {
             setBrandWiseGrowth((prevData) => {
@@ -590,8 +636,14 @@ function TargetAchieve() {
                   return acc;
                 }, {})
               )
-                .sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" }))
-                .flatMap((storeName) => sortSections(mergedData.filter((i) => i.store_name === storeName)));
+                .sort((a, b) =>
+                  a.localeCompare(b, "en", { sensitivity: "base" })
+                )
+                .flatMap((storeName) =>
+                  sortSections(
+                    mergedData.filter((i) => i.store_name === storeName)
+                  )
+                );
             });
           }
           setBrandWiseGrowthPage(pagenum);
@@ -644,12 +696,7 @@ function TargetAchieve() {
     setFilters({ ...filters, section: event.target.value });
   };
 
-
-  
-const [firsttym, setfirsttym] =useState({ section: "",
-  store_name: "",
-  tgt_timeline: "",})
-  
+  const [firsttym, setfirsttym] = useState();
 
   const fetchDropdownData = async (isinitialfetch) => {
     console.log(isinitialfetch);
@@ -673,7 +720,7 @@ const [firsttym, setfirsttym] =useState({ section: "",
             tgt_timeline: cleanEncode(filters.tgt_timeline),
           };
 
-          setfirsttym(encodedFilters);
+      // setfirsttym(encodedFilters);
 
       console.log("Decoded and Encoded Filters:", encodedFilters);
 
@@ -795,6 +842,7 @@ const [firsttym, setfirsttym] =useState({ section: "",
           });
 
           handleperiodChange([{ value: latestDate, label: latestDate }]);
+          setfirsttym(true);
           setBrandWise([]);
           setBrandWiseGrowth([]);
           //setCount([]);
@@ -806,12 +854,11 @@ const [firsttym, setfirsttym] =useState({ section: "",
           //   store_name: "",
           //   tgt_timeline: "",
           // })
-          
+
           await fetchsetBrandWiseGrowth(1, { tgt_timeline: latestDate });
           await fetchsetBrandWise(1, { tgt_timeline: latestDate });
           await fetchsetOverALLDetails({ tgt_timeline: latestDate });
-          await fetchQuantityData({tgt_timeline:latestDate});
-         
+          await fetchQuantityData({ tgt_timeline: latestDate });
         }
       }
 
@@ -826,9 +873,16 @@ const [firsttym, setfirsttym] =useState({ section: "",
     setBrandWiseGrowthloading(true);
     setBrandWiseloading(true);
     setOverallDashboardloading(true);
+    // setfirsttym(true);
+    setFilters({
+      section: "",
+      store_name: "",
+      tgt_timeline: "",
+    });
     setBrandWiseGrowth("");
     setBrandWise("");
     setOverALLDetails("");
+    setInitialFilters("");
     setDropdownData({
       section: [],
       store_name: [],
@@ -838,7 +892,6 @@ const [firsttym, setfirsttym] =useState({ section: "",
     setBrandWiselimit(120);
     setBrandWiseGrowthlimit(50);
 
-   
     console.log(filters.tgt_timeline);
 
     fetchDropdownData(true);
@@ -861,26 +914,25 @@ const [firsttym, setfirsttym] =useState({ section: "",
 
     setrefresh(false);
   };
-  const [initialFilters, setInitialFilters] = useState(filters); // Store initial values
-const [isApplyDisabled, setIsApplyDisabled] = useState(true); 
-useEffect(() => {
-  console.log('ghhgdd6666',firsttym);
-  console.log('hghh999',filters);
-  
-  
-  const filtersChanged = Object.keys(filters).some(
-    (key) => filters[key] !== initialFilters[key]
-  ); 
-  setIsApplyDisabled(!filtersChanged);
-}, [filters, firsttym, initialFilters]);
 
-  
+  const [initialFilters, setInitialFilters] = useState(filters); // Store initial values
+  const [isApplyDisabled, setIsApplyDisabled] = useState(true);
+  useEffect(() => {
+    console.log("ghhgdd6666", firsttym);
+    console.log("hghh999", filters);
+
+    const filtersChanged = Object.keys(filters).some(
+      (key) => filters[key] !== initialFilters[key]
+    );
+    setIsApplyDisabled(!filtersChanged);
+  }, [filters, firsttym, initialFilters]);
+
   const reloadWithFilters = () => {
     console.log("testindbro", filters.tgt_timeline);
 
     if (filters.tgt_timeline !== "") {
       setrefresh(true);
-      setInitialFilters(filters)
+      setInitialFilters(filters);
       setBrandWiseGrowth("");
       setBrandWise("");
       setOverALLDetails("");
@@ -936,7 +988,7 @@ useEffect(() => {
             tgt_timeline: currentfilter.tgt_timeline,
             asm: asm,
             // section:filters.section,
-            store_name:currentfilter.store_name,
+            store_name: currentfilter.store_name,
           },
         }
       );
@@ -953,18 +1005,32 @@ useEffect(() => {
   //   return "";
   // };
 
+  // const formatNumber = (value) => {
+  //   if (isNaN(value)) return "0";
+  //   return parseInt(value).toLocaleString("en-IN"); // Format without decimal points
+  // };
+
+
   const formatNumber = (value) => {
     if (isNaN(value)) return "0";
-    return parseInt(value).toLocaleString(); // Format without decimal points
+    const number = parseInt(value, 10);
+    if (number < 10) {
+      return number.toString().padStart(2, '0');
+    }
+    return number.toLocaleString("en-IN");
   };
 
+  
   const formatNumber2 = (value) => {
     if (value === null || value === undefined) return " ";
     return `${value >= 0 ? "" : ""}${Math.round(parseFloat(value))}`;
   };
   const formatNumber1 = (value) => {
     if (value === null || value === undefined) return " ";
-    return `${value >= 0 ? "" : ""}${parseFloat(value).toFixed(2)}`;
+    return parseFloat(value).toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
   };
 
   const renderGrowthIcon = (CMvs3Mnth) => {
@@ -1064,30 +1130,38 @@ useEffect(() => {
     : []; // Fallback to an empty array if section is undefined or not an array
 
   const handleperiodChange = (selectedOptions) => {
+    console.log(selectedOptions);
+
+    setfirsttym(false);
     setSelectedOptionperiod(selectedOptions);
     console.log("Selected item options:", selectedOptions);
-    if (selectedOptions) {
-      // Extract values from selected options
-      const selectedValues = selectedOptions.map((option) => option.value);
 
-      // Join the values into a comma-separated string
+    if (Array.isArray(selectedOptions)) {
+      // Check if it's an array
+      const selectedValues = selectedOptions.map((option) => option.value);
       const selectedValuesString = selectedValues.join(",");
 
-      // Update the filters state
       setFilters((prevFilters) => ({
         ...prevFilters,
-        tgt_timeline: selectedValuesString, // Update the `item_category` filter
+        tgt_timeline: selectedValuesString,
+      }));
+    } else if (selectedOptions && selectedOptions.value) {
+      // Handle single object scenario
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        tgt_timeline: selectedOptions.value,
       }));
     } else {
-      // If no options are selected, clear the item_category filter
       setFilters((prevFilters) => ({
         ...prevFilters,
-        tgt_timeline: "", // Clear the `item_category` filter
+        tgt_timeline: "",
       }));
     }
   };
+
   const handlebranchChange = (selectedOptions) => {
     setSelectedOptionbranch(selectedOptions);
+    setfirsttym(false);
     console.log("Selected item options:", selectedOptions);
     if (selectedOptions) {
       // Extract values from selected options
@@ -1111,6 +1185,7 @@ useEffect(() => {
   };
 
   const handlesectionChange = (selectedOptions) => {
+    setfirsttym(false);
     setSelectedOptionsection(selectedOptions);
     console.log("Selected item options:", selectedOptions);
     if (selectedOptions) {
@@ -1172,7 +1247,11 @@ useEffect(() => {
                     className="btn btn-outline-light btn-sm d-flex align-items-center"
                     style={{
                       backgroundColor:
-                      ( filters.tgt_timeline !== "" && !isApplyDisabled) ? "white" : "gray",
+                        filters.tgt_timeline !== "" &&
+                        !isApplyDisabled &&
+                        !firsttym
+                          ? "white"
+                          : "gray",
                       width: "116px",
                       height: "31px",
                       clipPath:
@@ -1180,17 +1259,30 @@ useEffect(() => {
                       border: "none",
                       outline: "none",
                       cursor:
-                      ( filters.tgt_timeline !== "" && !isApplyDisabled) ? "pointer" : "not-allowed",
+                        filters.tgt_timeline !== "" &&
+                        !isApplyDisabled &&
+                        !firsttym
+                          ? "pointer"
+                          : "not-allowed",
                       padding: "7px",
                       color: "black",
-                      opacity: ( filters.tgt_timeline !== "" && !isApplyDisabled) ? 1 : 0.6,
+                      opacity:
+                        filters.tgt_timeline !== "" &&
+                        !isApplyDisabled &&
+                        !firsttym
+                          ? 1
+                          : 0.6,
                     }}
                     onClick={
-                    ( filters.tgt_timeline !== "" && !isApplyDisabled)
+                      filters.tgt_timeline !== "" &&
+                      !isApplyDisabled &&
+                      !firsttym
                         ? reloadWithFilters
                         : undefined
                     }
-                    disabled={filters.tgt_timeline==="" && isApplyDisabled}
+                    disabled={
+                      filters.tgt_timeline === "" && isApplyDisabled && firsttym
+                    }
                   >
                     <span
                       className="me-2"
@@ -1332,7 +1424,7 @@ useEffect(() => {
                     options={optionsperiod} // Dropdown options
                     value={dropdownValueoptionperiod} // Controlled value
                     onChange={handleperiodChange} // Handle selection changes
-                    isMulti // Enable multi-select
+                    isMulti={false} // Enable multi-select
                     defaultValue={
                       dropdownData.tgt_timeline
                         .slice() // Create a copy of the array
@@ -1350,6 +1442,21 @@ useEffect(() => {
                     className="basic-multi-select"
                     classNamePrefix="select"
                     placeholder={placeholderperiod}
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        backgroundColor: "#f0f0f0", // Background color of the select box
+                      }),
+
+                      option: (base, { isSelected }) => ({
+                        ...base,
+                        backgroundColor: isSelected ? "#ADD8E6" : "white", // Selected option color
+                        color: isSelected ? "black" : "black",
+                        ":hover": {
+                          backgroundColor: "#ADD8E6", // Hover effect
+                        },
+                      }),
+                    }}
                   />
                 </div>
                 <div className="col-md-3">
@@ -1683,7 +1790,7 @@ useEffect(() => {
                     >
                       {Count.map((item, index) => (
                         <h5 key={index} className="card-text">
-                          {formatNumber(item.target_ach_percentage)}
+                          {formatNumber1(item.target_ach_percentage) + "%" || 0}
                         </h5>
                       ))}
                     </div>
@@ -1712,7 +1819,7 @@ useEffect(() => {
                     >
                       {Count.map((item, index) => (
                         <h5 key={index} className="card-text">
-                          {formatNumber(item.proj_target)}
+                          {formatNumber1(item.proj_target) + "%" || 0}
                         </h5>
                       ))}
                     </div>
@@ -1786,7 +1893,7 @@ useEffect(() => {
                         style={{
                           display: "flex",
                           justifyContent: "space-between",
-                          marginBottom: "10px",
+                          // marginBottom: "10px",
                           borderBottom: "2px solid black",
                           paddingBottom: "5px",
                           alignItems: "center",
@@ -1797,113 +1904,123 @@ useEffect(() => {
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "center",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Section
+                          <img
+                            src={
+                              sortConfig.key === "section" &&
+                              sortConfig.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort1("section")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig.key === "section" &&
-                            sortConfig.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort1("section")}
-                        />
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Target
+                          <img
+                            src={
+                              sortConfig.key === "section" &&
+                              sortConfig.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort1("target")}
+                          />
                         </span>
-
-                        <img
-                          src={
-                            sortConfig.key === "section" &&
-                            sortConfig.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort1("target")}
-                        />
 
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Current Sales
+                          <img
+                            src={
+                              sortConfig.key === "section" &&
+                              sortConfig.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort1("current_Sales")}
+                          />
                         </span>
-
-                        <img
-                          src={
-                            sortConfig.key === "section" &&
-                            sortConfig.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort1("current_Sales")}
-                        />
 
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Sales Projection
+                          <img
+                            src={
+                              sortConfig.key === "section" &&
+                              sortConfig.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort1("Sales_Projection")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig.key === "section" &&
-                            sortConfig.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort1("Sales_Projection")}
-                        />
                         {/*  */}
 
                         {/*  */}
@@ -1911,146 +2028,160 @@ useEffect(() => {
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Current Discount
+                          <img
+                            src={
+                              sortConfig.key === "section" &&
+                              sortConfig.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort1("Current_Discount")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig.key === "section" &&
-                            sortConfig.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort1("Current_Discount")}
-                        />
                         {/*  */}
 
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Discount Projection
+                          <img
+                            src={
+                              sortConfig.key === "section" &&
+                              sortConfig.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort1("Discount_Projection")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig.key === "section" &&
-                            sortConfig.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort1("Discount_Projection")}
-                        />
                         {/*  */}
 
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Avg Value to Ach Target
+                          <img
+                            src={
+                              sortConfig.key === "section" &&
+                              sortConfig.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort1("Avg_Qty_Value")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig.key === "section" &&
-                            sortConfig.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort1("Avg_Qty_Value")}
-                        />
                         {/*  */}
 
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Target Ach%
+                          <img
+                            src={
+                              sortConfig.key === "section" &&
+                              sortConfig.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort1("target_ach_percent")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig.key === "section" &&
-                            sortConfig.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort1("target_ach_percent")}
-                        />
                         {/*  */}
 
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Proj Target Ach%
+                          <img
+                            src={
+                              sortConfig.key === "section" &&
+                              sortConfig.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort1("Proj_Target_Ach")}
+                          />
                         </span>
-
-                        <img
-                          src={
-                            sortConfig.key === "section" &&
-                            sortConfig.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort1("Proj_Target_Ach")}
-                        />
                       </div>
 
                       {/* Table Rows */}
@@ -2062,10 +2193,9 @@ useEffect(() => {
                           const getColor = (value) =>
                             // value >= 100 ? "#42B0B0" : "#FD6666";
                             {
-                              console.log("val", { value });
                               if (value >= 100) {
                                 return "#42B0B0";
-                              } else if (value < 100 && value > 0) {
+                              } else if (value < 100 && value >= 0) {
                                 return "#FD6666";
                               } else {
                                 return "#d6d6d6";
@@ -2096,7 +2226,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "center",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   fontSize: 9,
                                   fontFamily: "Inter",
                                   backgroundColor: getColor(
@@ -2113,7 +2245,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "center",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   fontSize: 9,
                                   fontFamily: "Inter",
                                   backgroundColor: getColor(
@@ -2131,7 +2265,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "center",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   fontSize: 9,
                                   fontFamily: "Inter",
                                   backgroundColor: getColor(
@@ -2149,7 +2285,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "center",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   fontSize: 9,
                                   fontFamily: "Inter",
                                   backgroundColor: getColor(
@@ -2165,7 +2303,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "center",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   fontSize: 9,
                                   fontFamily: "Inter",
                                   backgroundColor: getColor(
@@ -2181,7 +2321,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "center",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   fontSize: 9,
                                   fontFamily: "Inter",
                                   backgroundColor: getColor(
@@ -2197,7 +2339,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "center",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   fontSize: 9,
                                   fontFamily: "Inter",
                                   backgroundColor: getColor(
@@ -2215,7 +2359,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "center",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   fontSize: 9,
                                   fontFamily: "Inter",
                                   backgroundColor: getColor(
@@ -2317,7 +2463,7 @@ useEffect(() => {
                         justifyContent: "center",
                         background: "#173F46",
                         // height: "248px",
-                        overflow: "auto",
+                        // overflow: "auto",
                       }}
                     >
                       <span
@@ -2335,16 +2481,12 @@ useEffect(() => {
                     </div>
 
                     {/* Table Header */}
-                    <div
-                      className="scroll"
-                      style={{ overflow: "scroll", height: "393px" }}
-                      onScroll={(e) => handleScroll2(e, "BrandWise")}
-                    >
+                    
                       <div
                         style={{
                           display: "flex",
                           justifyContent: "space-between",
-                          marginBottom: "10px",
+                          // marginBottom: "10px",
                           borderBottom: "2px solid black",
                           paddingBottom: "5px",
                           alignItems: "center",
@@ -2355,138 +2497,153 @@ useEffect(() => {
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "center",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Branch
+                          <img
+                            src={
+                              sortConfig1.key === "store_name" &&
+                              sortConfig1.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort2("store_name")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig1.key === "section" &&
-                            sortConfig1.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort2("store_name")}
-                        />
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "center",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Section
+                          <img
+                            src={
+                              sortConfig1.key === "section" &&
+                              sortConfig1.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort2("section")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig1.key === "section" &&
-                            sortConfig1.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort2("section")}
-                        />
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Target
+                          <img
+                            src={
+                              sortConfig1.key === "target" &&
+                              sortConfig1.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort4("target")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig1.key === "section" &&
-                            sortConfig1.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort2("target")}
-                        />
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Current Sales
+                          <img
+                            src={
+                              sortConfig1.key === "current_Sales" &&
+                              sortConfig1.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort4("current_Sales")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig1.key === "section" &&
-                            sortConfig1.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort2("current_Sales")}
-                        />
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Sales Projection
+                          <img
+                            src={
+                              sortConfig1.key === "Sales_Projection" &&
+                              sortConfig1.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort4("Sales_Projection")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig1.key === "section" &&
-                            sortConfig1.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort2("Sales_Projection")}
-                        />
                         {/*  */}
 
                         {/*  */}
@@ -2494,148 +2651,168 @@ useEffect(() => {
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Current Discount
+                          <img
+                            src={
+                              sortConfig1.key === "Current_Discount" &&
+                              sortConfig1.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort4("Current_Discount")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig1.key === "section" &&
-                            sortConfig1.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort2("Current_Discount")}
-                        />
                         {/*  */}
 
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Discount Projection
+                          <img
+                            src={
+                              sortConfig1.key === "Discount_Projection" &&
+                              sortConfig1.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort4("Discount_Projection")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig1.key === "section" &&
-                            sortConfig1.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort2("Discount_Projection")}
-                        />
                         {/*  */}
 
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
+                          <div>
                           Avg Value to Ach Target
+                          </div>
+                          <img
+                            src={
+                              sortConfig1.key === "Avg_Qty_Value" &&
+                              sortConfig1.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort4("Avg_Qty_Value")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig1.key === "section" &&
-                            sortConfig1.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort2("Avg_Qty_Value")}
-                        />
                         {/*  */}
 
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Target Ach%
+                          <img
+                            src={
+                              sortConfig1.key === "target_ach_percent" &&
+                              sortConfig1.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort4("target_ach_percent")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig1.key === "section" &&
-                            sortConfig1.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort2("target_ach_percent")}
-                        />
                         {/*  */}
 
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Proj Target Ach%
+                          <img
+                            src={
+                              sortConfig1.key === "Proj_Target_Ach" &&
+                              sortConfig1.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort4("Proj_Target_Ach")}
+                          />
                         </span>
-
-                        <img
-                          src={
-                            sortConfig1.key === "section" &&
-                            sortConfig1.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort2("Proj_Target_Ach")}
-                        />
                       </div>
-
+                      <div
+                      className="scroll"
+                      style={{ overflow: "scroll", height: "393px" }}
+                      onScroll={(e) => handleScroll2(e, "BrandWise")}
+                    >
                       {/* Table Rows */}
                       {BrandWise && BrandWise.length > 0 ? (
                         BrandWise.filter(
@@ -2648,7 +2825,7 @@ useEffect(() => {
                               console.log("val", { value });
                               if (value >= 100) {
                                 return "#42B0B0";
-                              } else if (value < 100 && value > 0) {
+                              } else if (value < 100 && value >= 0) {
                                 return "#FD6666";
                               } else {
                                 return "#d6d6d6";
@@ -2668,7 +2845,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "left",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "flex-start",
                                   fontSize: 10,
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
@@ -2681,7 +2860,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "right",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "flex-start",
                                   fontSize: 9,
                                   fontFamily: "Inter",
 
@@ -2690,13 +2871,19 @@ useEffect(() => {
                                   lineBreak: "anywhere",
                                 }}
                               >
+                                <div style={{
+                                  marginLeft:'10px'
+                                }}>
                                 {section?.section || ""}
+                                </div>
                               </span>
 
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "right",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   fontSize: 9,
                                   fontFamily: "Inter",
                                   backgroundColor: getColor(
@@ -2715,7 +2902,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "right",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   fontSize: 9,
                                   fontFamily: "Inter",
                                   backgroundColor: getColor(
@@ -2733,7 +2922,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "right",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   fontSize: 9,
                                   fontFamily: "Inter",
                                   backgroundColor: getColor(
@@ -2751,7 +2942,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "right",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   fontSize: 9,
                                   fontFamily: "Inter",
                                   backgroundColor: getColor(
@@ -2769,7 +2962,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "right",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   fontSize: 9,
                                   fontFamily: "Inter",
                                   backgroundColor: getColor(
@@ -2787,7 +2982,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "right",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   fontSize: 9,
                                   fontFamily: "Inter",
                                   backgroundColor: getColor(
@@ -2804,7 +3001,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "right",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   fontSize: 9,
                                   fontFamily: "Inter",
                                   backgroundColor: getColor(
@@ -2823,7 +3022,9 @@ useEffect(() => {
                               <span
                                 style={{
                                   flex: 1,
-                                  textAlign: "right",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                   fontSize: 9,
                                   fontFamily: "Inter",
                                   backgroundColor: getColor(
@@ -2944,221 +3145,237 @@ useEffect(() => {
                       </span>
                     </div>
                     {/* Table Header */}
-                    <div
-                      className="scroll"
-                      style={{ overflow: "scroll", height: "393px" }}
-                      onScroll={(e) => handleScroll1(e, "BrandWiseGrowth")}
-                    >
+                   
                       <div
                         style={{
                           display: "flex",
                           justifyContent: "space-between",
-                          marginBottom: "10px",
+                          // marginBottom: "10px",
                           borderBottom: "2px solid black",
                           paddingBottom: "5px",
                           alignItems: "center",
                           paddingTop: "9px",
-                          minWidth: "1000px",
+                          // minWidth: "1000px",
                         }}
                       >
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "center",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Branch
+                          <img
+                            src={
+                              sortConfig2.key === "section" &&
+                              sortConfig2.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort3("store_name")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig2.key === "section" &&
-                            sortConfig2.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort3("store_name")}
-                        />
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Section
+                          <img
+                            src={
+                              sortConfig2.key === "section" &&
+                              sortConfig2.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort3("section")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig2.key === "section" &&
-                            sortConfig2.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort3("section")}
-                        />
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           CM Vs 3Mnth
+                          <img
+                            src={
+                              sortConfig2.key === "section" &&
+                              sortConfig2.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort5("CMvs3Mnth")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig2.key === "section" &&
-                            sortConfig2.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort3("CMvs3Mnth")}
-                        />
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           CM Vs LM
+                          <img
+                            src={
+                              sortConfig2.key === "section" &&
+                              sortConfig2.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleSort5("CMvsLM")}
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig2.key === "section" &&
-                            sortConfig2.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleSort3("CMvsLM")}
-                        />
                         {/*  */}
 
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Target LM Ach%
+                          <img
+                            src={
+                              sortConfig2.key === "section" &&
+                              sortConfig2.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() =>
+                              handleSort5("target_lm_ach_percentage")
+                            }
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig2.key === "section" &&
-                            sortConfig2.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() =>
-                            handleSort3("target_lm_ach_percentage")
-                          }
-                        />
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Target MB Ach%
+                          <img
+                            src={
+                              sortConfig2.key === "section" &&
+                              sortConfig2.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() =>
+                              handleSort5("target_mb_ach_percentage")
+                            }
+                          />
                         </span>
 
-                        <img
-                          src={
-                            sortConfig2.key === "section" &&
-                            sortConfig2.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() =>
-                            handleSort3("target_mb_ach_percentage")
-                          }
-                        />
                         {/*  */}
                         <span
                           style={{
                             flex: 1,
-                            textAlign: "right",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "9px",
                             fontFamily: "Inter",
                             fontSize: 12,
                             fontWeight: "bold",
                           }}
                         >
                           Target 2MB Ach%
+                          <img
+                            src={
+                              sortConfig2.key === "section" &&
+                              sortConfig2.direction === "asc"
+                                ? SelectArrow
+                                : SelectArrow
+                            }
+                            alt=""
+                            style={{
+                              width: "10px",
+                              height: "15px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() =>
+                              handleSort5("target_2mb_ach_percentage")
+                            }
+                          />
                         </span>
-
-                        <img
-                          src={
-                            sortConfig2.key === "section" &&
-                            sortConfig2.direction === "asc"
-                              ? SelectArrow
-                              : SelectArrow
-                          }
-                          alt=""
-                          style={{
-                            width: "10px",
-                            height: "15px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() =>
-                            handleSort3("target_2mb_ach_percentage")
-                          }
-                        />
                       </div>
 
                       {/* Table Rows */}
@@ -3303,6 +3520,12 @@ useEffect(() => {
                           </div>
                         </div>
                       )} */}
+
+<div
+                      className="scroll"
+                      style={{ overflow: "scroll", height: "393px" }}
+                      onScroll={(e) => handleScroll1(e, "BrandWiseGrowth")}
+                    >
                       {BrandWiseGrowth && BrandWiseGrowth.length > 0 ? (
                         BrandWiseGrowth.filter(
                           (section) =>
@@ -3315,7 +3538,7 @@ useEffect(() => {
                                 console.log("val", { value });
                                 if (value >= 100) {
                                   return "#42B0B0";
-                                } else if (value < 100 && value > 0) {
+                                } else if (value < 100 && value >= 0) {
                                   return "#FD6666";
                                 } else {
                                   return "#d6d6d6";
@@ -3328,14 +3551,16 @@ useEffect(() => {
                                 style={{
                                   display: "flex",
                                   justifyContent: "space-between",
-                                  minWidth: "1000px",
+                                  // minWidth: "1000px",
                                   borderBottom: "1px solid #ccc",
                                 }}
                               >
                                 <span
                                   style={{
                                     flex: 1,
-                                    textAlign: "left",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "flex-start",
                                     fontSize: 10,
                                     fontFamily: "Inter",
                                     fontWeight: "bold",
@@ -3349,7 +3574,10 @@ useEffect(() => {
                                 <span
                                   style={{
                                     flex: 1,
-                                    textAlign: "right",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "flex-start",
+
                                     fontSize: 9,
                                     fontFamily: "Inter",
                                     padding: "5px",
@@ -3357,13 +3585,21 @@ useEffect(() => {
                                     lineBreak: "anywhere",
                                   }}
                                 >
+                                  <div style={{
+                                    
+                                    marginLeft:'20%'
+                                  }}>
                                   {section?.section}
+                                  </div>
+
                                 </span>
 
                                 <span
                                   style={{
                                     flex: 1,
-                                    textAlign: "right",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
                                     fontSize: 9,
                                     fontFamily: "Inter",
                                     padding: "5px",
@@ -3380,7 +3616,9 @@ useEffect(() => {
                                 <span
                                   style={{
                                     flex: 1,
-                                    textAlign: "right",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
                                     fontSize: 9,
                                     fontFamily: "Inter",
                                     fontWeight: "bold",
@@ -3395,7 +3633,9 @@ useEffect(() => {
                                 <span
                                   style={{
                                     flex: 1,
-                                    textAlign: "right",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
                                     fontSize: 9,
                                     fontFamily: "Inter",
                                     backgroundColor: getColor(
@@ -3414,7 +3654,9 @@ useEffect(() => {
                                 <span
                                   style={{
                                     flex: 1,
-                                    textAlign: "right",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
                                     fontSize: 9,
                                     fontFamily: "Inter",
                                     backgroundColor: getColor(
@@ -3433,7 +3675,9 @@ useEffect(() => {
                                 <span
                                   style={{
                                     flex: 1,
-                                    textAlign: "right",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
                                     fontSize: 9,
                                     fontFamily: "Inter",
                                     backgroundColor: getColor(
