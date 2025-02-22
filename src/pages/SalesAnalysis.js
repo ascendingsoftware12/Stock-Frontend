@@ -43,6 +43,10 @@ const SalesAnalysis = () => {
     start_date: "",
     end_date: "",
   });
+  const [tempCustom, setTempCustom] = useState({
+    from: "",
+    to: "",
+  });
   const [asm, setasm] = useState(null);
   let lastScrollTop = 0;
   // const sortedBrandSales = [...BrandSales].sort(
@@ -113,7 +117,7 @@ const SalesAnalysis = () => {
     from: "",
     to: "",
   });
-
+  const lastFetchedPage = useRef(0);
   const [periodtemp, setPeriodtemp] = useState({ from: "", to: "" });
   const [tempPeriod1, setTempPeriod1] = useState({ from: "", to: "" });
   const [tempPeriod2, setTempPeriod2] = useState({
@@ -151,13 +155,10 @@ const SalesAnalysis = () => {
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1;
-
-    // Get yesterday's date
     const yesterday = new Date();
     yesterday.setDate(currentDate.getDate() - 1);
     const formattedYesterday = yesterday.toISOString().split("T")[0];
 
-    // Determine financial year start (April 1st)
     const financialYearStart =
       currentMonth < 4 ? `${currentYear - 1}-04-01` : `${currentYear}-04-01`;
     setPeriodtemp({ from: financialYearStart, to: formattedYesterday });
@@ -171,7 +172,6 @@ const SalesAnalysis = () => {
     setIsDisabled(false);
     setClickedButton("YDAY");
 
-    // Get yesterday's date
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
@@ -227,13 +227,14 @@ const SalesAnalysis = () => {
   //   fetchDiscountCity(1, true);
   //   fetchDiscountSection(1, true);
   //   fetchDiscountBrand(1, true);
-  //   fetchDiscountModelNo(2, true);
+  //   fetchDiscountModelNo(1, true);
   //   fetchSales1();
   //   fetchSales2();
   //   fetchSales3();
   //   fetchliveData();
   //   // }
-  // }, []);
+  // }, [period1]);
+
   // useEffect(() => {
   //   if (period1.from && period1.to) {
   //     setSections([]);
@@ -314,10 +315,7 @@ const SalesAnalysis = () => {
     setDiscountModelNo([]);
     setBrandSales([]);
     setSalesCity([]);
-    setIsApplyDisabled(true);
-    // setPeriod1(tempPeriod1);
-    // setPeriod1(tempPeriod2);
-    setIsFiltersUpdated(true);
+
     setSalesContributionPage(1);
     setItemCategoryPage(1);
     setSalesproductPage(1);
@@ -331,17 +329,12 @@ const SalesAnalysis = () => {
     setDiscountBrandpage(1);
     setDiscountModelPage(1);
     // fetchDropdownData();
-    setInitialFilters(filters);
-    setInitialPeriod(period1);
-    // setIsApplyDisabled(false);
+    console.log("dddddddddddd22222222222222222");
+    setIsFiltersUpdated(true);
   };
   useEffect(() => {
     if (isFiltersUpdated) {
-      console.log("discountbranch1", DiscountBranchpage);
-      console.log("discountcity1", DiscountCitypage);
-      console.log("discountsection1", DiscountSectionpage);
-      console.log("discountbrand1", DiscountBrandpage);
-      console.log("discountmodelno1", DiscountModelpage);
+      setInitialFilters({ filters, period1 });
       setSalesContributionPage(1);
       setItemCategoryPage(1);
       setSalesproductPage(1);
@@ -371,40 +364,41 @@ const SalesAnalysis = () => {
       setsalesData1([]);
       setsalesData2([]);
       setsalesData3([]);
-      fetchDropdownData();
-      fetchliveData();
-      // setHasMoreDataDiscountModel(true);
-      // fetchDiscountModelNo(1, true);
-      // setHasMoreDataDiscountBrand(true);
-      // fetchDiscountBrand(1, true);
+      fetchData();
+      console.log("dddddddddddd111111111111111111");
       setIsFiltersUpdated(false);
       const queryString = new URLSearchParams(filters).toString();
       const baseUrl = "sales_analysis/";
       const clearedUrl = `${baseUrl}?${queryString}`;
       console.log("API URL being called:", clearedUrl);
-      // fetchDropdownData();
+      fetchDropdownData();
+      fetchliveData();
       fetchSales1();
       fetchSales2();
       fetchSales3();
       fetchSalesType();
-      fetchSections();
-      fetchItemCategory();
-      fetchSalesProduct();
-      fetchSalesBranch();
-      fetchSalesCity();
-      fetchBrandSales();
-      fetchBrandItem();
-      fetchDiscountBranch();
-      fetchDiscountCity();
-      fetchDiscountSection();
-      fetchDiscountBrand();
-      fetchDiscountModelNo();
-      fetchliveData();
+      fetchSections(1);
+      fetchItemCategory(1);
+      fetchSalesProduct(1);
+      console.log("dddddddddddd");
+      fetchSalesBranch(1);
+      fetchSalesCity(1);
+      fetchBrandSales(1);
+      fetchBrandItem(1);
+      fetchDiscountBranch(1);
+      fetchDiscountCity(1);
+      fetchDiscountSection(1);
+      fetchDiscountBrand(1);
+      fetchDiscountModelNo(1);
+      // fetchDropdownData();
+
+      // fetchData();
     }
   }, [filters, isFiltersUpdated]);
+
   const reloadRefresh = () => {
-    handleButtonClickyday();
     setIsFiltersUpdated(true);
+    handleButtonClickyday();
     console.log("discountbranch1", DiscountBranchpage);
     console.log("discountcity1", DiscountCitypage);
     console.log("discountsection1", DiscountSectionpage);
@@ -552,7 +546,6 @@ const SalesAnalysis = () => {
     // });
     setrefresh(false);
   };
-
   //sort
   const minQtyitemcat = Math.min(
     ...ItemCategory.map((section) => section.total_sales)
@@ -861,7 +854,8 @@ const SalesAnalysis = () => {
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDataSection &&
-      !SalesContributionloading
+      !SalesContributionloading &&
+      SalesContributionpage > 1
     ) {
       fetchSections(SalesContributionpage);
     }
@@ -872,57 +866,93 @@ const SalesAnalysis = () => {
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDataItemcategory &&
-      !ItemCategoryloading
+      !ItemCategoryloading &&
+      ItemCategorypage > 1
     ) {
       fetchItemCategory(ItemCategorypage);
     }
   };
+
   const handleProductScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDataProduct &&
-      !SalesContributionProductloading
+      !SalesContributionProductloading &&
+      Salesproductpage > 1
     ) {
       fetchSalesProduct(Salesproductpage);
     }
   };
+
   const handleBranchScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDataBranch &&
-      !SalesContributionBranchloading
+      !SalesContributionBranchloading &&
+      SalesBranchpage > 1
     ) {
       fetchSalesBranch(SalesBranchpage);
     }
   };
+
   const handleCityScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDataCity &&
-      !SalesContributionCityloading
+      !SalesContributionCityloading &&
+      SalesCitypage > 1
     ) {
       fetchSalesCity(SalesCitypage);
     }
   };
+
   const handleBrandSalesScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDataBrandSale &&
-      !BrandSalesloading
+      !BrandSalesloading &&
+      BrandSalepage > 1
     ) {
       fetchBrandSales(BrandSalepage);
     }
   };
+  // const handleBrandSalesScroll = (e) => {
+  //   // if (finalsize > 0) {
+  //   const { scrollHeight, scrollTop, clientHeight } = e.target;
+
+  //   const isVerticalScroll = scrollTop !== lastScrollTop;
+  //   lastScrollTop = scrollTop;
+
+  //   if (isVerticalScroll && !BrandSalesloading) {
+  //     const isNearBottom = scrollHeight - scrollTop <= clientHeight + 1;
+
+  //     if (isNearBottom) {
+  //       setBrandSalePage((prevPage) => {
+  //         const newPage = prevPage + 1;
+
+  //         if (newPage !== lastFetchedPage.current) {
+  //           console.log(newPage, "Updated WeekAnalysispage");
+  //           fetchBrandSales(newPage);
+  //           lastFetchedPage.current = newPage;
+  //         }
+
+  //         return newPage;
+  //       });
+  //     }
+  //   }
+  //   // }
+  // };
   const handleBrandItemScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
     if (
       scrollHeight - scrollTop <= clientHeight + 80 &&
       hasMoreDataBrandItem &&
-      !ItemSalesloading
+      !ItemSalesloading &&
+      BrandItempage > 1
     ) {
       fetchBrandItem(BrandItempage);
     }
@@ -933,17 +963,20 @@ const SalesAnalysis = () => {
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDataDiscountBranch &&
-      !DiscountAvailedloading
+      !DiscountAvailedloading &&
+      DiscountBranchpage > 1
     ) {
       fetchDiscountBranch(DiscountBranchpage);
     }
   };
+
   const handleDiscountcityScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDataDiscountCity &&
-      !DiscountCityloading
+      !DiscountCityloading &&
+      DiscountCitypage > 1
     ) {
       fetchDiscountCity(DiscountCitypage);
     }
@@ -954,7 +987,8 @@ const SalesAnalysis = () => {
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDataDiscountSection &&
-      !DiscountSectionloading
+      !DiscountSectionloading &&
+      DiscountSectionpage > 1
     ) {
       fetchDiscountSection(DiscountSectionpage);
     }
@@ -965,7 +999,8 @@ const SalesAnalysis = () => {
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDataDiscountBrand &&
-      !DiscountBrandloading
+      !DiscountBrandloading &&
+      DiscountBrandpage > 1
     ) {
       fetchDiscountBrand(DiscountBrandpage);
     }
@@ -976,7 +1011,8 @@ const SalesAnalysis = () => {
     if (
       scrollHeight - scrollTop <= clientHeight + 70 &&
       hasMoreDataDiscountModel &&
-      !DiscountModelloading
+      !DiscountModelloading &&
+      DiscountModelpage > 1
     ) {
       fetchDiscountModelNo(DiscountModelpage);
     }
@@ -1011,14 +1047,96 @@ const SalesAnalysis = () => {
   //   }
   // };
   const [appliedFilters, setAppliedFilters] = useState(true);
-  const [initialFilters, setInitialFilters] = useState(filters);
+  // const [initialFilters, setInitialFilters] = useState(filters);
   const [isApplyDisabled, setIsApplyDisabled] = useState(true);
+
+  const [isApplyDisabled1, setIsApplyDisabled1] = useState(false);
   useEffect(() => {
-    const filtersChanged = Object.keys(filters).some(
-      (key) => filters[key] !== initialFilters[key]
-    );
-    setIsApplyDisabled(!filtersChanged);
-  }, [filters]);
+    if (activeButton === "Customs") {
+      if (tempCustom.from === "") {
+        setIsApplyDisabled1(true);
+        console.log("gdgdgf", isApplyDisabled1);
+      }
+    } else {
+      setIsApplyDisabled1(false);
+    }
+  }, [tempCustom, activeButton]);
+
+  const [initialFilters, setInitialFilters] = useState({ filters, period1 });
+  useEffect(() => {
+    if (period1 !== "" && period1 !== "") {
+      console.log("Initial Filters:", initialFilters);
+
+      // Ensure required values are available
+      if (!initialFilters || !filters || !period1) return;
+
+      // Check if any filter value has changed
+      const filtersChanged = Object.keys(filters).some(
+        (key) => filters[key] !== initialFilters.filters[key]
+      );
+
+      // Check if period1 or period2 have changed
+      const periodsChanged =
+        period1.from !== initialFilters.period1.from ||
+        period1.to !== initialFilters.period1.to;
+
+      // If any changes are detected, enable the button
+      const shouldDisable = !(filtersChanged || periodsChanged);
+
+      console.log("Filters Changed:", filtersChanged);
+      console.log("Periods Changed:", periodsChanged);
+      console.log("Apply Button Disabled:", shouldDisable);
+
+      // Update state only if it has changed
+      setIsApplyDisabled((prev) => {
+        if (prev !== shouldDisable) {
+          console.log("Updating isApplyDisabled to:", shouldDisable);
+          return shouldDisable;
+        }
+        return prev;
+      });
+    }
+  }, [filters, period1, initialFilters]);
+  useEffect(() => {
+    if (period1 !== "" && period1 !== "") {
+      console.log("Initial Filters:", initialFilters);
+
+      // Ensure required values are available
+      if (!initialFilters || !filters || !period1) return;
+
+      // Check if any filter value has changed
+      const filtersChanged = Object.keys(filters).some(
+        (key) => filters[key] !== initialFilters.filters[key]
+      );
+
+      // Check if period1 or period2 have changed
+      const periodsChanged =
+        period1.from !== initialFilters.period1.from ||
+        period1.to !== initialFilters.period1.to;
+
+      // If any changes are detected, enable the button
+      const shouldDisable = !(filtersChanged || periodsChanged);
+
+      console.log("Filters Changed:", filtersChanged);
+      console.log("Periods Changed:", periodsChanged);
+      console.log("Apply Button Disabled:", shouldDisable);
+
+      // Update state only if it has changed
+      setIsApplyDisabled((prev) => {
+        if (prev !== shouldDisable) {
+          console.log("Updating isApplyDisabled to:", shouldDisable);
+          return shouldDisable;
+        }
+        return prev;
+      });
+    }
+  }, [filters, period1, initialFilters]);
+  // useEffect(() => {
+  //   const filtersChanged = Object.keys(filters).some(
+  //     (key) => filters[key] !== initialFilters[key]
+  //   );
+  //   setIsApplyDisabled(!filtersChanged);
+  // }, [filters]);
 
   // useEffect(() => {
   //   const hasFromChanged = period1.from !== initialPeriod.from;
@@ -1053,7 +1171,7 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisColumn?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&srn_flag=${encodedFilters.srn_flag}&asm=${asm}`
+        `sales_analysis/salesAnalysisColumn?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&srn_flag=${encodedFilters.srn_flag}&asm=${asm}`
       );
       setDropdownData(response.data);
     } catch (error) {
@@ -1090,11 +1208,16 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisSalestype?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&srn_flag=${encodedFilters.srn_flag}&asm=${asm}`
+        `sales_analysis/salesAnalysisSalestype?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&srn_flag=${encodedFilters.srn_flag}&asm=${asm}`
       );
 
       if (response.data && Array.isArray(response.data.data)) {
-        setSalesType(response.data.data);
+        const sortedData = response.data.data.sort(
+          (a, b) => b.total_sales - a.total_sales
+        );
+
+        setSalesType(sortedData);
+        // setSalesType(response.data.data);
         console.log("SalesType updated:", response.data.data);
         setSalesTypeloading(false);
       } else {
@@ -1112,6 +1235,11 @@ const SalesAnalysis = () => {
     useState(false);
   const [hasMoreDataSection, setHasMoreDataSection] = useState(true);
   const fetchSections = async (page = 1, resetData = false) => {
+    if (resetData) {
+      setSalesContributionPage(1);
+      setSections([]);
+      setHasMoreDataSection(true);
+    }
     setSalesContributionloading(true);
 
     try {
@@ -1140,7 +1268,7 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisSection?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${SalesContributionpage}&limit=${SalesContributionlimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/salesAnalysisSection?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${SalesContributionpage}&limit=${SalesContributionlimit}&srn_flag=${encodedFilters.srn_flag}`
       );
       console.log("API Response:", response);
 
@@ -1150,10 +1278,20 @@ const SalesAnalysis = () => {
           return b.total_sales - a.total_sales;
         });
 
-        setSections((prevData) =>
-          resetData ? sortedData : [...prevData, ...sortedData]
-        );
+        // setSections((prevData) =>
+        // const combinedData = resetData
+        //     ? sortedData
+        //     : [...prevData, ...sortedData];
 
+        //   return combinedData.sort((a, b) => b.disc_amt - a.disc_amt);
+        // );
+        setSections((prevData) => {
+          const combinedData = resetData
+            ? sortedData
+            : [...prevData, ...sortedData];
+
+          return combinedData.sort((a, b) => b.total_sales - a.total_sales);
+        });
         // setSalesContributionPage((prevPage) => prevPage + 1);
         if (sortedData.length < SalesContributionlimit) {
           setHasMoreDataSection(false);
@@ -1208,7 +1346,7 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisitemCategory?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${ItemCategorypage}&limit=${ItemCategorylimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/salesAnalysisitemCategory?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${ItemCategorypage}&limit=${ItemCategorylimit}&srn_flag=${encodedFilters.srn_flag}`
       );
 
       if (response.data && Array.isArray(response.data.data)) {
@@ -1216,6 +1354,13 @@ const SalesAnalysis = () => {
         const sortedData = newData.sort((a, b) => {
           return b.total_sales - a.total_sales;
         });
+        // setItemCategory((prevData) => {
+        //   const combinedData = resetData
+        //     ? sortedData
+        //     : [...prevData, ...sortedData];
+
+        //   return combinedData.sort((a, b) => b.total_sales - a.total_sales);
+        // });
         setItemCategory((prevData) =>
           resetData ? sortedData : [...prevData, ...sortedData]
         );
@@ -1272,16 +1417,20 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisProduct?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${Salesproductpage}&limit=${Salesproductlimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/salesAnalysisProduct?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${Salesproductpage}&limit=${Salesproductlimit}&srn_flag=${encodedFilters.srn_flag}`
       );
       if (response.data && Array.isArray(response.data.data)) {
         const newData = response.data.data;
         const sortedData = newData.sort((a, b) => {
           return b.total_sales - a.total_sales;
         });
-        setSalesProduct((prevData) =>
-          resetData ? sortedData : [...prevData, ...sortedData]
-        );
+        setSalesProduct((prevData) => {
+          const combinedData = resetData
+            ? sortedData
+            : [...prevData, ...sortedData];
+
+          return combinedData.sort((a, b) => b.total_sales - a.total_sales);
+        });
         if (sortedData.length < Salesproductlimit) {
           setHasMoreDataProduct(false);
         } else {
@@ -1335,7 +1484,7 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisBranch?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${SalesBranchpage}&limit=${SalesBranchlimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/salesAnalysisBranch?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${SalesBranchpage}&limit=${SalesBranchlimit}&srn_flag=${encodedFilters.srn_flag}`
       );
 
       if (response.data && Array.isArray(response.data.data)) {
@@ -1346,9 +1495,13 @@ const SalesAnalysis = () => {
         if (SalesBranchpage == 1) {
           setSalesBranch(sortedData);
         } else {
-          setSalesBranch((prevData) =>
-            resetData ? sortedData : [...prevData, ...sortedData]
-          );
+          setSalesBranch((prevData) => {
+            const combinedData = resetData
+              ? sortedData
+              : [...prevData, ...sortedData];
+
+            return combinedData.sort((a, b) => b.total_sales - a.total_sales);
+          });
         }
 
         if (sortedData.length < SalesBranchlimit) {
@@ -1404,16 +1557,20 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisCity?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${SalesCitypage}&limit=${SalesCitylimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/salesAnalysisCity?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${SalesCitypage}&limit=${SalesCitylimit}&srn_flag=${encodedFilters.srn_flag}`
       );
       if (response.data && Array.isArray(response.data.data)) {
         const newData = response.data.data;
         const sortedData = newData.sort((a, b) => {
           return b.total_sales - a.total_sales;
         });
-        setSalesCity((prevData) =>
-          resetData ? sortedData : [...prevData, ...sortedData]
-        );
+        setSalesCity((prevData) => {
+          const combinedData = resetData
+            ? sortedData
+            : [...prevData, ...sortedData];
+
+          return combinedData.sort((a, b) => b.total_sales - a.total_sales);
+        });
         if (sortedData.length < SalesCitylimit) {
           setHasMoreDataCity(false);
         } else {
@@ -1467,7 +1624,7 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisBrandSales?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&limit=${BrandSalelimit}&page=${BrandSalepage}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/salesAnalysisBrandSales?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&limit=${BrandSalelimit}&page=${BrandSalepage}&srn_flag=${encodedFilters.srn_flag}`
       );
 
       if (response.data && Array.isArray(response.data.data)) {
@@ -1533,7 +1690,7 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisItemSales?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&limit=${BrandItemlimit}&page=${BrandItempage}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/salesAnalysisItemSales?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&limit=${BrandItemlimit}&page=${BrandItempage}&srn_flag=${encodedFilters.srn_flag}`
       );
 
       if (response.data && Array.isArray(response.data.data)) {
@@ -1593,7 +1750,7 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/DiscountAnalysisBranch?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountBranchpage}&limit=${DiscountBranchlimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/DiscountAnalysisBranch?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountBranchpage}&limit=${DiscountBranchlimit}&srn_flag=${encodedFilters.srn_flag}`
       );
 
       if (response.data && Array.isArray(response.data.data)) {
@@ -1663,7 +1820,7 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/DiscountAnalysisCity?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountCitypage}&limit=${DiscountCitylimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/DiscountAnalysisCity?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountCitypage}&limit=${DiscountCitylimit}&srn_flag=${encodedFilters.srn_flag}`
       );
 
       if (response.data && Array.isArray(response.data.data)) {
@@ -1728,7 +1885,7 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/DiscountAnalysisSection?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountSectionpage}&limit=${DiscountSectionlimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/DiscountAnalysisSection?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountSectionpage}&limit=${DiscountSectionlimit}&srn_flag=${encodedFilters.srn_flag}`
       );
 
       if (response.data && Array.isArray(response.data.data)) {
@@ -1797,7 +1954,7 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/DiscountAnalysisBrand?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountBrandpage}&limit=${DiscountBrandlimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/DiscountAnalysisBrand?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountBrandpage}&limit=${DiscountBrandlimit}&srn_flag=${encodedFilters.srn_flag}`
       );
 
       if (response.data && Array.isArray(response.data.data)) {
@@ -1868,7 +2025,7 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/DiscountAnalysisModelNo?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${page}&limit=${DiscountModellimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/DiscountAnalysisModelNo?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${page}&limit=${DiscountModellimit}&srn_flag=${encodedFilters.srn_flag}`
       );
 
       if (response.data && Array.isArray(response.data.data)) {
@@ -1961,7 +2118,7 @@ const SalesAnalysis = () => {
     };
     try {
       const response = await axios.get(
-        `sales_all_in_one_live/date?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountBranchpage}&limit=${DiscountBranchlimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_all_in_one_live/date?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountBranchpage}&limit=${DiscountBranchlimit}&srn_flag=${encodedFilters.srn_flag}`
       );
 
       const responseData = response.data.data[0];
@@ -1975,27 +2132,36 @@ const SalesAnalysis = () => {
           .reverse()
           .join("-");
 
-        setPeriod1({
-          from: formattedStartDate,
-          to: formattedEndDate,
-        });
+        // setPeriod1({
+        //   from: formattedStartDate,
+        //   to: formattedEndDate,
+        // });
         setDateRange({
           start_date: formattedStartDate,
           end_date: formattedEndDate,
+        });
+        setTempCustom({
+          from: formattedStartDate,
+          to: formattedEndDate,
         });
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
-      setIsApplyDisabled(false);
     }
   };
   const handleCustomClick = () => {
+    // setPeriod1({
+    //   from: "",
+    //   to: " "
+    // });
+    setPeriod1(tempCustom);
+    setPeriodtemp({ from: tempCustom.from, to: tempCustom.to });
     setClickedButton("Custom");
     setActiveButton("Customs");
     setIsDisabled(false);
-    setIsApplyDisabled(true);
-    fetchData();
+    setIsApplyDisabled(false);
+    // fetchData();
   };
   // setIsApplyDisabled(true);
   // setPeriod1({ from: "2025-02-01", to: "2025-02-12" });
@@ -2032,7 +2198,7 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisSales?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/salesAnalysisSales?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&srn_flag=${encodedFilters.srn_flag}`
       );
 
       setsalesData1(response.data.data);
@@ -2068,7 +2234,7 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/DiscountAnalysisDiscount?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/DiscountAnalysisDiscount?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&srn_flag=${encodedFilters.srn_flag}`
       );
 
       setsalesData2(response.data.data);
@@ -2103,7 +2269,7 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/DiscountAnalysisDiscountPercentage?period1_from=${period1.from}&period1_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&srn_flag=${encodedFilters.srn_flag}&asm=${asm}`
+        `sales_analysis/DiscountAnalysisDiscountPercentage?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&srn_flag=${encodedFilters.srn_flag}&asm=${asm}`
       );
 
       setsalesData3(response.data.data);
@@ -2960,8 +3126,12 @@ const SalesAnalysis = () => {
                     cursor: isApplyDisabled ? "not-allowed" : "pointer",
                   }}
                   // onClick={reloadWithFilters}
-                  onClick={!isApplyDisabled ? reloadWithFilters : null}
-                  disabled={isApplyDisabled ? reloadWithFilters : null}
+                  onClick={
+                    !isApplyDisabled && !isApplyDisabled1
+                      ? reloadWithFilters
+                      : null
+                  }
+                  // disabled={(isApplyDisabled && isApplyDisabled1) ? reloadWithFilters : null}
                 >
                   <span
                     className="me-2"
@@ -3103,9 +3273,9 @@ const SalesAnalysis = () => {
                 <TextInput
                   id="from"
                   type="date"
-                  max={dateRange.end_date || periodtemp.to}
+                  max={periodtemp.to}
                   // min={period1.from}
-                  min={dateRange.start_date || periodtemp.from}
+                  min={periodtemp.from}
                   value={
                     clickedButton === "Custom" ? period1.from : period1.from
                   }
@@ -3136,9 +3306,9 @@ const SalesAnalysis = () => {
                 <TextInput
                   id="to"
                   type="date"
-                  min={dateRange.start_date || periodtemp.from}
+                  min={periodtemp.from}
                   // max={period1.to}
-                  max={dateRange.end_date || periodtemp.to}
+                  max={periodtemp.to}
                   value={clickedButton === "Custom" ? period1.to : period1.to}
                   style={{
                     width: "156px",
@@ -4222,7 +4392,10 @@ const SalesAnalysis = () => {
                           <div
                             key={index}
                             className=""
-                            style={{ marginBottom: "3px" }}
+                            style={{
+                              marginBottom: "3px",
+                              borderBottom: "1px solid #6b728038",
+                            }}
                           >
                             <div className="d-flex align-items-center">
                               <div className="w-16 " style={{}}>
@@ -4279,7 +4452,7 @@ const SalesAnalysis = () => {
                                     height: "100%",
                                     left: "50%",
                                     backgroundColor: "rgb(204, 204, 204)",
-                                    zIndex: 10,
+                                    // zIndex: 10,
                                   }}
                                 >
                                   <span
@@ -4485,11 +4658,16 @@ const SalesAnalysis = () => {
                             );
 
                             return (
-                              <tr key={index}>
+                              <tr
+                                key={index}
+                                style={{
+                                  borderBottom: "1px solid #6b728038",
+                                }}
+                              >
                                 <td
                                   className="text-dark p-1"
                                   style={{
-                                    fontSize: "9px",
+                                    fontSize: "11px",
                                     fontFamily: "Inter",
                                     fontWeight: "bold",
                                   }}
@@ -4499,7 +4677,7 @@ const SalesAnalysis = () => {
                                 <td
                                   className="text-dark p-1"
                                   style={{
-                                    fontSize: "9px",
+                                    fontSize: "11px",
                                     fontFamily: "Inter",
                                     fontWeight: "bold",
                                     backgroundColor: `rgba(4, 126, 163, ${totalsales})`,
@@ -4510,7 +4688,7 @@ const SalesAnalysis = () => {
                                 <td
                                   className="text-dark p-1"
                                   style={{
-                                    fontSize: "9px",
+                                    fontSize: "11px",
                                     fontFamily: "Inter",
                                     fontWeight: "bold",
                                     backgroundColor: `rgba(4, 126, 163, ${totalsalespert})`,
@@ -4521,7 +4699,7 @@ const SalesAnalysis = () => {
                                 <td
                                   className="text-dark p-1"
                                   style={{
-                                    fontSize: "9px",
+                                    fontSize: "11px",
                                     fontFamily: "Inter",
                                     fontWeight: "bold",
                                     backgroundColor: `rgba(4, 126, 163, ${asp})`,
@@ -4697,11 +4875,16 @@ const SalesAnalysis = () => {
                             );
 
                             return (
-                              <tr key={index}>
+                              <tr
+                                key={index}
+                                style={{
+                                  borderBottom: "1px solid #6b728038",
+                                }}
+                              >
                                 <td
                                   className="text-dark p-1"
                                   style={{
-                                    fontSize: "9px",
+                                    fontSize: "11px",
                                     fontFamily: "Inter",
                                     fontWeight: "bold",
                                   }}
@@ -4711,7 +4894,7 @@ const SalesAnalysis = () => {
                                 <td
                                   className="text-dark p-1"
                                   style={{
-                                    fontSize: "9px",
+                                    fontSize: "11px",
                                     fontFamily: "Inter",
                                     fontWeight: "bold",
                                     backgroundColor: `rgba(4, 126, 163, ${totalsales})`,
@@ -4722,7 +4905,7 @@ const SalesAnalysis = () => {
                                 <td
                                   className="text-dark p-1"
                                   style={{
-                                    fontSize: "9px",
+                                    fontSize: "11px",
                                     fontFamily: "Inter",
                                     fontWeight: "bold",
                                     backgroundColor: `rgba(4, 126, 163, ${totalsalespert})`,
@@ -4733,7 +4916,7 @@ const SalesAnalysis = () => {
                                 <td
                                   className="text-dark p-1"
                                   style={{
-                                    fontSize: "9px",
+                                    fontSize: "11px",
                                     fontFamily: "Inter",
                                     fontWeight: "bold",
                                     backgroundColor: `rgba(4, 126, 163, ${asp})`,
@@ -4908,11 +5091,16 @@ const SalesAnalysis = () => {
                             );
 
                             return (
-                              <tr key={index}>
+                              <tr
+                                key={index}
+                                style={{
+                                  borderBottom: "1px solid #6b728038",
+                                }}
+                              >
                                 <td
                                   className="text-dark p-1"
                                   style={{
-                                    fontSize: "9px",
+                                    fontSize: "11px",
                                     fontFamily: "Inter",
                                     fontWeight: "bold",
                                   }}
@@ -4922,7 +5110,7 @@ const SalesAnalysis = () => {
                                 <td
                                   className="text-dark p-1"
                                   style={{
-                                    fontSize: "9px",
+                                    fontSize: "11px",
                                     fontFamily: "Inter",
                                     fontWeight: "bold",
                                     backgroundColor: `rgba(4, 126, 163, ${totalsales})`,
@@ -4933,7 +5121,7 @@ const SalesAnalysis = () => {
                                 <td
                                   className="text-dark p-1"
                                   style={{
-                                    fontSize: "9px",
+                                    fontSize: "11px",
                                     fontFamily: "Inter",
                                     fontWeight: "bold",
                                     backgroundColor: `rgba(4, 126, 163, ${totalsalespert})`,
@@ -4944,7 +5132,7 @@ const SalesAnalysis = () => {
                                 <td
                                   className="text-dark p-1"
                                   style={{
-                                    fontSize: "9px",
+                                    fontSize: "11px",
                                     fontFamily: "Inter",
                                     fontWeight: "bold",
                                     backgroundColor: `rgba(4, 126, 163, ${asp})`,
@@ -5192,11 +5380,16 @@ const SalesAnalysis = () => {
                           );
 
                           return (
-                            <tr key={index}>
+                            <tr
+                              key={index}
+                              style={{
+                                borderBottom: "1px solid #6b728038",
+                              }}
+                            >
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                 }}
@@ -5206,7 +5399,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsales})`,
@@ -5217,7 +5410,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsalespert})`,
@@ -5228,7 +5421,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${salesQty})`,
@@ -5239,7 +5432,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${salesQtyPercentage})`,
@@ -5250,7 +5443,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${asp})`,
@@ -5475,11 +5668,16 @@ const SalesAnalysis = () => {
                             maxPercentageitemcity
                           );
                           return (
-                            <tr key={index}>
+                            <tr
+                              key={index}
+                              style={{
+                                borderBottom: "1px solid #6b728038",
+                              }}
+                            >
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                 }}
@@ -5489,7 +5687,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsales})`,
@@ -5500,7 +5698,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsalespert})`,
@@ -5511,7 +5709,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${salesQty})`,
@@ -5522,7 +5720,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${salesQtyPercentage})`,
@@ -5533,7 +5731,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${asp})`,
@@ -5775,11 +5973,16 @@ const SalesAnalysis = () => {
                             maxPercentageitembrandsales
                           );
                           return (
-                            <tr key={index}>
+                            <tr
+                              key={index}
+                              style={{
+                                borderBottom: "1px solid #6b728038",
+                              }}
+                            >
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                 }}
@@ -5789,7 +5992,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsales})`,
@@ -5800,7 +6003,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   // backgroundColor,
@@ -5812,7 +6015,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${salesQty})`,
@@ -5823,7 +6026,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${salesQtyPercentage})`,
@@ -5834,7 +6037,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${asp})`,
@@ -6065,11 +6268,16 @@ const SalesAnalysis = () => {
                             maxPercentageitembranditem
                           );
                           return (
-                            <tr key={index}>
+                            <tr
+                              key={index}
+                              style={{
+                                borderBottom: "1px solid #6b728038",
+                              }}
+                            >
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                 }}
@@ -6079,7 +6287,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsales})`,
@@ -6090,7 +6298,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsalespert})`,
@@ -6101,7 +6309,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${salesQty})`,
@@ -6112,7 +6320,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${salesQtyPercentage})`,
@@ -6123,7 +6331,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${asp})`,
@@ -6527,11 +6735,16 @@ const SalesAnalysis = () => {
                             maxPercentageitemdisbranch
                           );
                           return (
-                            <tr key={index}>
+                            <tr
+                              key={index}
+                              style={{
+                                borderBottom: "1px solid #6b728038",
+                              }}
+                            >
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                 }}
@@ -6541,7 +6754,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${disamt})`,
@@ -6552,7 +6765,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsales})`,
@@ -6563,7 +6776,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsalespert})`,
@@ -6736,11 +6949,16 @@ const SalesAnalysis = () => {
                             maxPercentageitemdiscity
                           );
                           return (
-                            <tr key={index}>
+                            <tr
+                              key={index}
+                              style={{
+                                borderBottom: "1px solid #6b728038",
+                              }}
+                            >
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                 }}
@@ -6750,7 +6968,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${disamt})`,
@@ -6761,7 +6979,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsales})`,
@@ -6772,7 +6990,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsalespert})`,
@@ -6955,11 +7173,16 @@ const SalesAnalysis = () => {
                             maxPercentageitemdissection
                           );
                           return (
-                            <tr key={index}>
+                            <tr
+                              key={index}
+                              style={{
+                                borderBottom: "1px solid #6b728038",
+                              }}
+                            >
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                 }}
@@ -6969,7 +7192,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${disamt})`,
@@ -6980,7 +7203,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsales})`,
@@ -6991,7 +7214,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsalespert})`,
@@ -7167,11 +7390,16 @@ const SalesAnalysis = () => {
                             maxPercentageitemdisbrand
                           );
                           return (
-                            <tr key={index}>
+                            <tr
+                              key={index}
+                              style={{
+                                borderBottom: "1px solid #6b728038",
+                              }}
+                            >
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                 }}
@@ -7181,7 +7409,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${disamt})`,
@@ -7192,7 +7420,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsales})`,
@@ -7203,7 +7431,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsalespert})`,
@@ -7381,11 +7609,16 @@ const SalesAnalysis = () => {
                             maxPercentageitemdismodel
                           );
                           return (
-                            <tr key={index}>
+                            <tr
+                              key={index}
+                              style={{
+                                borderBottom: "1px solid #6b728038",
+                              }}
+                            >
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                 }}
@@ -7395,7 +7628,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${disamt})`,
@@ -7406,7 +7639,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsales})`,
@@ -7417,7 +7650,7 @@ const SalesAnalysis = () => {
                               <td
                                 className="text-dark p-1"
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontFamily: "Inter",
                                   fontWeight: "bold",
                                   backgroundColor: `rgba(4, 126, 163, ${totalsalespert})`,

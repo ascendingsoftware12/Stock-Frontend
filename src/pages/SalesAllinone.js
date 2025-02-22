@@ -13,11 +13,26 @@ import { filter } from "d3";
 function SalesAllinone() {
   const generateMonths = () => {
     const allMonths = [
-      "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+      "Jan",
+      "Feb",
+      "Mar",
     ];
     const currentDate = new Date();
-    const currentMonthName = currentDate.toLocaleString("default", { month: "short" });
-    const currentMonthIndex = allMonths.findIndex((month) => month === currentMonthName);
+    const currentMonthName = currentDate.toLocaleString("default", {
+      month: "short",
+    });
+    const currentMonthIndex = allMonths.findIndex(
+      (month) => month === currentMonthName
+    );
     const orderedMonths = [
       allMonths[currentMonthIndex],
       ...allMonths.slice(0, currentMonthIndex).reverse(),
@@ -26,14 +41,28 @@ function SalesAllinone() {
     return orderedMonths;
   };
 
-
   const generateMonths1 = () => {
     const allMonths = [
-      "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+      "Jan",
+      "Feb",
+      "Mar",
     ];
     const currentDate = new Date();
-    const currentMonthName = currentDate.toLocaleString("default", { month: "short" });
-    const currentMonthIndex = allMonths.findIndex((month) => month === currentMonthName);
+    const currentMonthName = currentDate.toLocaleString("default", {
+      month: "short",
+    });
+    const currentMonthIndex = allMonths.findIndex(
+      (month) => month === currentMonthName
+    );
     const orderedMonths = [
       allMonths[currentMonthIndex],
       ...allMonths.slice(0, currentMonthIndex).reverse(),
@@ -101,13 +130,13 @@ function SalesAllinone() {
     from: "",
     to: "",
   });
-  
+
   const [dateRange, setDateRange] = useState({
     start_date: "",
     end_date: "",
   });
 
-  const today = new Date().toISOString()?.split('T')[0];
+  const today = new Date().toISOString()?.split("T")[0];
   const [dropdownData, setDropdownData] = useState({
     store_name: [],
     city: [],
@@ -192,8 +221,6 @@ function SalesAllinone() {
     }
   };
 
-
-
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     console.log(e.target.value);
@@ -217,49 +244,48 @@ function SalesAllinone() {
   const [isFiltersUpdatedapply, setIsFiltersUpdatedapply] = useState(false);
 
   const [initialFilters, setInitialFilters] = useState(filters);
-const [isApplyDisabled, setIsApplyDisabled] = useState(true); 
+  const [isApplyDisabled, setIsApplyDisabled] = useState(true);
 
-useEffect(() => {
-  console.log(initialFilters)
-  const filtersChanged = Object.keys(filters).some(
-    (key) => filters[key] !== initialFilters[key]
-  ) || period.from !== dateRange.start_date || period.to !== dateRange.end_date;
-  setIsApplyDisabled(!filtersChanged);
-}, [filters,period.from, period.to]);
-
-
-
-
+  useEffect(() => {
+    console.log(initialFilters);
+    const filtersChanged =
+      Object.keys(filters).some(
+        (key) => filters[key] !== initialFilters[key]
+      ) ||
+      period.from !== dateRange.start_date ||
+      period.to !== dateRange.end_date;
+    setIsApplyDisabled(!filtersChanged);
+  }, [filters, period.from, period.to]);
 
   const reloadWithFilters = () => {
-    setrefresh(true)
-    setCitypage(1)
-    setBranchpage(1)
-    setItemCategorypage(1)
-    setItempage(1)
-    setSectionpage(1)
-    setBrandpage(1)
-    setProductpage(1)
-    setDayAnalysisPage(1)
-    setWeekAnalysisPage(1)
+    setrefresh(true);
+    setCitypage(1);
+    setBranchpage(1);
+    setItemCategorypage(1);
+    setItempage(1);
+    setSectionpage(1);
+    setBrandpage(1);
+    setProductpage(1);
+    setDayAnalysisPage(1);
+    setWeekAnalysisPage(1);
     console.log("productpage");
 
     setPriceBreakup1("");
-    setPriceBreakup2("")
+    setPriceBreakup2("");
     setWeekAnalysis("");
     setDayAnalysis("");
-    setSectionDimension("")
-    setItemCategoryDimension("")
-    setCityDimension("")
-    setBranchDimension("")
-    setBrandDimension("")
-    setProductionDimension("")
-    setItemDimension("")
-    setmonthcalender("")
-    setYTD("")
-    console.log('dsjhj');
+    setSectionDimension("");
+    setItemCategoryDimension("");
+    setCityDimension("");
+    setBranchDimension("");
+    setBrandDimension("");
+    setProductionDimension("");
+    setItemDimension("");
+    setmonthcalender("");
+    setYTD("");
+    console.log("dsjhj");
     // setIsFiltersUpdatedapply(true);
-    fetchDropdownData()
+    fetchDropdownData();
     fetchWeekAnalysis(1);
     // fetchData();
     fetchMonthlyCalendar();
@@ -276,8 +302,6 @@ useEffect(() => {
     fetchCityDimension(1);
     setInitialFilters(filters);
   };
-
-
 
   const [isFiltersUpdated, setIsFiltersUpdated] = useState(false);
 
@@ -297,7 +321,7 @@ useEffect(() => {
       sale_type: "",
       item_category: "",
       gstfilter: "cr",
-      price_breakup: ""
+      price_breakup: "",
     };
 
     fetchDropdownData({
@@ -313,17 +337,17 @@ useEffect(() => {
       sale_type: "",
       item_category: "",
       gstfilter: "cr",
-      price_breakup: ""
-    })
-    setCitypage(1)
-    setBranchpage(1)
-    setItemCategorypage(1)
-    setItempage(1)
-    setSectionpage(1)
-    setBrandpage(1)
-    setProductpage(1)
-    setDayAnalysisPage(1)
-    setWeekAnalysisPage(1)
+      price_breakup: "",
+    });
+    setCitypage(1);
+    setBranchpage(1);
+    setItemCategorypage(1);
+    setItempage(1);
+    setSectionpage(1);
+    setBrandpage(1);
+    setProductpage(1);
+    setDayAnalysisPage(1);
+    setWeekAnalysisPage(1);
     setFilters(clearedFilters);
     setIsFiltersUpdated(true);
     setSelectedOption1("");
@@ -337,10 +361,10 @@ useEffect(() => {
     setSelectedOption9("");
     setSelectedOption10("");
     setSelectedOption11("");
-    setSelectedOption31("")
-    setSelectedOption61("")
-    setSelectedOption("")
-    setSelectedOptionitem("")
+    setSelectedOption31("");
+    setSelectedOption61("");
+    setSelectedOption("");
+    setSelectedOptionitem("");
     setPeriod({ from: "", to: "" });
     setrefresh(false);
     // console.log("Reload complete.");
@@ -348,42 +372,43 @@ useEffect(() => {
 
   useEffect(() => {
     if (isFiltersUpdated) {
+      setIsApplyDisabled(true);
       setWeekAnalysis("");
       setDayAnalysis("");
-      setSectionDimension("")
-      setItemCategoryDimension("")
-      setCityDimension("")
-      setBranchDimension("")
-      setBrandDimension("")
-      setProductionDimension("")
-      setItemDimension("")
-      setmonthcalender("")
+      setSectionDimension("");
+      setItemCategoryDimension("");
+      setCityDimension("");
+      setBranchDimension("");
+      setBrandDimension("");
+      setProductionDimension("");
+      setItemDimension("");
+      setmonthcalender("");
       setPriceBreakup1("");
-      setPriceBreakup2("")
-      setYTD("")
-      setCitypage(1)
-      setBranchpage(1)
-      setItemCategorypage(1)
-      setItempage(1)
-      setSectionpage(1)
-      setBrandpage(1)
-      setProductpage(1)
-      setDayAnalysisPage(1)
-      setWeekAnalysisPage(1)
+      setPriceBreakup2("");
+      setYTD("");
+      setCitypage(1);
+      setBranchpage(1);
+      setItemCategorypage(1);
+      setItempage(1);
+      setSectionpage(1);
+      setBrandpage(1);
+      setProductpage(1);
+      setDayAnalysisPage(1);
+      setWeekAnalysisPage(1);
 
-      setCitypage(1)
-      setBranchpage(1)
-      setItemCategorypage(1)
-      setItempage(1)
-      setSectionpage(1)
-      setBrandpage(1)
-      setProductpage(1)
-      setDayAnalysisPage(1)
-      setWeekAnalysisPage(1)
-      setIsFiltersUpdated(false);
+      setCitypage(1);
+      setBranchpage(1);
+      setItemCategorypage(1);
+      setItempage(1);
+      setSectionpage(1);
+      setBrandpage(1);
+      setProductpage(1);
+      setDayAnalysisPage(1);
+      setWeekAnalysisPage(1);
+
       // console.log("Filters updated:", filters);
       const queryString = new URLSearchParams(filters).toString();
-      const baseUrl = 'sales_all_in_one_live/';
+      const baseUrl = "sales_all_in_one_live/";
       const clearedUrl = `${baseUrl}?${queryString}`;
       // console.log("API URL being called:", clearedUrl);
 
@@ -418,10 +443,9 @@ useEffect(() => {
       fetchYTD();
       fetchBranchDimension(1);
       fetchCityDimension(1);
+      setIsFiltersUpdated(false);
     }
-
   }, [filters, isFiltersUpdated]);
-
 
   // useEffect(() => {
   // if(reloadRef){
@@ -430,10 +454,6 @@ useEffect(() => {
   // })
 
   // popup
-
-
-
-
 
   const weekdata = {
     values: {
@@ -489,7 +509,6 @@ useEffect(() => {
     return { monthRowSpan, yearRowSpan };
   }
 
-
   const hasRun = useRef(false);
 
   useEffect(() => {
@@ -500,7 +519,7 @@ useEffect(() => {
     const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
 
     // Fetch dropdown data
-    liveData()
+    liveData();
     fetchDropdownData();
     fetchData();
     if (!mcFlag) fetchMonthlyCalendar();
@@ -516,7 +535,6 @@ useEffect(() => {
     if (!bdFlag) fetchBranchDimension(1);
     if (!bdFlag) fetchCityDimension(1);
     if (!bdFlag) fetchItemCategoryDimension(1);
-
   }, [period.from, period.to]);
 
   // Fetch Data
@@ -573,33 +591,32 @@ useEffect(() => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-
   };
 
-  const [popup, setpopup] = useState(false)
-
-
+  const [popup, setpopup] = useState(false);
 
   // const[live,setLiveDate]=useState();
   const [formatteddate, setLiveDate] = useState();
   const [formattedTime, setformattedTime] = useState();
   const liveData = async () => {
     try {
-      const response = await axios.get(`sales_all_in_one_live/table_modificatio`);
-  
+      const response = await axios.get(
+        `sales_all_in_one_live/table_modificatio`
+      );
+
       const LiveData = response?.data?.last_modified;
-  
+
       if (LiveData) {
         // Split the date and time from the last_modified string
-        const [dayOfWeek, day, month, year, time] = LiveData.split(' ');
-  
+        const [dayOfWeek, day, month, year, time] = LiveData.split(" ");
+
         // Format the date as DD/MM/YYYY
         const formattedDate = `${day}/${getMonthNumber(month)}/${year}`;
-  
+
         // Bind the date and time
         setLiveDate(formattedDate);
         setformattedTime(time);
-  
+
         console.log("Date:", formattedDate);
         console.log("Time:", time);
       } else {
@@ -609,7 +626,7 @@ useEffect(() => {
       console.error("Error fetching Live Data:", error);
     }
   };
-  
+
   // Helper to get month number from month name
   function getMonthNumber(monthName) {
     const months = {
@@ -628,10 +645,6 @@ useEffect(() => {
     };
     return months[monthName] || "01"; // Default to January if not found
   }
-  
-  
-
-
 
   // Fetch YTD
   const fetchYTD = async () => {
@@ -673,7 +686,7 @@ useEffect(() => {
       setYTDFlag(true);
     } catch (error) {
       console.error("Error fetching YTD Data:", error);
-      setpopup(true)
+      setpopup(true);
     } finally {
       setIsFetching5(false);
     }
@@ -802,7 +815,6 @@ useEffect(() => {
       const stockpositionData = response.data;
       setPriceBreakup2(stockpositionData);
       setpb2Flag(true);
-
     } catch (error) {
       console.error("Error fetching PriceBreakup2 Data:", error);
     } finally {
@@ -837,7 +849,7 @@ useEffect(() => {
   const [Sectionpage, setSectionpage] = useState(1);
   const [Itempage, setItempage] = useState(1);
   const [ItemCategorypage, setItemCategorypage] = useState(1);
-  const limit = 60;
+  const limit = 10;
   const Daylimit = 240;
   const productlimit = 99;
   const BrandLimit = 34;
@@ -860,7 +872,7 @@ useEffect(() => {
         const isNearBottom = scrollHeight - scrollTop <= clientHeight + 1;
 
         if (isNearBottom) {
-          setWeekAnalysisPage(prevPage => {
+          setWeekAnalysisPage((prevPage) => {
             const newPage = prevPage + 1;
 
             // Prevent duplicate fetches
@@ -911,7 +923,6 @@ useEffect(() => {
   // Branch
   const handleScroll3 = (e, dataKey) => {
     if (finalsize2 > 0) {
-
       const { scrollHeight, scrollTop, clientHeight } = e.target;
 
       const isVerticalScroll = scrollTop !== lastScrollTop;
@@ -923,7 +934,7 @@ useEffect(() => {
         if (isNearBottom) {
           // setBranchpage(Branchpage+1);
           setIsFetchingBranchloading(true);
-          setBranchpage(prevPage => {
+          setBranchpage((prevPage) => {
             const newPage = prevPage + 1;
 
             // Prevent duplicate fetches
@@ -964,7 +975,7 @@ useEffect(() => {
       if (isVerticalScroll && !isFetchingSectionloading) {
         const isNearBottom = scrollHeight - scrollTop <= clientHeight + 1;
         if (isNearBottom) {
-          setSectionpage(prevPage => {
+          setSectionpage((prevPage) => {
             const newPage = prevPage + 1;
 
             // Prevent duplicate fetches
@@ -1005,8 +1016,7 @@ useEffect(() => {
       if (isVerticalScroll) {
         const isNearBottom = scrollHeight - scrollTop <= clientHeight + 1;
         if (isNearBottom) {
-
-          setCitypage(prevPage => {
+          setCitypage((prevPage) => {
             const newPage = prevPage + 1;
 
             // Prevent duplicate fetches
@@ -1026,7 +1036,6 @@ useEffect(() => {
   // ItemCategory
   const handleScrol6 = (e, dataKey) => {
     if (finalsize5 > 0) {
-
       const { scrollHeight, scrollTop, clientHeight } = e.target;
 
       const isVerticalScroll = scrollTop !== lastScrollTop;
@@ -1036,7 +1045,7 @@ useEffect(() => {
         const isNearBottom = scrollHeight - scrollTop <= clientHeight + 1;
 
         if (isNearBottom) {
-          setItemCategorypage(prevPage => {
+          setItemCategorypage((prevPage) => {
             const newPage = prevPage + 1;
 
             // Prevent duplicate fetches
@@ -1069,10 +1078,7 @@ useEffect(() => {
 
   // Product
   const handleScrol7 = (e, dataKey) => {
-
     if (finalsize6 > 0) {
-
-
       const { scrollHeight, scrollTop, clientHeight } = e.target;
 
       const isVerticalScroll = scrollTop !== lastScrollTop;
@@ -1082,7 +1088,7 @@ useEffect(() => {
         const isNearBottom = scrollHeight - scrollTop <= clientHeight + 1;
 
         if (isNearBottom) {
-          setProductpage(prevPage => {
+          setProductpage((prevPage) => {
             const newPage = prevPage + 1;
 
             // Prevent duplicate fetches
@@ -1094,12 +1100,9 @@ useEffect(() => {
 
             return newPage;
           });
-
         }
-
       }
     }
-
   };
 
   // Brand
@@ -1113,7 +1116,7 @@ useEffect(() => {
         console.log(isNearBottom);
 
         if (isNearBottom) {
-          setBrandpage(prevPage => {
+          setBrandpage((prevPage) => {
             const newPage = prevPage + 1;
 
             // Prevent duplicate fetches
@@ -1148,7 +1151,6 @@ useEffect(() => {
   // Item
   const handleScrol9 = (e, dataKey) => {
     if (finalsize8 > 0) {
-
       const { scrollHeight, scrollTop, clientHeight } = e.target;
 
       const isVerticalScroll = scrollTop !== lastScrollTop;
@@ -1158,7 +1160,7 @@ useEffect(() => {
         const isNearBottom = scrollHeight - scrollTop <= clientHeight + 1;
 
         if (isNearBottom) {
-          setItempage(prevPage => {
+          setItempage((prevPage) => {
             const newPage = prevPage + 1;
 
             // Prevent duplicate fetches
@@ -1188,7 +1190,6 @@ useEffect(() => {
       }
     }
   };
-
 
   const [scrolling, setScrolling] = useState(false);
   const gstFilter = filters.gstfilter && filters.gstfilter.sales_with_gst;
@@ -1259,7 +1260,6 @@ useEffect(() => {
       setIsFetching(false); // Ensure loading state is reset
     }
   };
-
 
   // Fetch Day
   const [finalsize1, setfinalsize1] = useState();
@@ -1368,12 +1368,11 @@ useEffect(() => {
         `sales_all_in_one_live/product_dimension_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&page=${page}&limit=${productlimit}`
       );
       const size = Object.keys(response.data?.values || {}).length;
-      setfinalsize6(size)
+      setfinalsize6(size);
       if (response.data && response.data?.values && size > 0) {
         const { values } = response.data;
 
         if (Object.keys(values).length > 0) {
-
           if (page === 1) {
             setProductionDimension(response.data);
           } else {
@@ -1403,7 +1402,7 @@ useEffect(() => {
   // fetch Brand
   const [finalsize7, setfinalsize7] = useState();
   const fetchBrandDimension = async (page) => {
-    console.log('fetchBrandDimension');
+    console.log("fetchBrandDimension");
 
     setIsFetching3(true);
     try {
@@ -1437,7 +1436,7 @@ useEffect(() => {
         `sales_all_in_one_live/brand_dimension_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&page=${page}&limit=${BrandLimit}`
       );
       const size = Object.keys(response.data?.values || {}).length;
-      setfinalsize7(size)
+      setfinalsize7(size);
       if (response.data && response.data?.values && size > 0) {
         const { values } = response.data;
         if (Object.keys(values)?.length > 0) {
@@ -1451,12 +1450,9 @@ useEffect(() => {
                 ...values,
               },
             }));
-
           }
           setbdFlag(true);
-        }
-
-        else {
+        } else {
           console.error(
             "Expected values object in response data but got:",
             response.data
@@ -1466,7 +1462,6 @@ useEffect(() => {
             setIsFetching3(true);
           }
         }
-
       } else {
         console.error(
           "Expected values object in response data but got:",
@@ -1517,7 +1512,7 @@ useEffect(() => {
         `sales_all_in_one_live/item_dimension_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&page=${page}&limit=${ItemLimit}`
       );
       const size = Object.keys(response.data?.values || {}).length;
-      setfinalsize8(size)
+      setfinalsize8(size);
       if (response.data && response.data?.values && size > 0) {
         const { values } = response.data;
         if (Object.keys(values)?.length > 0) {
@@ -1532,8 +1527,6 @@ useEffect(() => {
               },
             }));
           }
-
-
         } else {
           if (finalsize8 == 0) {
             // console.log(finalsize);
@@ -1594,7 +1587,6 @@ useEffect(() => {
       setfinalsize4(size);
 
       if (response.data && response.data?.values && size > 0) {
-
         if (page3 === 1) {
           setSectionDimension(response.data);
         } else {
@@ -1618,8 +1610,6 @@ useEffect(() => {
     }
   };
 
-
-
   // Fetch Branch
   const [BranchDimension, setBranchDimension] = useState();
   const [isFetchingBranchloading, setIsFetchingBranchloading] = useState(false);
@@ -1640,7 +1630,6 @@ useEffect(() => {
         }
         return encodeURIComponent(decodedValue);
       };
-
 
       const encodedFilters = {
         city: cleanEncode(filters.city),
@@ -1664,7 +1653,7 @@ useEffect(() => {
       );
 
       const size = Object.keys(response.data?.values || {}).length;
-      setfinalsize2(size)
+      setfinalsize2(size);
       if (response.data && response.data?.values && size > 0) {
         if (page1 === 1) {
           setBranchDimension(response.data);
@@ -1676,7 +1665,6 @@ useEffect(() => {
               ...response.data?.values,
             },
           }));
-
         }
 
         setbdFlag(true);
@@ -1736,7 +1724,7 @@ useEffect(() => {
         `sales_all_in_one_live/city_dimension_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&page=${page}&limit=${CityLimit}`
       );
       const size = Object.keys(response.data?.values || {}).length;
-      setfinalsize9(size)
+      setfinalsize9(size);
       if (response.data && response.data?.values) {
         const { values } = response.data;
         if (Object.keys(values).length > 0) {
@@ -1821,7 +1809,6 @@ useEffect(() => {
             },
           }));
         }
-
       } else {
         if (finalsize5 === 0) {
           console.log("No more data available");
@@ -1833,7 +1820,6 @@ useEffect(() => {
       setIsFetchingcategoryloading(false); // Ensure the loader stops regardless of success or failure
     }
   };
-
 
   const [isFetching, setIsFetching] = useState(false);
   const [isFetching1, setIsFetching1] = useState(false);
@@ -1858,13 +1844,14 @@ useEffect(() => {
 
   // Define selectedOption based on the condition
   const [selectedOption, setSelectedOption] = useState(
-    Array.isArray(dropdownData?.store_name) && dropdownData?.store_name?.length > 2
+    Array.isArray(dropdownData?.store_name) &&
+      dropdownData?.store_name?.length > 2
       ? [
-        {
-          label: dropdownData.store_name[2],
-          value: dropdownData.store_name[2],
-        },
-      ]
+          {
+            label: dropdownData.store_name[2],
+            value: dropdownData.store_name[2],
+          },
+        ]
       : null
   );
 
@@ -1877,7 +1864,6 @@ useEffect(() => {
       setFilters((prevFilters) => ({
         ...prevFilters,
         store_name: selectedValuesString,
-
       }));
     } else {
       setFilters((prevFilters) => ({
@@ -1887,8 +1873,6 @@ useEffect(() => {
       // console.log("Cleared filter value");
     }
   };
-
-
 
   const [selectedOption1, setSelectedOption1] = useState(() => {
     // Ensure item_description is an array and has at least 3 items
@@ -1905,7 +1889,6 @@ useEffect(() => {
     }
     return null; // Default value if the condition is not met
   });
-
 
   const dropdownValue1 = selectedOption1 || filters.item_description;
 
@@ -1928,7 +1911,6 @@ useEffect(() => {
     }
   };
 
-
   const getRelatedItems = (selectedModelNos) => {
     // Example: Filter or fetch based on `selectedModelNos`
     const allItems = [
@@ -1950,9 +1932,6 @@ useEffect(() => {
       ? [{ label: city[2], value: city[2] }]
       : null;
   });
-
-
-
 
   const dropdownValuecity = selectedOption2 || filters.city;
 
@@ -2028,12 +2007,8 @@ useEffect(() => {
 
   // const dropdownValue11 = selectedOption11 || filters.sale_type;
 
-
-
   const dropdownValuesales = selectedOption11 || filters.sale_type;
-  const [selectedOption9, setSelectedOption9] = useState([
-
-  ]);
+  const [selectedOption9, setSelectedOption9] = useState([]);
   const dropdownprice = selectedOption9 || filters.price_breakup;
 
   // Transform store_name into options format required by react-select
@@ -2045,71 +2020,109 @@ useEffect(() => {
   // : null;
   const options = Array.isArray(dropdownData.store_name)
     ? dropdownData.store_name
-      .slice()
-      .sort((a, b) => a.localeCompare(b))
-      .map((store) => ({
-        label: store,
-        value: store,
-      }))
+        .slice()
+        .sort((a, b) => a.localeCompare(b))
+        .map((store) => ({
+          label: store,
+          value: store,
+        }))
     : [];
 
+  const options1 = Array.isArray(dropdownData.item_description)
+    ? dropdownData.item_description
+        .slice() // Create a copy to avoid mutating the original array
+        .sort((a, b) => a.localeCompare(b))
+        .map((store) => ({
+          label: store,
+          value: store,
+        }))
+    : [];
 
+  const options2 = Array.isArray(dropdownData.city)
+    ? dropdownData.city
+        .slice() // Create a copy to avoid mutating the original array
+        .sort((a, b) => a.localeCompare(b))
+        .map((store) => ({
+          label: store,
+          value: store,
+        }))
+    : [];
 
-  const options1 = Array.isArray(dropdownData.item_description) ? dropdownData.item_description.slice() // Create a copy to avoid mutating the original array
-    .sort((a, b) => a.localeCompare(b)).map((store) => ({
-      label: store,
-      value: store,
-    })) : [];
+  const options3 = Array.isArray(dropdownData.brand_name)
+    ? dropdownData.brand_name
+        .slice() // Create a copy to avoid mutating the original array
+        .sort((a, b) => a.localeCompare(b))
+        .map((store) => ({
+          label: store,
+          value: store,
+        }))
+    : [];
+  const options4 = Array.isArray(dropdownData.product_group)
+    ? dropdownData.product_group
+        .slice() // Create a copy to avoid mutating the original array
+        .sort((a, b) => a.localeCompare(b))
+        .map((store) => ({
+          label: store,
+          value: store,
+        }))
+    : [];
 
-  const options2 = Array.isArray(dropdownData.city) ? dropdownData.city.slice() // Create a copy to avoid mutating the original array
-    .sort((a, b) => a.localeCompare(b)).map((store) => ({
-      label: store,
-      value: store,
-    })) : [];
+  const options5 = Array.isArray(dropdownData.section)
+    ? dropdownData.section
+        .slice() // Create a copy to avoid mutating the original array
+        .sort((a, b) => a.localeCompare(b))
+        .map((store) => ({
+          label: store,
+          value: store,
+        }))
+    : [];
 
-  const options3 = Array.isArray(dropdownData.brand_name) ? dropdownData.brand_name.slice() // Create a copy to avoid mutating the original array
-    .sort((a, b) => a.localeCompare(b)).map((store) => ({
-      label: store,
-      value: store,
-    })) : [];
-  const options4 = Array.isArray(dropdownData.product_group) ? dropdownData.product_group.slice() // Create a copy to avoid mutating the original array
-    .sort((a, b) => a.localeCompare(b)).map((store) => ({
-      label: store,
-      value: store,
-    })) : [];
+  const options6 = Array.isArray(dropdownData.model_no)
+    ? dropdownData.model_no
+        .slice() // Create a copy to avoid mutating the original array
+        .sort((a, b) => a.localeCompare(b))
+        .map((store) => ({
+          label: store,
+          value: store,
+        }))
+    : [];
+  const options7 = Array.isArray(dropdownData.srn_flag)
+    ? dropdownData.srn_flag
+        .slice() // Create a copy to avoid mutating the original array
+        .sort((a, b) => a.localeCompare(b))
+        .map((store) => ({
+          label: store,
+          value: store,
+        }))
+    : [];
+  const options8 = Array.isArray(dropdownData.demo_flag)
+    ? dropdownData.demo_flag
+        .slice() // Create a copy to avoid mutating the original array
+        .sort((a, b) => a.localeCompare(b))
+        .map((store) => ({
+          label: store,
+          value: store,
+        }))
+    : [];
 
-  const options5 = Array.isArray(dropdownData.section) ? dropdownData.section.slice() // Create a copy to avoid mutating the original array
-    .sort((a, b) => a.localeCompare(b)).map((store) => ({
-      label: store,
-      value: store,
-    })) : [];
-
-  const options6 = Array.isArray(dropdownData.model_no) ? dropdownData.model_no.slice() // Create a copy to avoid mutating the original array
-    .sort((a, b) => a.localeCompare(b)).map((store) => ({
-      label: store,
-      value: store,
-    })) : [];
-  const options7 = Array.isArray(dropdownData.srn_flag) ? dropdownData.srn_flag.slice() // Create a copy to avoid mutating the original array
-    .sort((a, b) => a.localeCompare(b)).map((store) => ({
-      label: store,
-      value: store,
-    })) : [];
-  const options8 = Array.isArray(dropdownData.demo_flag) ? dropdownData.demo_flag.slice() // Create a copy to avoid mutating the original array
-    .sort((a, b) => a.localeCompare(b)).map((store) => ({
-      label: store,
-      value: store,
-    })) : [];
-
-  const options10 = Array.isArray(dropdownData.item_category) ? dropdownData.item_category.slice() // Create a copy to avoid mutating the original array
-    .sort((a, b) => a.localeCompare(b)).map((store) => ({
-      label: store,
-      value: store,
-    })) : [];
-  const options11 = Array.isArray(dropdownData.sale_type) ? dropdownData.sale_type.slice() // Create a copy to avoid mutating the original array
-    .sort((a, b) => a.localeCompare(b)).map((store) => ({
-      label: store,
-      value: store,
-    })) : [];
+  const options10 = Array.isArray(dropdownData.item_category)
+    ? dropdownData.item_category
+        .slice() // Create a copy to avoid mutating the original array
+        .sort((a, b) => a.localeCompare(b))
+        .map((store) => ({
+          label: store,
+          value: store,
+        }))
+    : [];
+  const options11 = Array.isArray(dropdownData.sale_type)
+    ? dropdownData.sale_type
+        .slice() // Create a copy to avoid mutating the original array
+        .sort((a, b) => a.localeCompare(b))
+        .map((store) => ({
+          label: store,
+          value: store,
+        }))
+    : [];
   const options9 = [
     { label: "Null", value: "Null" },
     { label: "0-1000", value: "0-1000" },
@@ -2219,7 +2232,6 @@ useEffect(() => {
     }
   };
 
-
   // Product Dropdown
   const handleproductgroupChange = (selectedOptions) => {
     setSelectedOption4(selectedOptions);
@@ -2280,8 +2292,6 @@ useEffect(() => {
     }
   };
 
-
-
   // -----------------------------------------------------------------------DK code------------------------------
 
   const [options51, setOptions51] = useState([]);
@@ -2293,14 +2303,13 @@ useEffect(() => {
     return Array.isArray(brandName) && brandName.length > 2
       ? [{ label: brandName[2], value: brandName[2] }]
       : null;
-  });;
+  });
   const [selectedOption61, setSelectedOption61] = useState(() => {
     const modelNo = dropdownData?.filters?.model_no;
     return Array.isArray(modelNo) && modelNo.length > 2
       ? [{ label: modelNo[2], value: modelNo[2] }]
       : null;
   });
-  ;
   const [selectedOptionitem, setSelectedOptionitem] = useState(null);
 
   // Handle brand_name change
@@ -2340,7 +2349,6 @@ useEffect(() => {
     }
   };
 
-
   const handleitemdeschange = (selectedOptions) => {
     setSelectedOption1(selectedOptions);
     if (selectedOptions) {
@@ -2350,7 +2358,6 @@ useEffect(() => {
       setFilters((prevFilters) => ({
         ...prevFilters,
         item_description: selectedValues,
-
       }));
     } else {
       setFilters((prevFilters) => ({
@@ -2360,9 +2367,7 @@ useEffect(() => {
     }
   };
 
-
   // -----------------------------------------------------------------------DK code end------------------------------
-
 
   // SRN Filter Dropdown
   const handlesrnflagChange = (selectedOptions) => {
@@ -2372,12 +2377,12 @@ useEffect(() => {
       const selectedValuesString = selectedValues.join(",");
       setFilters((prev) => ({
         ...prev,
-        srn_flag: selectedValuesString
+        srn_flag: selectedValuesString,
       }));
     } else {
       setFilters((prev) => ({
         ...prev,
-        srn_flag: ""
+        srn_flag: "",
       }));
     }
   };
@@ -2406,9 +2411,7 @@ useEffect(() => {
       ...prevFilters,
       srn_flag: selectedValues,
     }));
-
-  }
-
+  };
 
   // Price Breakup Dropdown
   const handlepricebreakupChange = (selectedOptions) => {
@@ -2435,17 +2438,16 @@ useEffect(() => {
   //   return "";
   // };
 
-
   const formatNumber = (value) => {
     if (value !== undefined && value !== null) {
-      return value.toLocaleString("en-IN");  // Correct way to format in Indian number system
+      return value.toLocaleString("en-IN"); // Correct way to format in Indian number system
     }
     return "";
   };
 
   // const formatNumber = (value) => {
   //   if (isNaN(value)) return "0";
-  //   return parseInt(value, 10).toLocaleString("en-IN"); 
+  //   return parseInt(value, 10).toLocaleString("en-IN");
   // };
 
   // const formatValueString = (valueString) => {
@@ -2459,11 +2461,13 @@ useEffect(() => {
 
   const formatValueString = (valueString) => {
     if (!valueString) return "0";
-  
+
     const [numberPart, percentagePart] = valueString.split(" ");
     const formattedNumber = parseFloat(numberPart || 0).toLocaleString("en-IN"); // Correctly formats number
-  
-    return percentagePart ? `${formattedNumber} ${percentagePart}` : formattedNumber;
+
+    return percentagePart
+      ? `${formattedNumber} ${percentagePart}`
+      : formattedNumber;
   };
   return (
     <div className="p-4 ">
@@ -2511,7 +2515,10 @@ useEffect(() => {
               </div>
 
               <div className="w-1/6.3">
-                <div className="apply-filter-container" style={{ width: 'auto' }}>
+                <div
+                  className="apply-filter-container"
+                  style={{ width: "auto" }}
+                >
                   <div
                     style={{
                       backgroundColor: "#fff",
@@ -2555,8 +2562,6 @@ useEffect(() => {
                       </svg>
                     </div>
                   )}
-
-
                   <div
                     style={{
                       // alignItems: "center",
@@ -2587,9 +2592,9 @@ useEffect(() => {
                         fontWeight: 600,
                       }}
                     >
-                      {formatteddate}<br></br>
+                      {formatteddate}
+                      <br></br>
                       {formattedTime}
-
                     </span>
                   </div>
                 </div>
@@ -2614,11 +2619,7 @@ useEffect(() => {
                           from: e.target.value || dateRange.start_date,
                         }))
                       }
-
                     />
-
-
-
                   </div>
                 </div>
                 <div
@@ -2654,20 +2655,20 @@ useEffect(() => {
                     isMulti
                     isClearable={true}
                     defaultValue={
-                      Array.isArray(dropdownData.srn_flag) && dropdownData.srn_flag.length > 2
+                      Array.isArray(dropdownData.srn_flag) &&
+                      dropdownData.srn_flag.length > 2
                         ? [
-                          {
-                            label: dropdownData.srn_flag
-                              .slice()
-                              .sort((a, b) => a.localeCompare(b))[2],
-                            value: dropdownData.srn_flag
-                              .slice()
-                              .sort((a, b) => a.localeCompare(b))[2],
-                          },
-                        ]
+                            {
+                              label: dropdownData.srn_flag
+                                .slice()
+                                .sort((a, b) => a.localeCompare(b))[2],
+                              value: dropdownData.srn_flag
+                                .slice()
+                                .sort((a, b) => a.localeCompare(b))[2],
+                            },
+                          ]
                         : null
                     }
-
                     onFocus={() => setPlaceholder8("Search...")}
                     onBlur={() => setPlaceholder8("All")}
                     className="basic-multi-select"
@@ -2684,15 +2685,16 @@ useEffect(() => {
                     onChange={handlesalestypeChange}
                     isMulti
                     defaultValue={
-                      Array.isArray(dropdownData.sale_type) && dropdownData.sale_type
+                      Array.isArray(dropdownData.sale_type) &&
+                      dropdownData.sale_type
                         .slice()
                         .sort((a, b) => a.localeCompare(b))?.length > 2
                         ? [
-                          {
-                            label: dropdownData.sale_type[2],
-                            value: dropdownData.sale_type[2],
-                          },
-                        ]
+                            {
+                              label: dropdownData.sale_type[2],
+                              value: dropdownData.sale_type[2],
+                            },
+                          ]
                         : null
                     }
                     onFocus={() => setPlaceholder12("Search...")}
@@ -2705,7 +2707,6 @@ useEffect(() => {
                       overflow: "auto",
                       overflowX: "auto",
                     }}
-
                   />
                 </div>
 
@@ -2719,7 +2720,9 @@ useEffect(() => {
                     isMulti
                     placeholder={placeholder6}
                     onFocus={() => setPlaceholder6("Search...")}
-                    onBlur={() => !dropdownValuesection && setPlaceholder6("All")}
+                    onBlur={() =>
+                      !dropdownValuesection && setPlaceholder6("All")
+                    }
                     className="basic-multi-select"
                     classNamePrefix="select"
                   />
@@ -2733,15 +2736,15 @@ useEffect(() => {
                     isMulti
                     defaultValue={
                       Array.isArray(dropdownData.item_category) &&
-                        dropdownData.item_category
-                          .slice()
-                          .sort((a, b) => a.localeCompare(b))?.length > 2
+                      dropdownData.item_category
+                        .slice()
+                        .sort((a, b) => a.localeCompare(b))?.length > 2
                         ? [
-                          {
-                            label: dropdownData.item_category[2],
-                            value: dropdownData.item_category[2],
-                          },
-                        ]
+                            {
+                              label: dropdownData.item_category[2],
+                              value: dropdownData.item_category[2],
+                            },
+                          ]
                         : null
                     }
                     onFocus={() => setPlaceholder11("Search...")}
@@ -2752,7 +2755,6 @@ useEffect(() => {
                   />
                 </div>
 
-
                 <div className="w-1/5 filterstock">
                   <label htmlFor="product_group">Product:</label>
                   <Select
@@ -2761,15 +2763,16 @@ useEffect(() => {
                     onChange={handleproductgroupChange}
                     isMulti
                     defaultValue={
-                      Array.isArray(dropdownData.product_group) && dropdownData.product_group
+                      Array.isArray(dropdownData.product_group) &&
+                      dropdownData.product_group
                         .slice()
                         .sort((a, b) => a.localeCompare(b))?.length > 2
                         ? [
-                          {
-                            label: dropdownData.product_group[2],
-                            value: dropdownData.product_group[2],
-                          },
-                        ]
+                            {
+                              label: dropdownData.product_group[2],
+                              value: dropdownData.product_group[2],
+                            },
+                          ]
                         : null
                     }
                     onFocus={() => setPlaceholder5("Search...")}
@@ -2784,21 +2787,20 @@ useEffect(() => {
                   <Select
                     options={options3}
                     value={selectedOption3}
-
-                    onChange={handleBrandNameChange1
-                    }
+                    onChange={handleBrandNameChange1}
                     isMulti
                     isSearchable={true}
                     defaultValue={
-                      Array.isArray(dropdownData.brand_name) && dropdownData.brand_name
+                      Array.isArray(dropdownData.brand_name) &&
+                      dropdownData.brand_name
                         .slice()
                         .sort((a, b) => a.localeCompare(b))?.length > 2
                         ? [
-                          {
-                            label: dropdownData.brand_name[2],
-                            value: dropdownData.brand_name[2],
-                          },
-                        ]
+                            {
+                              label: dropdownData.brand_name[2],
+                              value: dropdownData.brand_name[2],
+                            },
+                          ]
                         : null
                     }
                     onFocus={() => setPlaceholder4("Search...")}
@@ -2817,15 +2819,16 @@ useEffect(() => {
                     onChange={handleModelNoChange1}
                     isMulti
                     defaultValue={
-                      Array.isArray(dropdownData.model_no) && dropdownData.model_no
+                      Array.isArray(dropdownData.model_no) &&
+                      dropdownData.model_no
                         .slice()
                         .sort((a, b) => a.localeCompare(b))?.length > 2
                         ? [
-                          {
-                            label: dropdownData.model_no[2],
-                            value: dropdownData.model_no[2],
-                          },
-                        ]
+                            {
+                              label: dropdownData.model_no[2],
+                              value: dropdownData.model_no[2],
+                            },
+                          ]
                         : null
                     }
                     onFocus={() => setPlaceholder7("Search...")}
@@ -2835,7 +2838,6 @@ useEffect(() => {
                     placeholder={placeholder7}
                   />
                 </div>
-
 
                 <div className="w-1/5 filterstock">
                   <label htmlFor="item_description">Item Description:</label>
@@ -2848,15 +2850,15 @@ useEffect(() => {
                     isSearchable={true}
                     defaultValue={
                       Array.isArray(dropdownData.item_description) &&
-                        dropdownData.item_description
-                          .slice()
-                          .sort((a, b) => a.localeCompare(b))?.length > 2
+                      dropdownData.item_description
+                        .slice()
+                        .sort((a, b) => a.localeCompare(b))?.length > 2
                         ? [
-                          {
-                            label: dropdownData.item_description[2],
-                            value: dropdownData.item_description[2],
-                          },
-                        ]
+                            {
+                              label: dropdownData.item_description[2],
+                              value: dropdownData.item_description[2],
+                            },
+                          ]
                         : null
                     }
                     onFocus={() => setPlaceholder3("Search...")}
@@ -2875,15 +2877,16 @@ useEffect(() => {
                       onChange={handleChange}
                       isMulti
                       defaultValue={
-                        Array.isArray(dropdownData.store_name) && dropdownData.store_name
+                        Array.isArray(dropdownData.store_name) &&
+                        dropdownData.store_name
                           .slice()
                           .sort((a, b) => a.localeCompare(b))?.length > 2
                           ? [
-                            {
-                              label: dropdownData.store_name[2],
-                              value: dropdownData.store_name[2],
-                            },
-                          ]
+                              {
+                                label: dropdownData.store_name[2],
+                                value: dropdownData.store_name[2],
+                              },
+                            ]
                           : null
                       }
                       onFocus={() => setPlaceholder2("Search...")}
@@ -2903,15 +2906,16 @@ useEffect(() => {
                     onChange={handleCityChange}
                     isMulti
                     defaultValue={
-                      Array.isArray(dropdownData.city) && dropdownData.city
+                      Array.isArray(dropdownData.city) &&
+                      dropdownData.city
                         .slice()
                         .sort((a, b) => a.localeCompare(b))?.length > 2
                         ? [
-                          {
-                            label: dropdownData.city[2],
-                            value: dropdownData.city[2],
-                          },
-                        ]
+                            {
+                              label: dropdownData.city[2],
+                              value: dropdownData.city[2],
+                            },
+                          ]
                         : null
                     }
                     onFocus={() => setPlaceholder1("Search...")}
@@ -2922,7 +2926,6 @@ useEffect(() => {
                   />
                 </div>
 
-
                 <div className="w-1/5 filterstock">
                   <label htmlFor="demo_flag">Demo Filter:</label>
                   <Select
@@ -2931,15 +2934,16 @@ useEffect(() => {
                     onChange={handledemoflagChange}
                     isMulti
                     defaultValue={
-                      Array.isArray(dropdownData.demo_flag) && dropdownData.demo_flag
+                      Array.isArray(dropdownData.demo_flag) &&
+                      dropdownData.demo_flag
                         .slice()
                         .sort((a, b) => a.localeCompare(b))?.length > 2
                         ? [
-                          {
-                            label: dropdownData.demo_flag[2],
-                            value: dropdownData.demo_flag[2],
-                          },
-                        ]
+                            {
+                              label: dropdownData.demo_flag[2],
+                              value: dropdownData.demo_flag[2],
+                            },
+                          ]
                         : null
                     }
                     onFocus={() => setPlaceholder9("Search...")}
@@ -2985,35 +2989,40 @@ useEffect(() => {
               </div>
             </form>
           </div>
-          <div style={{
-            gap: "10px",
-            display: "flex",
-            flexDirection: "column"
-          }}>
-            <div class="d-flex" style={{
-              gap: "8px",
-              width: "100%",
-            }}>
-              <div style={{
-                background: " #1C3644",
-                width: "3%",
-                alignItems: "center",
-                justifyContent: "center",
-                display: "flex",
-                flexDirection: "column"
+          <div
+            style={{
+              gap: "10px",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div
+              class="d-flex"
+              style={{
+                gap: "8px",
+                width: "100%",
               }}
+            >
+              <div
+                style={{
+                  background: " #1C3644",
+                  width: "3%",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
               >
-                <div class="rotated-text" >
-                  Period Analysis
-                </div>
-
+                <div class="rotated-text">Period Analysis</div>
               </div>
-              <div style={{
-                display: "flex",
-                flexDirection: "column",
-                border: "2px solid #1C3644",
-                width: "97%",
-              }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  border: "2px solid #1C3644",
+                  width: "97%",
+                }}
+              >
                 <div className="grid grid-cols-5 gap-4">
                   <div className="col-span-1">
                     <h3 className="text-l font-medium text-center text-gray-900 dark:text-white py-2">
@@ -3022,7 +3031,11 @@ useEffect(() => {
 
                     <div
                       className="overflow-x-auto"
-                      style={{ height: "261px", overflow: "auto", border: '1px solid #80808075' }}
+                      style={{
+                        height: "261px",
+                        overflow: "auto",
+                        border: "1px solid #80808075",
+                      }}
                     >
                       <table className="w-full leading-normal m-0">
                         <thead className="sticky top-0" style={{ zIndex: "" }}>
@@ -3043,11 +3056,14 @@ useEffect(() => {
                         </thead>
 
                         <tbody>
-                          {YTD && !isFetching5 && Object.keys(YTD).length > 0 ? (
+                          {YTD &&
+                          !isFetching5 &&
+                          Object.keys(YTD).length > 0 ? (
                             Object.keys(YTD)
                               .sort((a, b) => b - a)
                               .map((year) => {
-                                const [value, percentage] = YTD[year]?.split(" ");
+                                const [value, percentage] =
+                                  YTD[year]?.split(" ");
                                 const currentValue = parseFloat(value);
                                 const maxSales = Math.max(
                                   ...Object.keys(YTD).map((y) => {
@@ -3063,16 +3079,18 @@ useEffect(() => {
                                   ? parseFloat(value.split(" ")[0])
                                   : null;
 
+                                const isDynamicZeroValue =
+                                  numericValue === 0 && value !== "0";
 
-                                const isDynamicZeroValue = numericValue === 0 && value !== "0";
+                                const opacity =
+                                  !isDynamicZeroValue && maxSales > 0
+                                    ? Math.max(numericValue / maxSales, 0.1)
+                                    : 0.1;
 
-
-                                const opacity = !isDynamicZeroValue && maxSales > 0
-                                  ? Math.max(numericValue / maxSales, 0.1)
-                                  : 0.1;
-
-
-                                const backgroundColor = !isDynamicZeroValue && numericValue === null ? "transparent" : `rgba(5, 127, 163, ${opacity})`;
+                                const backgroundColor =
+                                  !isDynamicZeroValue && numericValue === null
+                                    ? "transparent"
+                                    : `rgba(5, 127, 163, ${opacity})`;
 
                                 return (
                                   <tr key={year}>
@@ -3081,11 +3099,14 @@ useEffect(() => {
                                     </td>
                                     <td
                                       style={{
-                                        backgroundColor
+                                        backgroundColor,
                                       }}
                                       className="relative px-2 py-2 border-b border-gray-200 text-sm text-center"
                                     >
-                                      <span>{formatNumber(value) || 0}</span>
+                                      {/* <span>{formatNumber(value) || 0}</span> */}
+                                      <span>
+                                        {formatValueString(value) || 0}
+                                      </span>
                                       <br />
                                       <span>{percentage}</span>
                                     </td>
@@ -3093,16 +3114,16 @@ useEffect(() => {
                                 );
                               })
                           ) : (
-
                             <tr>
-                              {!isFetching5 &&
-                                <td style={{ border: 'none' }}
+                              {!isFetching5 && (
+                                <td
+                                  style={{ border: "none" }}
                                   colSpan="2"
                                   className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center text-gray-500"
                                 >
                                   No Data Available
                                 </td>
-                              }
+                              )}
                             </tr>
                           )}
                         </tbody>
@@ -3110,7 +3131,10 @@ useEffect(() => {
 
                       {isFetching5 && (
                         <div className="text-center text-gray-600 py-2">
-                          <div className="spinner-border gray-spinner" role="status">
+                          <div
+                            className="spinner-border gray-spinner"
+                            role="status"
+                          >
                             <span className="sr-only">Loading...</span>
                           </div>
                         </div>
@@ -3118,37 +3142,42 @@ useEffect(() => {
                     </div>
                   </div>
 
-
                   <div className="col-span-4 ">
                     <h3 className="text-l font-medium text-center text-gray-900 dark:text-white py-2">
                       Monthly Calendar
                     </h3>
                     <div
                       className="overflow-x-auto max-h-[400px]"
-                      style={{ height: "268px", overflow: "auto", border: '1px solid #80808075' }}
+                      style={{
+                        height: "268px",
+                        overflow: "auto",
+                        border: "1px solid #80808075",
+                      }}
                     >
                       <table className="w-full leading-normal m-0">
                         <thead>
                           <tr>
-                            {
-                              monthcal
-                                ?.map((month, index) => (
-                                  <th
-                                    style={{ background: "#1C3644" }}
-                                    key={index}
-                                    className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                                  >
-                                    {month}
-                                  </th>
-                                ))}
+                            {monthcal?.map((month, index) => (
+                              <th
+                                style={{ background: "#1C3644" }}
+                                key={index}
+                                className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
+                              >
+                                {month}
+                              </th>
+                            ))}
                           </tr>
                         </thead>
                         <tbody>
-                          {monthcalender && monthcalender.length > 0 && !isFetching6 ? (
+                          {monthcalender &&
+                          monthcalender.length > 0 &&
+                          !isFetching6 ? (
                             (() => {
                               const allValues = monthcalender.flatMap((row) =>
                                 generateMonths1().map((monthKey) => {
-                                  const value = row[monthKey] ? parseFloat(row[monthKey]?.split(" ")[0]) : 0;
+                                  const value = row[monthKey]
+                                    ? parseFloat(row[monthKey]?.split(" ")[0])
+                                    : 0;
                                   return value || 0;
                                 })
                               );
@@ -3168,16 +3197,25 @@ useEffect(() => {
                                     </td>
                                     {generateMonths1().map((monthKey) => {
                                       const monthValue = row[monthKey]
-                                        ? parseFloat(row[monthKey].replace("(0.0%)", "(-0.0%)").split(" ")[0]) || row[monthKey].replace("(0.0%)", "(-0.0%)").split(" ")[0]
+                                        ? parseFloat(
+                                            row[monthKey]
+                                              .replace("(0.0%)", "(-0.0%)")
+                                              .split(" ")[0]
+                                          ) ||
+                                          row[monthKey]
+                                            .replace("(0.0%)", "(-0.0%)")
+                                            .split(" ")[0]
                                         : 0;
                                       // console.log(row[monthKey]);
 
-                                      const formattedValue = formatNumber(monthValue);
-                                      const opacity = calculateOpacity(monthValue);
+                                      const formattedValue =
+                                        formatNumber(monthValue);
+                                      const opacity =
+                                        calculateOpacity(monthValue);
                                       const style = monthValue
                                         ? {
-                                          backgroundColor: `rgba(5, 127, 163, ${opacity})`,
-                                        }
+                                            backgroundColor: `rgba(5, 127, 163, ${opacity})`,
+                                          }
                                         : {};
 
                                       return (
@@ -3186,7 +3224,12 @@ useEffect(() => {
                                           className="relative px-2 py-2 border-b border-gray-200 text-sm text-center"
                                           style={style}
                                         >
-                                          {row[monthKey] ? `${formattedValue} ${row[monthKey]?.split(" ")[1] || ""}` : "0"}
+                                          {row[monthKey]
+                                            ? `${formattedValue} ${
+                                                row[monthKey]?.split(" ")[1] ||
+                                                ""
+                                              }`
+                                            : "0"}
                                         </td>
                                       );
                                     })}
@@ -3210,7 +3253,6 @@ useEffect(() => {
                             </tr>
                           )}
                         </tbody>
-
                       </table>
                       {isFetching6 && (
                         <div className="text-center text-gray-600 py-2">
@@ -3233,10 +3275,17 @@ useEffect(() => {
                     </h3>
                     <div
                       className="overflow-x-auto max-h-[400px]"
-                      style={{ height: "248px", overflow: "auto", border: '1px solid #80808075' }}
+                      style={{
+                        height: "248px",
+                        overflow: "auto",
+                        border: "1px solid #80808075",
+                      }}
                       onScroll={(e) => handleScroll1(e, "WeekAnalysis")}
                     >
-                      <table id="tblweekanalysis" className="w-full leading-normal m-0">
+                      <table
+                        id="tblweekanalysis"
+                        className="w-full leading-normal m-0"
+                      >
                         <thead className="sticky top-0">
                           <tr>
                             <th
@@ -3258,80 +3307,108 @@ useEffect(() => {
                           </tr>
                         </thead>
                         <tbody>
-                          {WeekAnalysis && WeekAnalysis.years && WeekAnalysis.years.length > 0 && Object.keys(WeekAnalysis.values || {}).length > 0 ? (
+                          {WeekAnalysis &&
+                          WeekAnalysis.years &&
+                          WeekAnalysis.years.length > 0 &&
+                          Object.keys(WeekAnalysis.values || {}).length > 0 ? (
                             <React.Fragment>
-                              {Object.entries(WeekAnalysis.values).map(([week, values]) => {
-                                const allValues = WeekAnalysis.years.map((year) => {
-                                  // const valueString = String(values[year] || '0');
-                                  const valueString = String(values?.[year]?.sales_details ?? values?.[year] ?? 0);
-                                  const value = parseFloat(valueString.split(" ")[0]) || 0;
-                                  // console.log(value);
-
-                                  return value;
-                                });
-
-
-
-                                const globalMaxValue = Math.max(...allValues);
-                                console.log(globalMaxValue);
-
-                                return (
-                                  <tr key={week}>
-                                    <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
-                                      {week}
-                                    </td>
-                                    {WeekAnalysis.years.map((year) => {
-                                      const valueString = String(values?.[year]?.sales_details ?? values?.[year] ?? 0);
-                                      const value = parseFloat(valueString.split(" ")[0])
-                                        || valueString.split(" ")[0] || 0;
-                                      console.log(value);
-
-                                      const maxAbsValue = Math.abs(globalMaxValue);
-                                      // const opacity = value === 0 ? 0.1 : value / globalMaxValue;
-                                      // const backgroundColor = valueString
-                                      //   ? `rgba(5, 127, 163, ${opacity})`
-                                      //   : "transparent";
-
-                                      const opacity = value === 0
-                                        ? 0
-                                        : Math.max(value / globalMaxValue, 0.1);
-
-                                      const backgroundColor = valueString != 0
-                                        ? `rgba(5, 127, 163, ${opacity})`
-                                        : "transparent";
-
-                                      console.log(backgroundColor);
-
-                                      // console.log(`Value: ${value}, Opacity: ${opacity}, Background: ${backgroundColor}`);
-
-                                      // const valueString = String(values?.[year]?.sales_details ?? values?.[year] ?? 0);
-                                      // // const valueString = String(values[year]?.sales_details||values[year] || 0);
-                                      // const value = parseFloat(valueString.split(" ")[0]) || 0;
-                                      // const opacity = value === 0 ? 0.1 : value / globalMaxValue;
-
-                                      // const backgroundColor = valueString
-                                      //   ? `rgba(5, 127, 163, ${opacity})`
-                                      //   : "transparent";
-
-                                      return (
-                                        <td
-                                          key={year}
-                                          style={{ backgroundColor }}
-                                          className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                        >
-                                          {formatValueString(valueString)}{" "}
-                                        </td>
+                              {Object.entries(WeekAnalysis.values).map(
+                                ([week, values]) => {
+                                  const allValues = WeekAnalysis.years.map(
+                                    (year) => {
+                                      // const valueString = String(values[year] || '0');
+                                      const valueString = String(
+                                        values?.[year]?.sales_details ??
+                                          values?.[year] ??
+                                          0
                                       );
-                                    })}
-                                  </tr>
-                                );
-                              })}
+                                      const value =
+                                        parseFloat(valueString.split(" ")[0]) ||
+                                        0;
+                                      // console.log(value);
+
+                                      return value;
+                                    }
+                                  );
+
+                                  const globalMaxValue = Math.max(...allValues);
+                                  console.log(globalMaxValue);
+
+                                  return (
+                                    <tr key={week}>
+                                      <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
+                                        {week}
+                                      </td>
+                                      {WeekAnalysis.years.map((year) => {
+                                        const valueString = String(
+                                          values?.[year]?.sales_details ??
+                                            values?.[year] ??
+                                            0
+                                        );
+                                        const value =
+                                          parseFloat(
+                                            valueString.split(" ")[0]
+                                          ) ||
+                                          valueString.split(" ")[0] ||
+                                          0;
+                                        console.log(value);
+
+                                        const maxAbsValue =
+                                          Math.abs(globalMaxValue);
+                                        // const opacity = value === 0 ? 0.1 : value / globalMaxValue;
+                                        // const backgroundColor = valueString
+                                        //   ? `rgba(5, 127, 163, ${opacity})`
+                                        //   : "transparent";
+
+                                        const opacity =
+                                          value === 0
+                                            ? 0
+                                            : Math.max(
+                                                value / globalMaxValue,
+                                                0.1
+                                              );
+
+                                        const backgroundColor =
+                                          valueString != 0
+                                            ? `rgba(5, 127, 163, ${opacity})`
+                                            : "transparent";
+
+                                        console.log(backgroundColor);
+
+                                        // console.log(`Value: ${value}, Opacity: ${opacity}, Background: ${backgroundColor}`);
+
+                                        // const valueString = String(values?.[year]?.sales_details ?? values?.[year] ?? 0);
+                                        // // const valueString = String(values[year]?.sales_details||values[year] || 0);
+                                        // const value = parseFloat(valueString.split(" ")[0]) || 0;
+                                        // const opacity = value === 0 ? 0.1 : value / globalMaxValue;
+
+                                        // const backgroundColor = valueString
+                                        //   ? `rgba(5, 127, 163, ${opacity})`
+                                        //   : "transparent";
+
+                                        return (
+                                          <td
+                                            key={year}
+                                            style={{ backgroundColor }}
+                                            className="px-2 py-2 border-b border-gray-200 text-sm text-center"
+                                          >
+                                            {formatValueString(valueString)}{" "}
+                                          </td>
+                                        );
+                                      })}
+                                    </tr>
+                                  );
+                                }
+                              )}
                             </React.Fragment>
                           ) : (
                             <tr>
                               {!isFetching && (
-                                <td style={{ border: 'none' }}
-                                  colSpan={(WeekAnalysis?.years?.length || 0) + 1}
+                                <td
+                                  style={{ border: "none" }}
+                                  colSpan={
+                                    (WeekAnalysis?.years?.length || 0) + 1
+                                  }
                                   className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center"
                                 >
                                   No Data Available
@@ -3340,13 +3417,15 @@ useEffect(() => {
                             </tr>
                           )}
                         </tbody>
-
                       </table>
 
                       {/* Lazy Loader */}
                       {isFetching && (
                         <div className="text-center text-gray-600 py-2">
-                          <div className="spinner-border gray-spinner" role="status">
+                          <div
+                            className="spinner-border gray-spinner"
+                            role="status"
+                          >
                             <span className="sr-only">Loading...</span>
                           </div>{" "}
                         </div>
@@ -3359,8 +3438,11 @@ useEffect(() => {
                     </h3>
                     <div
                       className="overflow-x-auto max-h-[400px]"
-                      style={{ height: "248px", overflow: "auto", border: '1px solid #80808075' }}
-
+                      style={{
+                        height: "248px",
+                        overflow: "auto",
+                        border: "1px solid #80808075",
+                      }}
                     >
                       <table className="w-full leading-normal m-0">
                         <thead className="sticky top-0">
@@ -3425,54 +3507,86 @@ useEffect(() => {
                               const monthRowSpan = {};
 
                               // Sorting the data by year and month, but current month comes first
-                              const sortedDayAnalysis = [...DayAnalysis].sort((a, b) => {
-                                // Prioritize the current year and month
-                                const currentDate = new Date();
-                                const currentYear = currentDate.getFullYear();
-                                const currentMonth = currentDate.getMonth() + 1; // Months are 0-based in JavaScript
+                              const sortedDayAnalysis = [...DayAnalysis].sort(
+                                (a, b) => {
+                                  // Prioritize the current year and month
+                                  const currentDate = new Date();
+                                  const currentYear = currentDate.getFullYear();
+                                  const currentMonth =
+                                    currentDate.getMonth() + 1; // Months are 0-based in JavaScript
 
-                                // If the year and month are the same, prioritize the current one
-                                if (a.year === currentYear && a.month === currentMonth) return -1;
-                                if (b.year === currentYear && b.month === currentMonth) return 1;
+                                  // If the year and month are the same, prioritize the current one
+                                  if (
+                                    a.year === currentYear &&
+                                    a.month === currentMonth
+                                  )
+                                    return -1;
+                                  if (
+                                    b.year === currentYear &&
+                                    b.month === currentMonth
+                                  )
+                                    return 1;
 
-                                // Otherwise, sort by year in descending order
-                                if (b.year !== a.year) {
-                                  return b.year - a.year; // Sort by year
+                                  // Otherwise, sort by year in descending order
+                                  if (b.year !== a.year) {
+                                    return b.year - a.year; // Sort by year
+                                  }
+
+                                  // Then sort by month in descending order
+                                  return b.month - a.month; // Sort by month
                                 }
-
-                                // Then sort by month in descending order
-                                return b.month - a.month; // Sort by month
-                              });
+                              );
 
                               sortedDayAnalysis.forEach((row) => {
                                 if (!yearRowSpan[row.year]) {
-                                  yearRowSpan[row.year] = sortedDayAnalysis.filter((r) => r.year === row.year).length;
+                                  yearRowSpan[row.year] =
+                                    sortedDayAnalysis.filter(
+                                      (r) => r.year === row.year
+                                    ).length;
                                 }
                                 if (!monthRowSpan[row.year]) {
                                   monthRowSpan[row.year] = {};
                                 }
                                 if (!monthRowSpan[row.year][row.month]) {
-                                  monthRowSpan[row.year][row.month] = sortedDayAnalysis.filter(
-                                    (r) => r.year === row.year && r.month === row.month
-                                  ).length;
+                                  monthRowSpan[row.year][row.month] =
+                                    sortedDayAnalysis.filter(
+                                      (r) =>
+                                        r.year === row.year &&
+                                        r.month === row.month
+                                    ).length;
                                 }
                               });
 
                               const globalMaxValue = Math.max(
                                 ...sortedDayAnalysis.flatMap((row) =>
-                                  ["mon", "tue", "wed", "thu", "fri", "sat", "sun"].map((day) => {
+                                  [
+                                    "mon",
+                                    "tue",
+                                    "wed",
+                                    "thu",
+                                    "fri",
+                                    "sat",
+                                    "sun",
+                                  ].map((day) => {
                                     const value = row[day];
                                     if (typeof value === "string") {
-                                      const numericValue = parseFloat(value.split(" ")[0]);
-                                      return isNaN(numericValue) ? 0 : numericValue;
+                                      const numericValue = parseFloat(
+                                        value.split(" ")[0]
+                                      );
+                                      return isNaN(numericValue)
+                                        ? 0
+                                        : numericValue;
                                     }
-                                    return typeof value === "number" ? value : 0;
+                                    return typeof value === "number"
+                                      ? value
+                                      : 0;
                                   })
                                 )
                               );
 
                               const calculateOpacity = (value) => {
-                                if (value === null || value === undefined) return 0.1;
+                                if (value === null || value === undefined)
+                                  return 0.1;
                                 const numericValue = parseFloat(value);
                                 if (isNaN(numericValue)) return 0.1;
                                 const opacity = numericValue / globalMaxValue;
@@ -3480,8 +3594,11 @@ useEffect(() => {
                               };
 
                               return sortedDayAnalysis.map((row, index) => {
-                                const isFirstYearInstance = row.year !== previousYear;
-                                const isFirstMonthInstance = row.month !== previousMonth || isFirstYearInstance;
+                                const isFirstYearInstance =
+                                  row.year !== previousYear;
+                                const isFirstMonthInstance =
+                                  row.month !== previousMonth ||
+                                  isFirstYearInstance;
 
                                 if (isFirstYearInstance) {
                                   previousYear = row.year;
@@ -3497,24 +3614,46 @@ useEffect(() => {
                                         rowSpan={yearRowSpan[row.year]}
                                         className="px-0 py-1 border-b border-gray-200 bg-white text-sm text-center"
                                       >
-                                        <p className="transform -rotate-90 origin-center">{row.year}</p>
+                                        <p className="transform -rotate-90 origin-center">
+                                          {row.year}
+                                        </p>
                                       </td>
                                     )}
                                     {isFirstMonthInstance && (
                                       <td
-                                        rowSpan={monthRowSpan[row.year][row.month]}
+                                        rowSpan={
+                                          monthRowSpan[row.year][row.month]
+                                        }
                                         className="px-1 py-1 border-b border-gray-200 bg-white text-sm text-center"
                                       >
-                                        <p className="transform -rotate-90 origin-center">{row.month}</p>
+                                        <p className="transform -rotate-90 origin-center">
+                                          {row.month}
+                                        </p>
                                       </td>
                                     )}
                                     <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
                                       {row.week}
                                     </td>
-                                    {["mon", "tue", "wed", "thu", "fri", "sat", "sun"].map((day) => {
+                                    {[
+                                      "mon",
+                                      "tue",
+                                      "wed",
+                                      "thu",
+                                      "fri",
+                                      "sat",
+                                      "sun",
+                                    ].map((day) => {
                                       const value = row[day];
-                                      let displayValue = String(row?.[day]?.sales_with_gst ?? row?.[day] ?? 0);
-                                      let percentage = String(row?.[day]?.percentage ?? row?.[day] ?? 0);;
+                                      let displayValue = String(
+                                        row?.[day]?.sales_with_gst ??
+                                          row?.[day] ??
+                                          0
+                                      );
+                                      let percentage = String(
+                                        row?.[day]?.percentage ??
+                                          row?.[day] ??
+                                          0
+                                      );
                                       let opacity = 0.1;
 
                                       if (typeof value === "string") {
@@ -3523,7 +3662,8 @@ useEffect(() => {
                                         if (match) {
                                           displayValue = match[1];
                                           percentage = match[2];
-                                          opacity = calculateOpacity(displayValue);
+                                          opacity =
+                                            calculateOpacity(displayValue);
                                         }
                                       } else if (typeof value === "number") {
                                         displayValue = value.toString();
@@ -3551,58 +3691,64 @@ useEffect(() => {
                           ) : (
                             <tr>
                               {!isFetching1 && (
-                                <td colSpan="10" className="text-center py-1" style={{ border: "none" }}>
+                                <td
+                                  colSpan="10"
+                                  className="text-center py-1"
+                                  style={{ border: "none" }}
+                                >
                                   No data available
                                 </td>
                               )}
                             </tr>
                           )}
                         </tbody>
-
-
-
                       </table>
 
                       {/* Lazy Loader */}
                       {isFetching1 && (
                         <div className="text-center text-gray-600 py-2">
-                          <div className="spinner-border gray-spinner" role="status">
+                          <div
+                            className="spinner-border gray-spinner"
+                            role="status"
+                          >
                             <span className="sr-only">Loading...</span>
                           </div>
                         </div>
                       )}
                     </div>
-
                   </div>
                 </div>
                 <br />
               </div>
             </div>
-            <div class="d-flex" style={{
-              gap: "8px",
-              width: "100%"
-            }}>
-              {/* Branch Dimension */}
-              <div style={{
-                background: " #1C3644",
-                width: "3%",
-                alignItems: "center",
-                justifyContent: "center",
-                display: "flex",
-                flexDirection: "column"
+            <div
+              class="d-flex"
+              style={{
+                gap: "8px",
+                width: "100%",
               }}
+            >
+              {/* Branch Dimension */}
+              <div
+                style={{
+                  background: " #1C3644",
+                  width: "3%",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
               >
-
-                <div class="rotated-text" >
-                  Place Analysis
-                </div>
+                <div class="rotated-text">Place Analysis</div>
               </div>
-              <div style={{
-                display: "flex",
-                flexDirection: "column",
-                border: "2px solid #1C3644",
-                width: "97%",
-              }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  border: "2px solid #1C3644",
+                  width: "97%",
+                }}
+              >
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <h3 className="text-l font-medium text-center text-gray-900 dark:text-white py-2">
@@ -3611,7 +3757,11 @@ useEffect(() => {
                     <div
                       className="overflow-x-auto max-h-[400px]"
                       onScroll={(e) => handleScroll3(e, "BranchDimension")}
-                      style={{ height: "348px", overflow: "scroll", border: '1px solid #80808075' }}
+                      style={{
+                        height: "348px",
+                        overflow: "scroll",
+                        border: "1px solid #80808075",
+                      }}
                     >
                       <table className="w-full leading-normal m-0">
                         <thead className="sticky top-0">
@@ -3661,13 +3811,20 @@ useEffect(() => {
                         <tbody>
                           {BranchDimension ? (
                             (() => {
-                              if (!BranchDimension.values || !BranchDimension.years) {
+                              if (
+                                !BranchDimension.values ||
+                                !BranchDimension.years
+                              ) {
                                 return (
                                   <tr>
                                     <td
-                                      style={{ border: 'none' }}
+                                      style={{ border: "none" }}
                                       rowSpan="1"
-                                      colSpan={BranchDimension.years?.length * months?.length + 1 || 1}
+                                      colSpan={
+                                        BranchDimension.years?.length *
+                                          months?.length +
+                                          1 || 1
+                                      }
                                       className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center"
                                     >
                                       No data available
@@ -3675,13 +3832,17 @@ useEffect(() => {
                                   </tr>
                                 );
                               }
-                              const allValues = Object.values(BranchDimension.values)
+                              const allValues = Object.values(
+                                BranchDimension.values
+                              )
                                 .flatMap((yearsData) =>
                                   BranchDimension.years.flatMap((year) =>
                                     months.map((month) => {
-
-                                      const valueString = yearsData[year]?.[month];
-                                      return valueString ? parseFloat(valueString.split(' ')[0]) : 0;
+                                      const valueString =
+                                        yearsData[year]?.[month];
+                                      return valueString
+                                        ? parseFloat(valueString.split(" ")[0])
+                                        : 0;
                                     })
                                   )
                                 )
@@ -3692,82 +3853,131 @@ useEffect(() => {
 
                               // console.log('Max Value:', maxValue, 'Min Value:', minValue);
                               const calculateOpacity = (value) => {
-                                if (maxValue === minValue) return 0.5;;
-                                return ((value - minValue) / (maxValue - minValue)) * 0.9 + 0.1;
+                                if (maxValue === minValue) return 0.5;
+                                return (
+                                  ((value - minValue) / (maxValue - minValue)) *
+                                    0.9 +
+                                  0.1
+                                );
                               };
-                              const sortedRows = Object.entries(BranchDimension.values)
+                              const sortedRows = Object.entries(
+                                BranchDimension.values
+                              )
                                 .map(([brand, yearsData]) => {
-                                  const currentMonthValue = BranchDimension.years?.reduce((max, year) => {
-                                    return Math.max(
-                                      ...months.map((month) => {
-                                        const valueString = yearsData[year]?.[month];
-                                        return valueString ? parseFloat(valueString.split(' ')[0]) : 0;
-                                      })
+                                  const currentMonthValue =
+                                    BranchDimension.years?.reduce(
+                                      (max, year) => {
+                                        return Math.max(
+                                          ...months.map((month) => {
+                                            const valueString =
+                                              yearsData[year]?.[month];
+                                            return valueString
+                                              ? parseFloat(
+                                                  valueString.split(" ")[0]
+                                                )
+                                              : 0;
+                                          })
+                                        );
+                                      },
+                                      0
                                     );
-                                  }, 0);
                                   return { brand, currentMonthValue };
                                 })
-                                .sort((a, b) => a.currentMonthValue - b.currentMonthValue);
+                                .sort(
+                                  (a, b) =>
+                                    a.currentMonthValue - b.currentMonthValue
+                                );
                               return sortedRows.length > 0 ? (
-                                sortedRows.map(({ brand, currentMonthValue }) => {
-                                  const yearsData = BranchDimension.values[brand];
-                                  return (
-                                    <tr key={brand} className="bg-white">
-                                      <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
-                                        {brand}
-                                      </td>
-                                      {BranchDimension.years.map((year) =>
-                                        months.map((month) => {
-                                          if (month === "Total") {
-                                            const totalValue = BranchDimension.yearly_totals[brand]?.[year] || 0;
+                                sortedRows.map(
+                                  ({ brand, currentMonthValue }) => {
+                                    const yearsData =
+                                      BranchDimension.values[brand];
+                                    return (
+                                      <tr key={brand} className="bg-white">
+                                        <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
+                                          {brand}
+                                        </td>
+                                        {BranchDimension.years.map((year) =>
+                                          months.map((month) => {
+                                            if (month === "Total") {
+                                              const totalValue =
+                                                BranchDimension.yearly_totals[
+                                                  brand
+                                                ]?.[year] || 0;
+
+                                              return (
+                                                <td
+                                                  key={`${year}-${month}`}
+                                                  className="px-2 py-2 border-b border-gray-200 text-sm text-center"
+                                                >
+                                                  {totalValue
+                                                    ? formatNumber(totalValue)
+                                                    : "0"}
+                                                </td>
+                                              );
+                                            }
+
+                                            const valueString =
+                                              yearsData[year]?.[month];
+                                            const numericValue = valueString
+                                              ? parseFloat(
+                                                  valueString
+                                                    .replace("(0.0%)")
+                                                    .split(" ")[0]
+                                                ) ||
+                                                valueString
+                                                  .replace("(0.0%)")
+                                                  .split(" ")[0]
+                                              : 0;
+                                            const formattedValue =
+                                              formatNumber(numericValue);
+                                            const isNegativeZero = Object.is(
+                                              numericValue,
+                                              -0
+                                            );
+                                            const opacity = isNegativeZero
+                                              ? 0.1
+                                              : calculateOpacity(numericValue);
+                                            // const opacity = calculateOpacity(numericValue);
+                                            const backgroundColor =
+                                              Object.is(numericValue, -0) ||
+                                              numericValue !== 0 ||
+                                              (valueString &&
+                                                valueString.includes("-0"))
+                                                ? `rgba(5, 127, 163, ${opacity})`
+                                                : "transparent";
+
+                                            // console.log(`Value: ${numericValue}, Opacity: ${opacity}, Background: ${backgroundColor}`);
 
                                             return (
                                               <td
                                                 key={`${year}-${month}`}
                                                 className="px-2 py-2 border-b border-gray-200 text-sm text-center"
+                                                style={{ backgroundColor }}
                                               >
-                                                {totalValue ? formatNumber(totalValue) : "0"}
+                                                {valueString
+                                                  ? `${formattedValue} ${
+                                                      valueString?.split(" ")[1]
+                                                    }`
+                                                  : "0"}
                                               </td>
                                             );
-                                          }
-
-                                          const valueString = yearsData[year]?.[month];
-                                          const numericValue = valueString
-                                            ? parseFloat(valueString.replace('(0.0%)').split(' ')[0]) ||
-                                            valueString.replace('(0.0%)').split(' ')[0]
-                                            : 0;
-                                          const formattedValue = formatNumber(numericValue);
-                                          const isNegativeZero = Object.is(numericValue, -0);
-                                          const opacity = isNegativeZero ? 0.1 : calculateOpacity(numericValue);
-                                          // const opacity = calculateOpacity(numericValue);
-                                          const backgroundColor = (Object.is(numericValue, -0) || numericValue !== 0 || (valueString && valueString.includes('-0')))
-                                            ? `rgba(5, 127, 163, ${opacity})`
-                                            : 'transparent';
-
-
-
-                                          // console.log(`Value: ${numericValue}, Opacity: ${opacity}, Background: ${backgroundColor}`);
-
-                                          return (
-                                            <td
-                                              key={`${year}-${month}`}
-                                              className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                              style={{ backgroundColor }}
-                                            >
-                                              {valueString ? `${formattedValue} ${valueString?.split(' ')[1]}` : '0'}
-                                            </td>
-                                          );
-                                        })
-                                      )}
-                                    </tr>
-                                  );
-                                })
+                                          })
+                                        )}
+                                      </tr>
+                                    );
+                                  }
+                                )
                               ) : (
                                 <tr>
                                   <td
-                                    style={{ border: 'none' }}
+                                    style={{ border: "none" }}
                                     rowSpan="2"
-                                    colSpan={BranchDimension.years?.length * months?.length + 1 || 1}
+                                    colSpan={
+                                      BranchDimension.years?.length *
+                                        months?.length +
+                                        1 || 1
+                                    }
                                     className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center"
                                   >
                                     No data available
@@ -3778,7 +3988,11 @@ useEffect(() => {
                           ) : (
                             <tr>
                               {!isFetchingBranchloading && (
-                                <td style={{ border: 'none' }} colSpan={1} className="text-center text-gray-500 py-2">
+                                <td
+                                  style={{ border: "none" }}
+                                  colSpan={1}
+                                  className="text-center text-gray-500 py-2"
+                                >
                                   No data available
                                 </td>
                               )}
@@ -3788,7 +4002,10 @@ useEffect(() => {
                       </table>
                       {isFetchingBranchloading && (
                         <div className="text-center text-gray-600 py-2">
-                          <div className="spinner-border gray-spinner" role="status">
+                          <div
+                            className="spinner-border gray-spinner"
+                            role="status"
+                          >
                             <span className="sr-only">Loading...</span>
                           </div>
                         </div>
@@ -3804,7 +4021,11 @@ useEffect(() => {
                     <div
                       className="overflow-x-auto max-h-[400px]"
                       onScroll={(e) => handleScroll(e, "CityDimension")}
-                      style={{ height: "348px", overflow: "auto", border: '1px solid #80808075' }}
+                      style={{
+                        height: "348px",
+                        overflow: "auto",
+                        border: "1px solid #80808075",
+                      }}
                     >
                       <table className="w-full leading-normal m-0">
                         <thead className="sticky top-0">
@@ -3849,7 +4070,8 @@ useEffect(() => {
                           </tr>
                         </thead>
                         <tbody>
-                          {CityDimension && Object.keys(CityDimension.values).length > 0 ? (
+                          {CityDimension &&
+                          Object.keys(CityDimension.values).length > 0 ? (
                             (() => {
                               const maxItemValue = CityDimension.max;
 
@@ -3861,17 +4083,29 @@ useEffect(() => {
                                 return Math.min(Math.max(opacity, 0.1), 1);
                               };
 
-                              const sortedEntries = Object.entries(CityDimension.values).sort(
-                                ([, yearsDataA], [, yearsDataB]) => {
-                                  const valueA = yearsDataA[CityDimension.years[0]]?.[months[0]]
-                                    ? parseFloat(yearsDataA[CityDimension.years[0]][months[0]].split(" ")[0])
-                                    : 0;
-                                  const valueB = yearsDataB[CityDimension.years[0]]?.[months[0]]
-                                    ? parseFloat(yearsDataB[CityDimension.years[0]][months[0]].split(" ")[0])
-                                    : 0;
-                                  return valueB - valueA;
-                                }
-                              );
+                              const sortedEntries = Object.entries(
+                                CityDimension.values
+                              ).sort(([, yearsDataA], [, yearsDataB]) => {
+                                const valueA = yearsDataA[
+                                  CityDimension.years[0]
+                                ]?.[months[0]]
+                                  ? parseFloat(
+                                      yearsDataA[CityDimension.years[0]][
+                                        months[0]
+                                      ].split(" ")[0]
+                                    )
+                                  : 0;
+                                const valueB = yearsDataB[
+                                  CityDimension.years[0]
+                                ]?.[months[0]]
+                                  ? parseFloat(
+                                      yearsDataB[CityDimension.years[0]][
+                                        months[0]
+                                      ].split(" ")[0]
+                                    )
+                                  : 0;
+                                return valueB - valueA;
+                              });
 
                               return sortedEntries.map(([item, yearsData]) => (
                                 <tr key={item} className="bg-white">
@@ -3881,11 +4115,18 @@ useEffect(() => {
                                   {CityDimension.years.map((year) =>
                                     months.map((month) => {
                                       if (month === "Total") {
-                                        const totalValue = CityDimension.yearly_totals[item]?.[year];
-                                        const numericValue = totalValue ? parseFloat(totalValue) : 0;
-                                        const opacity = !isNaN(numericValue) && numericValue !== 0
-                                          ? calculateOpacity(numericValue)
-                                          : 0.1;
+                                        const totalValue =
+                                          CityDimension.yearly_totals[item]?.[
+                                            year
+                                          ];
+                                        const numericValue = totalValue
+                                          ? parseFloat(totalValue)
+                                          : 0;
+                                        const opacity =
+                                          !isNaN(numericValue) &&
+                                          numericValue !== 0
+                                            ? calculateOpacity(numericValue)
+                                            : 0.1;
                                         const backgroundColor = totalValue
                                           ? `rgba(5, 127, 163, ${opacity})`
                                           : "transparent";
@@ -3896,16 +4137,23 @@ useEffect(() => {
                                             className="px-2 py-2 border-b border-gray-200 text-sm text-center"
                                             style={{ backgroundColor }}
                                           >
-                                            {totalValue ? formatNumber(numericValue) : "0"}
+                                            {totalValue
+                                              ? formatNumber(numericValue)
+                                              : "0"}
                                           </td>
                                         );
                                       }
 
-                                      const valueString = yearsData[year]?.[month];
-                                      const numericValue = valueString ? parseFloat(valueString.split(" ")[0]) : 0;
-                                      const opacity = !isNaN(numericValue) && numericValue !== 0
-                                        ? calculateOpacity(numericValue)
-                                        : 0.1;
+                                      const valueString =
+                                        yearsData[year]?.[month];
+                                      const numericValue = valueString
+                                        ? parseFloat(valueString.split(" ")[0])
+                                        : 0;
+                                      const opacity =
+                                        !isNaN(numericValue) &&
+                                        numericValue !== 0
+                                          ? calculateOpacity(numericValue)
+                                          : 0.1;
                                       const backgroundColor = valueString
                                         ? `rgba(5, 127, 163, ${opacity})`
                                         : "transparent";
@@ -3916,7 +4164,11 @@ useEffect(() => {
                                           className="px-2 py-2 border-b border-gray-200 text-sm text-center"
                                           style={{ backgroundColor }}
                                         >
-                                          {valueString ? `${formatNumber(numericValue)} ${valueString.split(" ")[1]}` : "0"}
+                                          {valueString
+                                            ? `${formatNumber(numericValue)} ${
+                                                valueString.split(" ")[1]
+                                              }`
+                                            : "0"}
                                         </td>
                                       );
                                     })
@@ -3928,8 +4180,12 @@ useEffect(() => {
                             <tr>
                               {!isFetchingCityloading && (
                                 <td
-                                  style={{ border: 'none' }}
-                                  colSpan={CityDimension?.years?.length * months.length + 1 || 1}
+                                  style={{ border: "none" }}
+                                  colSpan={
+                                    CityDimension?.years?.length *
+                                      months.length +
+                                      1 || 1
+                                  }
                                   className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center"
                                 >
                                   No Data Available
@@ -3938,12 +4194,13 @@ useEffect(() => {
                             </tr>
                           )}
                         </tbody>
-
-
                       </table>
                       {isFetchingCityloading && (
                         <div className="text-center text-gray-600 py-2">
-                          <div className="spinner-border gray-spinner" role="status">
+                          <div
+                            className="spinner-border gray-spinner"
+                            role="status"
+                          >
                             <span className="sr-only">Loading...</span>
                           </div>
                         </div>
@@ -3951,35 +4208,37 @@ useEffect(() => {
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
 
-
             {/* section Dimension */}
-            <div class="d-flex" style={{
-              gap: "8px",
-              width: "100%"
-            }}>
-              <div style={{
-                background: " #1C3644",
-                width: "3%",
-                alignItems: "center",
-                justifyContent: "center",
-                display: "flex",
-                flexDirection: "column"
+            <div
+              class="d-flex"
+              style={{
+                gap: "8px",
+                width: "100%",
               }}
+            >
+              <div
+                style={{
+                  background: " #1C3644",
+                  width: "3%",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
               >
-                <div class="rotated-text" >
-                  Product Analysis
-                </div>
+                <div class="rotated-text">Product Analysis</div>
               </div>
-              <div style={{
-                display: "flex",
-                flexDirection: "column",
-                border: "2px solid #1C3644",
-                width: "97%",
-              }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  border: "2px solid #1C3644",
+                  width: "97%",
+                }}
+              >
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <h3 className="text-l font-medium text-center text-gray-900 dark:text-white py-2">
@@ -3988,7 +4247,11 @@ useEffect(() => {
                     <div
                       className="overflow-x-auto max-h-[400px]"
                       onScroll={(e) => handleScroll5(e, "SectionDimension")}
-                      style={{ height: "361px", overflow: "auto", border: '1px solid #80808075' }}
+                      style={{
+                        height: "361px",
+                        overflow: "auto",
+                        border: "1px solid #80808075",
+                      }}
                     >
                       <table className="w-full leading-normal m-0">
                         <thead className="sticky top-0">
@@ -4035,99 +4298,153 @@ useEffect(() => {
                           </tr>
                         </thead>
                         <tbody>
-                          {SectionDimension && Object.keys(SectionDimension.values || {}).length > 0 ? (
+                          {SectionDimension &&
+                          Object.keys(SectionDimension.values || {}).length >
+                            0 ? (
                             (() => {
-                              const calculateTotalValueForMonth = (yearsData, month) => {
-                                return Object.values(yearsData)?.reduce((total, yearData) => {
-                                  const valueString = yearData?.[month];
-                                  const numericValue = valueString
-                                    ? parseFloat(valueString.split(" ")[0])
-                                    : 0;
-                                  return total + numericValue;
-                                }, 0);
-                              };
-                              const calculateMaxValue = (yearsData) => {
-                                return SectionDimension.years?.reduce((highest, year) => {
-                                  return months?.reduce((max, month) => {
-                                    const valueString = yearsData[year]?.[month];
+                              const calculateTotalValueForMonth = (
+                                yearsData,
+                                month
+                              ) => {
+                                return Object.values(yearsData)?.reduce(
+                                  (total, yearData) => {
+                                    const valueString = yearData?.[month];
                                     const numericValue = valueString
                                       ? parseFloat(valueString.split(" ")[0])
                                       : 0;
-                                    return Math.max(max, numericValue);
-                                  }, highest);
-                                }, 0);
+                                    return total + numericValue;
+                                  },
+                                  0
+                                );
                               };
-                              const sortedItems = Object.entries(SectionDimension.values).sort(
+                              const calculateMaxValue = (yearsData) => {
+                                return SectionDimension.years?.reduce(
+                                  (highest, year) => {
+                                    return months?.reduce((max, month) => {
+                                      const valueString =
+                                        yearsData[year]?.[month];
+                                      const numericValue = valueString
+                                        ? parseFloat(valueString.split(" ")[0])
+                                        : 0;
+                                      return Math.max(max, numericValue);
+                                    }, highest);
+                                  },
+                                  0
+                                );
+                              };
+                              const sortedItems = Object.entries(
+                                SectionDimension.values
+                              ).sort(
                                 ([, yearsDataA], [, yearsDataB]) =>
-                                  calculateMaxValue(yearsDataB) - calculateMaxValue(yearsDataA)
+                                  calculateMaxValue(yearsDataB) -
+                                  calculateMaxValue(yearsDataA)
                               );
                               // console.log(sortedItems);
-                              const currentMonth = months[new Date().getMonth()];
-                              const sortedByCurrentMonth = sortedItems.map(([brand, yearsData]) => ({
-                                brand,
-                                yearsData,
-                                currentMonthValue: calculateTotalValueForMonth(yearsData, currentMonth),
-                              })).sort((a, b) => b.currentMonthValue - a.currentMonthValue);
+                              const currentMonth =
+                                months[new Date().getMonth()];
+                              const sortedByCurrentMonth = sortedItems
+                                .map(([brand, yearsData]) => ({
+                                  brand,
+                                  yearsData,
+                                  currentMonthValue:
+                                    calculateTotalValueForMonth(
+                                      yearsData,
+                                      currentMonth
+                                    ),
+                                }))
+                                .sort(
+                                  (a, b) =>
+                                    b.currentMonthValue - a.currentMonthValue
+                                );
 
-                              const maxCurrentMonthValue = sortedByCurrentMonth[0]?.currentMonthValue || 1;
+                              const maxCurrentMonthValue =
+                                sortedByCurrentMonth[0]?.currentMonthValue || 1;
 
-                              const calculateOpacity = (value) => Math.max(value / maxCurrentMonthValue, 0.1);
+                              const calculateOpacity = (value) =>
+                                Math.max(value / maxCurrentMonthValue, 0.1);
 
-                              return sortedByCurrentMonth.map(({ brand, yearsData }) => (
-                                <tr key={brand} className="bg-white">
-                                  <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
-                                    {brand}
-                                  </td>
-                                  {SectionDimension?.years?.map((year) =>
-                                    months?.map((month) => {
+                              return sortedByCurrentMonth.map(
+                                ({ brand, yearsData }) => (
+                                  <tr key={brand} className="bg-white">
+                                    <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
+                                      {brand}
+                                    </td>
+                                    {SectionDimension?.years?.map((year) =>
+                                      months?.map((month) => {
+                                        const valueString =
+                                          yearsData[year]?.[month];
+                                        // console.log(valueString);
 
+                                        const numericValue = valueString
+                                          ? parseFloat(
+                                              valueString?.split(" ")[0]
+                                            )
+                                          : 0;
+                                        const backgroundColor = valueString
+                                          ? `rgba(5, 127, 163, ${calculateOpacity(
+                                              numericValue
+                                            )})`
+                                          : "transparent";
 
-                                      const valueString = yearsData[year]?.[month];
-                                      // console.log(valueString);
+                                        if (month === "Total") {
+                                          const totalValue =
+                                            SectionDimension.yearly_totals[
+                                              brand
+                                            ]?.[year] || 0;
 
-                                      const numericValue = valueString
-                                        ? parseFloat(valueString?.split(" ")[0])
-                                        : 0;
-                                      const backgroundColor = valueString
-                                        ? `rgba(5, 127, 163, ${calculateOpacity(numericValue)})`
-                                        : "transparent";
+                                          return (
+                                            <td
+                                              key={`${year}-${month}`}
+                                              className="px-2 py-2 border-b border-gray-200 text-sm text-center"
+                                            >
+                                              {/* {totalValue
+                                                ? formatValueString(totalValue.toFixed(2))
+                                                : "0"} */}
 
-                                      if (month === "Total") {
-                                        const totalValue = SectionDimension.yearly_totals[brand]?.[year] || 0;
+                                              {!isNaN(Number(totalValue)) &&
+                                              totalValue !== null
+                                                ? formatValueString(
+                                                    Number(totalValue).toFixed(
+                                                      2
+                                                    )
+                                                  )
+                                                : "0"}
+                                            </td>
+                                          );
+                                        }
 
                                         return (
                                           <td
                                             key={`${year}-${month}`}
                                             className="px-2 py-2 border-b border-gray-200 text-sm text-center"
+                                            style={{ backgroundColor }}
                                           >
-                                            {totalValue ? formatNumber(totalValue) : "0"}
+                                            {valueString
+                                              ? `${formatNumber(
+                                                  numericValue
+                                                )} ${
+                                                  valueString?.split(" ")[1] ||
+                                                  "0"
+                                                }`
+                                              : "0"}
                                           </td>
                                         );
-                                      }
-
-
-                                      return (
-                                        <td
-                                          key={`${year}-${month}`}
-                                          className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                          style={{ backgroundColor }}
-                                        >
-                                          {valueString
-                                            ? `${formatNumber(numericValue)} ${valueString?.split(" ")[1] || "0"}`
-                                            : "0"}
-                                        </td>
-                                      );
-                                    })
-                                  )}
-                                </tr>
-                              ));
+                                      })
+                                    )}
+                                  </tr>
+                                )
+                              );
                             })()
                           ) : (
                             <tr>
                               {!isFetchingSectionloading && (
                                 <td
                                   style={{ border: "none" }}
-                                  colSpan={SectionDimension?.years?.length * months?.length + 1 || 1}
+                                  colSpan={
+                                    SectionDimension?.years?.length *
+                                      months?.length +
+                                      1 || 1
+                                  }
                                   className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center"
                                 >
                                   No Data Available
@@ -4139,14 +4456,16 @@ useEffect(() => {
                       </table>
                       {isFetchingSectionloading && (
                         <div className="text-center text-gray-600 py-2">
-                          <div className="spinner-border gray-spinner" role="status">
+                          <div
+                            className="spinner-border gray-spinner"
+                            role="status"
+                          >
                             <span className="sr-only">Loading...</span>
                           </div>
                         </div>
                       )}
                     </div>
                   </div>
-
 
                   {/* Item Category Dimension */}
                   <div>
@@ -4156,7 +4475,11 @@ useEffect(() => {
                     <div
                       className="overflow-x-auto max-h-[400px]"
                       onScroll={(e) => handleScrol6(e, "ItemCategoryDimension")}
-                      style={{ height: "361px", overflow: "auto", border: '1px solid #80808075' }}
+                      style={{
+                        height: "361px",
+                        overflow: "auto",
+                        border: "1px solid #80808075",
+                      }}
                     >
                       <table className="w-full leading-normal m-0">
                         <thead className="sticky top-0">
@@ -4201,22 +4524,34 @@ useEffect(() => {
                           </tr>
                         </thead>
                         <tbody>
-                          {ItemCategoryDimension && Object.keys(ItemCategoryDimension.values).length > 0 ? (
+                          {ItemCategoryDimension &&
+                          Object.keys(ItemCategoryDimension.values).length >
+                            0 ? (
                             (() => {
                               const currentMonth = months[months.length - 1];
-                              const sortedItems = Object.entries(ItemCategoryDimension.values).sort(
+                              const sortedItems = Object.entries(
+                                ItemCategoryDimension.values
+                              ).sort(
                                 ([itemA, yearsDataA], [itemB, yearsDataB]) => {
                                   const calculateMaxValue = (yearsData) => {
                                     let highestValue = 0;
-                                    ItemCategoryDimension.years?.forEach((year) => {
-                                      months.forEach((month) => {
-                                        const valueString = yearsData[year]?.[month];
-                                        const numericValue = valueString
-                                          ? parseFloat(valueString?.split(" ")[0])
-                                          : 0;
-                                        highestValue = Math.max(highestValue, numericValue);
-                                      });
-                                    });
+                                    ItemCategoryDimension.years?.forEach(
+                                      (year) => {
+                                        months.forEach((month) => {
+                                          const valueString =
+                                            yearsData[year]?.[month];
+                                          const numericValue = valueString
+                                            ? parseFloat(
+                                                valueString?.split(" ")[0]
+                                              )
+                                            : 0;
+                                          highestValue = Math.max(
+                                            highestValue,
+                                            numericValue
+                                          );
+                                        });
+                                      }
+                                    );
                                     return highestValue;
                                   };
                                   const maxA = calculateMaxValue(yearsDataA);
@@ -4227,7 +4562,8 @@ useEffect(() => {
                               const maxItemValue = ItemCategoryDimension.max;
 
                               const calculateOpacity = (value, maxValue) => {
-                                const safeMaxValue = maxValue !== undefined ? maxValue : 1;
+                                const safeMaxValue =
+                                  maxValue !== undefined ? maxValue : 1;
                                 if (safeMaxValue === 0) return 0.1;
                                 const opacity = value / safeMaxValue;
                                 return Math.max(opacity, 0.1);
@@ -4240,25 +4576,36 @@ useEffect(() => {
                                   </td>
                                   {ItemCategoryDimension?.years?.map((year) =>
                                     months?.map((month) => {
-                                      const valueString = yearsData[year]?.[month];
+                                      const valueString =
+                                        yearsData[year]?.[month];
                                       const numericValue = valueString
                                         ? parseFloat(valueString?.split(" ")[0])
                                         : 0;
-                                      const calculateTotalValueForYear = (yearsData, year) => {
+                                      const calculateTotalValueForYear = (
+                                        yearsData,
+                                        year
+                                      ) => {
                                         let total = 0;
                                         for (const month of months) {
-                                          const valueString = yearsData[year]?.[month];
+                                          const valueString =
+                                            yearsData[year]?.[month];
                                           const numericValue = valueString
-                                            ? parseFloat(valueString.split(" ")[0])
+                                            ? parseFloat(
+                                                valueString.split(" ")[0]
+                                              )
                                             : 0;
                                           total += numericValue;
                                         }
                                         return Math.round(total * 100) / 100;
                                       };
 
-                                      const formattedValue = formatNumber(numericValue);
-                                      const yearTotal = calculateTotalValueForYear(yearsData, year);
-
+                                      const formattedValue =
+                                        formatNumber(numericValue);
+                                      const yearTotal =
+                                        calculateTotalValueForYear(
+                                          yearsData,
+                                          year
+                                        );
 
                                       if (month === "Total") {
                                         return (
@@ -4267,12 +4614,17 @@ useEffect(() => {
                                             className="px-2 py-2 border-b border-gray-200 text-sm text-center"
                                           >
                                             {/* {formatValueString(yearTotal ?? "0")} */}
-                                            {formatValueString(yearTotal.toFixed(2) ?? "0")}
+                                            {formatValueString(
+                                              yearTotal.toFixed(2) ?? "0"
+                                            )}
                                           </td>
                                         );
                                       }
                                       const backgroundColor = valueString
-                                        ? `rgba(5, 127, 163, ${calculateOpacity(numericValue, maxItemValue)})`
+                                        ? `rgba(5, 127, 163, ${calculateOpacity(
+                                            numericValue,
+                                            maxItemValue
+                                          )})`
                                         : "transparent";
 
                                       return (
@@ -4281,7 +4633,11 @@ useEffect(() => {
                                           className="px-2 py-2 border-b border-gray-200 text-sm text-center"
                                           style={{ backgroundColor }}
                                         >
-                                          {valueString ? `${formattedValue} ${valueString?.split(" ")[1]}` : "0"}
+                                          {valueString
+                                            ? `${formattedValue} ${
+                                                valueString?.split(" ")[1]
+                                              }`
+                                            : "0"}
                                         </td>
                                       );
                                     })
@@ -4292,8 +4648,13 @@ useEffect(() => {
                           ) : (
                             <tr>
                               {!isFetchingcategoryloading && (
-                                <td style={{ border: 'none' }}
-                                  colSpan={ItemCategoryDimension?.years?.length * months.length + 1 || 1}
+                                <td
+                                  style={{ border: "none" }}
+                                  colSpan={
+                                    ItemCategoryDimension?.years?.length *
+                                      months.length +
+                                      1 || 1
+                                  }
                                   className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center"
                                 >
                                   No Data Available
@@ -4302,11 +4663,13 @@ useEffect(() => {
                             </tr>
                           )}
                         </tbody>
-
                       </table>
                       {isFetchingcategoryloading && (
                         <div className="text-center text-gray-600 py-2">
-                          <div className="spinner-border gray-spinner" role="status">
+                          <div
+                            className="spinner-border gray-spinner"
+                            role="status"
+                          >
                             <span className="sr-only">Loading...</span>
                           </div>
                         </div>
@@ -4323,7 +4686,11 @@ useEffect(() => {
                       Product Dimension
                     </h3>
                     <div
-                      style={{ height: "359px", overflow: "auto", border: '1px solid #80808075' }}
+                      style={{
+                        height: "359px",
+                        overflow: "auto",
+                        border: "1px solid #80808075",
+                      }}
                       className="overflow-x-auto max-h-[400px]  "
                       onScroll={(e) => handleScrol7(e, "ProductionDimension")}
                     >
@@ -4370,109 +4737,173 @@ useEffect(() => {
                           </tr>
                         </thead>
                         <tbody>
-                          {ProductionDimension && ProductionDimension.values && Object.keys(ProductionDimension?.values)?.length > 0 ? (
+                          {ProductionDimension &&
+                          ProductionDimension.values &&
+                          Object.keys(ProductionDimension?.values)?.length >
+                            0 ? (
                             (() => {
+                              const currentYear = new Date()
+                                .getFullYear()
+                                .toString();
 
-                              const currentYear = new Date().getFullYear().toString();
-
-
-                              const calculateMaxValueForMonth = (products, month) => {
+                              const calculateMaxValueForMonth = (
+                                products,
+                                month
+                              ) => {
                                 return Math.max(
                                   ...products.map(({ yearsData }) =>
-                                    Object.keys(yearsData).reduce((max, year) => {
-                                      const valueString = yearsData[year]?.[month];
-                                      const numericValue = valueString ? parseFloat(valueString.split(" ")[0]) : 0;
-                                      return Math.max(max, numericValue);
-                                    }, 0)
+                                    Object.keys(yearsData).reduce(
+                                      (max, year) => {
+                                        const valueString =
+                                          yearsData[year]?.[month];
+                                        const numericValue = valueString
+                                          ? parseFloat(
+                                              valueString.split(" ")[0]
+                                            )
+                                          : 0;
+                                        return Math.max(max, numericValue);
+                                      },
+                                      0
+                                    )
                                   ),
                                   0
                                 );
                               };
 
-                              const calculateTotalValueForCurrentYear = (yearsData) => {
+                              const calculateTotalValueForCurrentYear = (
+                                yearsData
+                              ) => {
                                 if (!yearsData[currentYear]) return 0; // If the year doesn't exist, return 0
 
-                                return Object.values(yearsData[currentYear]).reduce((total, valueString) => {
-                                  const numericValue = valueString ? parseFloat(valueString.split(" ")[0]) : 0;
+                                return Object.values(
+                                  yearsData[currentYear]
+                                ).reduce((total, valueString) => {
+                                  const numericValue = valueString
+                                    ? parseFloat(valueString.split(" ")[0])
+                                    : 0;
                                   return total + numericValue;
                                 }, 0);
                               };
 
-                              const currentMonth = months[new Date().getMonth()];
+                              const currentMonth =
+                                months[new Date().getMonth()];
 
-                              const sortedProducts = Object.entries(ProductionDimension?.values)
+                              const sortedProducts = Object.entries(
+                                ProductionDimension?.values
+                              )
                                 .map(([product, yearsData]) => ({
                                   product,
                                   yearsData,
-                                  currentYearTotal: calculateTotalValueForCurrentYear(yearsData), // Calculate total value for sorting
+                                  currentYearTotal:
+                                    calculateTotalValueForCurrentYear(
+                                      yearsData
+                                    ), // Calculate total value for sorting
                                 }))
 
-                                .sort((a, b) => b.currentYearTotal - a.currentYearTotal);
+                                .sort(
+                                  (a, b) =>
+                                    b.currentYearTotal - a.currentYearTotal
+                                );
                               const maxValuesPerMonth = {};
                               months.forEach((month) => {
-                                maxValuesPerMonth[month] = calculateMaxValueForMonth(sortedProducts, month);
+                                maxValuesPerMonth[month] =
+                                  calculateMaxValueForMonth(
+                                    sortedProducts,
+                                    month
+                                  );
                               });
 
-                              return sortedProducts.map(({ product, yearsData }) => (
-                                <tr key={product}>
-                                  <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">{product}</td>
+                              return sortedProducts.map(
+                                ({ product, yearsData }) => (
+                                  <tr key={product}>
+                                    <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
+                                      {product}
+                                    </td>
 
-                                  {ProductionDimension?.years?.map((year) =>
-                                    months?.map((month) => {
-                                      const valueString = yearsData[year]?.[month];
-                                      const numericValue = valueString ? parseFloat(valueString.split(" ")[0]) : null;
+                                    {ProductionDimension?.years?.map((year) =>
+                                      months?.map((month) => {
+                                        const valueString =
+                                          yearsData[year]?.[month];
+                                        const numericValue = valueString
+                                          ? parseFloat(
+                                              valueString.split(" ")[0]
+                                            )
+                                          : null;
 
-                                      const maxMonthValue = maxValuesPerMonth[month] || 1;
+                                        const maxMonthValue =
+                                          maxValuesPerMonth[month] || 1;
 
-                                      const opacity =
-                                        numericValue !== null && maxMonthValue > 0
-                                          ? Math.max(numericValue / maxMonthValue, 0.1)
-                                          : 0.1;
+                                        const opacity =
+                                          numericValue !== null &&
+                                          maxMonthValue > 0
+                                            ? Math.max(
+                                                numericValue / maxMonthValue,
+                                                0.1
+                                              )
+                                            : 0.1;
 
-                                      const backgroundColor =
-                                        numericValue === null ? "transparent" : `rgba(5, 127, 163, ${opacity})`;
+                                        const backgroundColor =
+                                          numericValue === null
+                                            ? "transparent"
+                                            : `rgba(5, 127, 163, ${opacity})`;
 
-                                      // Handling the "Total" month (if present)
-                                      if (month === "Total") {
-                                        const yearTotal = Object.values(yearsData[year] || {}).reduce((sum, val) => {
-                                          const num = val ? parseFloat(val.split(" ")[0]) : 0;
-                                          return sum + num;
-                                        }, 0);
+                                        // Handling the "Total" month (if present)
+                                        if (month === "Total") {
+                                          const yearTotal = Object.values(
+                                            yearsData[year] || {}
+                                          ).reduce((sum, val) => {
+                                            const num = val
+                                              ? parseFloat(val.split(" ")[0])
+                                              : 0;
+                                            return sum + num;
+                                          }, 0);
+
+                                          return (
+                                            <td
+                                              key={`${year}-${month}`}
+                                              className="px-2 py-2 border-b border-gray-200 text-sm text-center"
+                                            >
+                                              {formatValueString(
+                                                yearTotal.toFixed(2) ?? "0"
+                                              )}
+                                            </td>
+                                          );
+                                        }
 
                                         return (
                                           <td
                                             key={`${year}-${month}`}
                                             className="px-2 py-2 border-b border-gray-200 text-sm text-center"
+                                            style={{ backgroundColor }}
                                           >
-                                            {formatValueString(yearTotal.toFixed(2) ?? "0")}
+                                            {/* {valueString || "0"} */}
+                                            {valueString &&
+                                            numericValue !== null
+                                              ? `${formatValueString(
+                                                  numericValue.toFixed(2)
+                                                )} ${valueString.split(" ")[1]}`
+                                              : "0"}
                                           </td>
                                         );
-                                      }
-
-                                      return (
-                                        <td
-                                          key={`${year}-${month}`}
-                                          className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                          style={{ backgroundColor }}
-                                        >
-                                          {/* {valueString || "0"} */}
-                                          {valueString && numericValue !== null
-                                            ? `${formatValueString(numericValue.toFixed(2))} ${valueString.split(" ")[1]}`
-                                            : "0"}
-                                        </td>
-                                      );
-                                    })
-                                  )}
-                                </tr>
-                              ));
-                            }
-                            )()
+                                      })
+                                    )}
+                                  </tr>
+                                )
+                              );
+                            })()
                           ) : (
                             <tr>
                               {!isFetching2 && (
                                 <td
-                                  style={{ border: "none", backgroundColor: "transparent" }}
-                                  colSpan={ProductionDimension?.years?.length * months?.length + 1}
+                                  style={{
+                                    border: "none",
+                                    backgroundColor: "transparent",
+                                  }}
+                                  colSpan={
+                                    ProductionDimension?.years?.length *
+                                      months?.length +
+                                    1
+                                  }
                                   className="px-2 py-2 text-center text-gray-500"
                                 >
                                   No data available
@@ -4481,19 +4912,15 @@ useEffect(() => {
                             </tr>
                           )}
                         </tbody>
-
-
-
-
-
-
-
                       </table>
 
                       {/* Lazy Loader */}
                       {isFetching2 && (
                         <div className="text-center text-gray-600 py-2">
-                          <div className="spinner-border gray-spinner" role="status">
+                          <div
+                            className="spinner-border gray-spinner"
+                            role="status"
+                          >
                             <span className="sr-only">Loading...</span>
                           </div>{" "}
                         </div>
@@ -4501,7 +4928,6 @@ useEffect(() => {
                     </div>
                   </div>
                   <div>
-
                     {/*  Brand Dimension */}
                     <h3 className="text-l font-medium text-center text-gray-900 dark:text-white py-2">
                       Brand Dimension
@@ -4509,7 +4935,11 @@ useEffect(() => {
                     <div
                       className="overflow-x-auto max-h-[400px]"
                       onScroll={(e) => handleScrol8(e, "BrandDimension")}
-                      style={{ height: "359px", overflow: "auto", border: '1px solid #80808075' }}
+                      style={{
+                        height: "359px",
+                        overflow: "auto",
+                        border: "1px solid #80808075",
+                      }}
                     >
                       <table className="w-full leading-normal m-0">
                         <thead className="sticky top-0">
@@ -4554,133 +4984,220 @@ useEffect(() => {
                           </tr>
                         </thead>
                         <tbody>
-                          {BrandDimension && BrandDimension.values && Object.keys(BrandDimension.values).length > 0 ? (
+                          {BrandDimension &&
+                          BrandDimension.values &&
+                          Object.keys(BrandDimension.values).length > 0 ? (
                             (() => {
-                              const currentYear = new Date().getFullYear().toString();
+                              const currentYear = new Date()
+                                .getFullYear()
+                                .toString();
 
-                              const calculateMaxValueForMonth = (products, month) => {
+                              const calculateMaxValueForMonth = (
+                                products,
+                                month
+                              ) => {
                                 return Math.max(
                                   ...products.map(({ yearsData }) =>
-                                    Object.keys(yearsData).reduce((max, year) => {
-                                      const valueString = yearsData[year]?.[month];
-                                      const numericValue = valueString ? parseFloat(valueString.split(" ")[0]) : 0;
-                                      return Math.max(max, numericValue);
-                                    }, 0)
+                                    Object.keys(yearsData).reduce(
+                                      (max, year) => {
+                                        const valueString =
+                                          yearsData[year]?.[month];
+                                        const numericValue = valueString
+                                          ? parseFloat(
+                                              valueString.split(" ")[0]
+                                            )
+                                          : 0;
+                                        return Math.max(max, numericValue);
+                                      },
+                                      0
+                                    )
                                   ),
                                   0
                                 );
                               };
 
-                              const calculateTotalValueForCurrentYear = (yearsData) => {
+                              const calculateTotalValueForCurrentYear = (
+                                yearsData
+                              ) => {
                                 if (!yearsData[currentYear]) return 0;
-                                return Object.values(yearsData[currentYear]).reduce((total, valueString) => {
-                                  const numericValue = valueString ? parseFloat(valueString.split(" ")[0]) : 0;
+                                return Object.values(
+                                  yearsData[currentYear]
+                                ).reduce((total, valueString) => {
+                                  const numericValue = valueString
+                                    ? parseFloat(valueString.split(" ")[0])
+                                    : 0;
                                   return total + numericValue;
                                 }, 0);
                               };
 
-                              const brandMaxValues = Object.entries(BrandDimension.values).map(
-                                ([brand, yearsData]) => {
-                                  const overallTotal = (BrandDimension?.years || []).reduce((total, year) => {
-                                    const yearlySum = Object.values(yearsData[year] || {}).reduce((sum, valueString) => {
-                                      const numericValue = valueString ? parseFloat(valueString.split(" ")[0]) : 0;
-                                      return sum + numericValue;
-                                    }, 0);
-                                    return total + yearlySum;
+                              const brandMaxValues = Object.entries(
+                                BrandDimension.values
+                              ).map(([brand, yearsData]) => {
+                                const overallTotal = (
+                                  BrandDimension?.years || []
+                                ).reduce((total, year) => {
+                                  const yearlySum = Object.values(
+                                    yearsData[year] || {}
+                                  ).reduce((sum, valueString) => {
+                                    const numericValue = valueString
+                                      ? parseFloat(valueString.split(" ")[0])
+                                      : 0;
+                                    return sum + numericValue;
                                   }, 0);
+                                  return total + yearlySum;
+                                }, 0);
 
-                                  const currentYearTotal = calculateTotalValueForCurrentYear(yearsData);
+                                const currentYearTotal =
+                                  calculateTotalValueForCurrentYear(yearsData);
 
-                                  const maxBrandValue = Math.max(
-                                    ...(BrandDimension?.years || []).flatMap((year) =>
+                                const maxBrandValue = Math.max(
+                                  ...(BrandDimension?.years || []).flatMap(
+                                    (year) =>
                                       months
                                         .map((month) => {
-                                          const valueString = yearsData[year]?.[month];
-                                          return valueString && !valueString.includes("0.0%")
-                                            ? parseFloat(valueString.replace(/[\(\)%]/g, "").split(" ")[0])
+                                          const valueString =
+                                            yearsData[year]?.[month];
+                                          return valueString &&
+                                            !valueString.includes("0.0%")
+                                            ? parseFloat(
+                                                valueString
+                                                  .replace(/[\(\)%]/g, "")
+                                                  .split(" ")[0]
+                                              )
                                             : null;
                                         })
                                         .filter((value) => value !== null)
-                                    )
-                                  );
+                                  )
+                                );
 
-                                  return { brand, maxBrandValue, yearsData, overallTotal, currentYearTotal };
-                                }
-                              );
+                                return {
+                                  brand,
+                                  maxBrandValue,
+                                  yearsData,
+                                  overallTotal,
+                                  currentYearTotal,
+                                };
+                              });
 
                               // Sorting by year-wise total for all years
                               brandMaxValues.sort((a, b) => {
-                                const aYearTotal = BrandDimension.years.reduce((sum, year) => {
-                                  return sum + Object.values(a.yearsData[year] || {}).reduce((yearSum, val) => {
-                                    const numericValue = val ? parseFloat(val.split(" ")[0]) : 0;
-                                    return yearSum + numericValue;
-                                  }, 0);
-                                }, 0);
+                                const aYearTotal = BrandDimension.years.reduce(
+                                  (sum, year) => {
+                                    return (
+                                      sum +
+                                      Object.values(
+                                        a.yearsData[year] || {}
+                                      ).reduce((yearSum, val) => {
+                                        const numericValue = val
+                                          ? parseFloat(val.split(" ")[0])
+                                          : 0;
+                                        return yearSum + numericValue;
+                                      }, 0)
+                                    );
+                                  },
+                                  0
+                                );
 
-                                const bYearTotal = BrandDimension.years.reduce((sum, year) => {
-                                  return sum + Object.values(b.yearsData[year] || {}).reduce((yearSum, val) => {
-                                    const numericValue = val ? parseFloat(val.split(" ")[0]) : 0;
-                                    return yearSum + numericValue;
-                                  }, 0);
-                                }, 0);
+                                const bYearTotal = BrandDimension.years.reduce(
+                                  (sum, year) => {
+                                    return (
+                                      sum +
+                                      Object.values(
+                                        b.yearsData[year] || {}
+                                      ).reduce((yearSum, val) => {
+                                        const numericValue = val
+                                          ? parseFloat(val.split(" ")[0])
+                                          : 0;
+                                        return yearSum + numericValue;
+                                      }, 0)
+                                    );
+                                  },
+                                  0
+                                );
 
                                 return bYearTotal - aYearTotal;
                               });
 
                               const calculateOpacity = (value, maxValue) => {
-                                if (value === null || maxValue === 0) return 0.1;
+                                if (value === null || maxValue === 0)
+                                  return 0.1;
                                 const opacity = value / maxValue;
                                 return opacity < 0.1 ? 0.1 : opacity;
                               };
 
-                              return brandMaxValues.map(({ brand, yearsData, maxBrandValue, overallTotal, currentYearTotal }) => (
-                                <tr key={brand} className="bg-white">
-                                  <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
-                                    {brand}
-                                  </td>
-                                  {BrandDimension?.years?.map((year) =>
-                                    months.map((month) => {
-                                      if (month === "Total") {
-                                        const yearTotal = Object.values(yearsData[year] || {}).reduce((sum, val) => {
-                                          const num = val ? parseFloat(val.split(" ")[0]) : 0;
-                                          return sum + num;
-                                        }, 0);
+                              return brandMaxValues.map(
+                                ({
+                                  brand,
+                                  yearsData,
+                                  maxBrandValue,
+                                  overallTotal,
+                                  currentYearTotal,
+                                }) => (
+                                  <tr key={brand} className="bg-white">
+                                    <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
+                                      {brand}
+                                    </td>
+                                    {BrandDimension?.years?.map((year) =>
+                                      months.map((month) => {
+                                        if (month === "Total") {
+                                          const yearTotal = Object.values(
+                                            yearsData[year] || {}
+                                          ).reduce((sum, val) => {
+                                            const num = val
+                                              ? parseFloat(val.split(" ")[0])
+                                              : 0;
+                                            return sum + num;
+                                          }, 0);
+
+                                          return (
+                                            <td
+                                              key={`${year}-${month}`}
+                                              className="px-2 py-2 border-b border-gray-200 text-sm text-center"
+                                            >
+                                              {formatValueString(
+                                                yearTotal.toFixed(2) ?? "0"
+                                              )}
+                                            </td>
+                                          );
+                                        }
+
+                                        const valueString =
+                                          yearsData[year]?.[month];
+                                        const numericValue = valueString
+                                          ? parseFloat(
+                                              valueString
+                                                .replace(/[\(\)%]/g, "")
+                                                .split(" ")[0]
+                                            )
+                                          : null;
+
+                                        const backgroundColor =
+                                          numericValue !== null
+                                            ? `rgba(5, 127, 163, ${calculateOpacity(
+                                                numericValue,
+                                                maxBrandValue
+                                              )})`
+                                            : "transparent";
 
                                         return (
                                           <td
                                             key={`${year}-${month}`}
                                             className="px-2 py-2 border-b border-gray-200 text-sm text-center"
+                                            style={{ backgroundColor }}
                                           >
-                                            {formatValueString(yearTotal.toFixed(2) ?? "0")}
+                                            {valueString &&
+                                            numericValue !== null
+                                              ? `${formatValueString(
+                                                  numericValue.toFixed(2)
+                                                )} ${valueString.split(" ")[1]}`
+                                              : "0"}
                                           </td>
                                         );
-                                      }
-
-                                      const valueString = yearsData[year]?.[month];
-                                      const numericValue = valueString
-                                        ? parseFloat(valueString.replace(/[\(\)%]/g, "").split(" ")[0])
-                                        : null;
-
-                                      const backgroundColor =
-                                        numericValue !== null
-                                          ? `rgba(5, 127, 163, ${calculateOpacity(numericValue, maxBrandValue)})`
-                                          : "transparent";
-
-                                      return (
-                                        <td
-                                          key={`${year}-${month}`}
-                                          className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                          style={{ backgroundColor }}
-                                        >
-                                          {valueString && numericValue !== null
-                                            ? `${formatValueString(numericValue.toFixed(2))} ${valueString.split(" ")[1]}`
-                                            : "0"}
-                                        </td>
-                                      );
-                                    })
-                                  )}
-                                </tr>
-                              ));
+                                      })
+                                    )}
+                                  </tr>
+                                )
+                              );
                             })()
                           ) : (
                             <tr>
@@ -4696,13 +5213,13 @@ useEffect(() => {
                             </tr>
                           )}
                         </tbody>
-
-
-
                       </table>
                       {isFetching3 && (
                         <div className="text-center text-gray-600 py-2">
-                          <div className="spinner-border gray-spinner" role="status">
+                          <div
+                            className="spinner-border gray-spinner"
+                            role="status"
+                          >
                             <span className="sr-only">Loading...</span>
                           </div>{" "}
                         </div>
@@ -4710,7 +5227,6 @@ useEffect(() => {
                     </div>
                   </div>
                   <div>
-
                     {/*  Item Dimension */}
                     <h3 className="text-l font-medium text-center text-gray-900 dark:text-white py-2">
                       Item Dimension
@@ -4718,7 +5234,11 @@ useEffect(() => {
                     <div
                       className="overflow-x-auto max-h-[400px]"
                       onScroll={(e) => handleScrol9(e, "ItemDimension")}
-                      style={{ height: "359px", overflow: "auto", border: '1px solid #80808075' }}
+                      style={{
+                        height: "359px",
+                        overflow: "auto",
+                        border: "1px solid #80808075",
+                      }}
                     >
                       <table className="w-full leading-normal m-0">
                         <thead className="sticky top-0">
@@ -4773,26 +5293,37 @@ useEffect(() => {
                                     </th>
                                   )
                                 )}
-
                           </tr>
                         </thead>
                         <tbody>
-                          {ItemDimension && ItemDimension.values && Object.keys(ItemDimension.values).length > 0 ? (
+                          {ItemDimension &&
+                          ItemDimension.values &&
+                          Object.keys(ItemDimension.values).length > 0 ? (
                             (() => {
                               const currentYear = new Date().getFullYear();
-                              const currentMonthName = months[new Date().getMonth()]; // Get the name of the current month
+                              const currentMonthName =
+                                months[new Date().getMonth()]; // Get the name of the current month
                               const allValues = [];
 
                               // Collect all numeric values to determine the true global maximum for opacity scaling
-                              Object.values(ItemDimension.values).forEach((yearsData) => {
-                                Object.values(yearsData).forEach((monthsData) => {
-                                  months.forEach((month) => {
-                                    const valueString = monthsData?.[month] || "0.0%";
-                                    const numericValue = parseFloat(valueString.split(" ")[0]) || 0;
-                                    if (numericValue > 0) allValues.push(numericValue);
-                                  });
-                                });
-                              });
+                              Object.values(ItemDimension.values).forEach(
+                                (yearsData) => {
+                                  Object.values(yearsData).forEach(
+                                    (monthsData) => {
+                                      months.forEach((month) => {
+                                        const valueString =
+                                          monthsData?.[month] || "0.0%";
+                                        const numericValue =
+                                          parseFloat(
+                                            valueString.split(" ")[0]
+                                          ) || 0;
+                                        if (numericValue > 0)
+                                          allValues.push(numericValue);
+                                      });
+                                    }
+                                  );
+                                }
+                              );
 
                               const trueMaxValue = Math.max(...allValues, 1); // Prevent division by zero
 
@@ -4804,36 +5335,60 @@ useEffect(() => {
                                 return Math.max(0.3, value / trueMaxValue);
                               };
 
-                              const sortedItems = Object.entries(ItemDimension.values || {})
+                              const sortedItems = Object.entries(
+                                ItemDimension.values || {}
+                              )
                                 .map(([item, yearsData]) => {
                                   // Get highest value for the current year and month
                                   const currentMonthValue = (() => {
                                     const yearData = yearsData[currentYear];
                                     if (yearData && currentMonthName) {
-                                      const valueString = yearData?.[currentMonthName] || "0.0%";
-                                      return parseFloat(valueString.split(" ")[0]) || 0;
+                                      const valueString =
+                                        yearData?.[currentMonthName] || "0.0%";
+                                      return (
+                                        parseFloat(valueString.split(" ")[0]) ||
+                                        0
+                                      );
                                     }
                                     return 0;
                                   })();
 
                                   // Calculate overall highest value across all months and years
-                                  const highestMonthValues = months.map((month) => {
-                                    let highestValue = 0;
-                                    Object.values(yearsData).forEach((yearsDataYear) => {
-                                      const valueString = yearsDataYear?.[month] || "0.0%";
-                                      const numericValue = (valueString?.split(" ")[0]) || 0;
-                                      if (numericValue > highestValue) {
-                                        highestValue = numericValue;
-                                      }
-                                    });
-                                    return highestValue;
-                                  });
+                                  const highestMonthValues = months.map(
+                                    (month) => {
+                                      let highestValue = 0;
+                                      Object.values(yearsData).forEach(
+                                        (yearsDataYear) => {
+                                          const valueString =
+                                            yearsDataYear?.[month] || "0.0%";
+                                          const numericValue =
+                                            valueString?.split(" ")[0] || 0;
+                                          if (numericValue > highestValue) {
+                                            highestValue = numericValue;
+                                          }
+                                        }
+                                      );
+                                      return highestValue;
+                                    }
+                                  );
 
-                                  const highestValueForItem = Math.max(...highestMonthValues);
-                                  return { item, yearsData, currentMonthValue, highestValueForItem };
+                                  const highestValueForItem = Math.max(
+                                    ...highestMonthValues
+                                  );
+                                  return {
+                                    item,
+                                    yearsData,
+                                    currentMonthValue,
+                                    highestValueForItem,
+                                  };
                                 })
                                 // First sort by current month value, then fallback to overall highest value
-                                .sort((a, b) => b.currentMonthValue - a.currentMonthValue || b.highestValueForItem - a.highestValueForItem);
+                                .sort(
+                                  (a, b) =>
+                                    b.currentMonthValue - a.currentMonthValue ||
+                                    b.highestValueForItem -
+                                      a.highestValueForItem
+                                );
 
                               return sortedItems.map(({ item, yearsData }) => (
                                 <tr key={item} className="bg-white">
@@ -4845,8 +5400,12 @@ useEffect(() => {
                                     ?.map((year) =>
                                       months.map((month) => {
                                         if (month === "Total") {
-                                          const yearTotal = Object.values(yearsData[year] || {}).reduce((sum, val) => {
-                                            const num = val ? parseFloat(val.split(" ")[0]) : 0;
+                                          const yearTotal = Object.values(
+                                            yearsData[year] || {}
+                                          ).reduce((sum, val) => {
+                                            const num = val
+                                              ? parseFloat(val.split(" ")[0])
+                                              : 0;
                                             return sum + num;
                                           }, 0);
 
@@ -4855,27 +5414,35 @@ useEffect(() => {
                                               key={`${year}-${month}`}
                                               className="px-2 py-2 border-b border-gray-200 text-sm text-center"
                                             >
-                                              {formatValueString (yearTotal.toFixed(2) ?? "0")}
+                                              {formatValueString(
+                                                yearTotal.toFixed(2) ?? "0"
+                                              )}
                                             </td>
                                           );
                                         }
 
+                                        const valueString =
+                                          yearsData?.[year]?.[month] || null;
 
-                                        const valueString = yearsData?.[year]?.[month] || null;
-
-                                        const numericValue = (valueString?.split(" ")[0]) || 0;
-                                        const percentageText = valueString?.split(" ")[1] || "";
-                                        const isZeroValue = numericValue === 0 || percentageText === "0.0%";
+                                        const numericValue =
+                                          valueString?.split(" ")[0] || 0;
+                                        const percentageText =
+                                          valueString?.split(" ")[1] || "";
+                                        const isZeroValue =
+                                          numericValue === 0 ||
+                                          percentageText === "0.0%";
 
                                         const backgroundColor = !isZeroValue
-                                          ? `rgba(5, 127, 163, ${calculateOpacity(numericValue)})`
+                                          ? `rgba(5, 127, 163, ${calculateOpacity(
+                                              numericValue
+                                            )})`
                                           : "transparent";
 
                                         const displayValue = !isZeroValue
-                                          ? `${formatValueString(numericValue)} ${percentageText}`
+                                          ? `${formatValueString(
+                                              numericValue
+                                            )} ${percentageText}`
                                           : "0";
-
-
 
                                         // const numericValue = (valueString?.split(" ")[0]) || 0;
 
@@ -4908,7 +5475,11 @@ useEffect(() => {
                               {!isFetching4 && (
                                 <td
                                   style={{ border: "none" }}
-                                  colSpan={ItemDimension?.years?.length * months.length + 1}
+                                  colSpan={
+                                    ItemDimension?.years?.length *
+                                      months.length +
+                                    1
+                                  }
                                   className="px-2 py-2 border-b border-gray-200 text-sm text-center"
                                 >
                                   No data available
@@ -4917,18 +5488,13 @@ useEffect(() => {
                             </tr>
                           )}
                         </tbody>
-
-
-
-
-
-
-
-
                       </table>
                       {isFetching4 && (
                         <div className="text-center text-gray-600 py-2">
-                          <div className="spinner-border gray-spinner" role="status">
+                          <div
+                            className="spinner-border gray-spinner"
+                            role="status"
+                          >
                             <span className="sr-only">Loading...</span>
                           </div>{" "}
                         </div>
@@ -4940,37 +5506,43 @@ useEffect(() => {
               </div>
             </div>
 
-
-            <div class="d-flex" style={{
-              gap: "8px",
-              width: "100%"
-            }}>
-              <div style={{
-                background: " #1C3644",
-                width: "3%",
-                alignItems: "center",
-                justifyContent: "center",
-                display: "flex",
-                flexDirection: "column"
+            <div
+              class="d-flex"
+              style={{
+                gap: "8px",
+                width: "100%",
               }}
+            >
+              <div
+                style={{
+                  background: " #1C3644",
+                  width: "3%",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
               >
-                <div class="rotated-text" >
-                  Price Analysis
-                </div>
+                <div class="rotated-text">Price Analysis</div>
               </div>
-              <div style={{
-                display: "flex",
-                flexDirection: "column",
-                border: "2px solid #1C3644",
-                width: "97%",
-              }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  border: "2px solid #1C3644",
+                  width: "97%",
+                }}
+              >
                 {/*  Price Breakup1 */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <h3 className="text-l font-medium text-center text-gray-900 dark:text-white py-2">
                       Price Breakup1
                     </h3>
-                    <div className="overflow-x-auto max-h-[330px]" style={{ border: '1px solid #80808075' }}>
+                    <div
+                      className="overflow-x-auto max-h-[330px]"
+                      style={{ border: "1px solid #80808075" }}
+                    >
                       <table className="w-full leading-normal m-0">
                         <thead className="sticky top-0">
                           <tr>
@@ -4992,22 +5564,34 @@ useEffect(() => {
                           </tr>
                         </thead>
                         <tbody>
-                          {PriceBreakup1 && PriceBreakup1.values && PriceBreakup1.years && Object.keys(PriceBreakup1.values).length > 0 ? (
+                          {PriceBreakup1 &&
+                          PriceBreakup1.values &&
+                          PriceBreakup1.years &&
+                          Object.keys(PriceBreakup1.values).length > 0 ? (
                             (() => {
-                              const sortedEntries = Object.entries(PriceBreakup1.values).sort(
-                                ([rangeA], [rangeB]) => {
-                                  const rangeEndA = parseInt(rangeA.split('-')[1], 10);
-                                  const rangeEndB = parseInt(rangeB.split('-')[1], 10);
-                                  return rangeEndA - rangeEndB;
-                                }
-                              );
+                              const sortedEntries = Object.entries(
+                                PriceBreakup1.values
+                              ).sort(([rangeA], [rangeB]) => {
+                                const rangeEndA = parseInt(
+                                  rangeA.split("-")[1],
+                                  10
+                                );
+                                const rangeEndB = parseInt(
+                                  rangeB.split("-")[1],
+                                  10
+                                );
+                                return rangeEndA - rangeEndB;
+                              });
 
-                              const numericValues = Object.entries(PriceBreakup1.values).flatMap(
-                                ([, yearValues]) =>
-                                  PriceBreakup1?.years?.map((year) => {
-                                    const valueString = yearValues[year];
-                                    return valueString ? parseFloat(valueString) : 0;
-                                  })
+                              const numericValues = Object.entries(
+                                PriceBreakup1.values
+                              ).flatMap(([, yearValues]) =>
+                                PriceBreakup1?.years?.map((year) => {
+                                  const valueString = yearValues[year];
+                                  return valueString
+                                    ? parseFloat(valueString)
+                                    : 0;
+                                })
                               );
 
                               const maxPriceValue = Math.max(...numericValues);
@@ -5018,36 +5602,44 @@ useEffect(() => {
                                 return Math.max(opacity, 0.1);
                               };
 
-                              return sortedEntries.map(([range, yearValues]) => (
-                                <tr key={range}>
-                                  <td className="px-2 py-2 border-b border-gray-200 text-sm text-center">
-                                    {range}
-                                  </td>
-                                  {PriceBreakup1?.years?.map((year) => {
-                                    const valueString = yearValues[year];
-                                    const numericValue = valueString ? parseFloat(valueString) : 0;
-                                    const backgroundColor = valueString
-                                      ? `rgba(5, 127, 163, ${calculateOpacity(numericValue)})`
-                                      : "transparent";
-                                    console.log(valueString);
+                              return sortedEntries.map(
+                                ([range, yearValues]) => (
+                                  <tr key={range}>
+                                    <td className="px-2 py-2 border-b border-gray-200 text-sm text-center">
+                                      {range}
+                                    </td>
+                                    {PriceBreakup1?.years?.map((year) => {
+                                      const valueString = yearValues[year];
+                                      const numericValue = valueString
+                                        ? parseFloat(valueString)
+                                        : 0;
+                                      const backgroundColor = valueString
+                                        ? `rgba(5, 127, 163, ${calculateOpacity(
+                                            numericValue
+                                          )})`
+                                        : "transparent";
+                                      console.log(valueString);
 
-                                    return (
-                                      <td
-                                        key={year}
-                                        className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                        style={{ backgroundColor }}
-                                      >
-                                        {formatValueString(valueString) || '0'}
-                                      </td>
-                                    );
-                                  })}
-                                </tr>
-                              ));
+                                      return (
+                                        <td
+                                          key={year}
+                                          className="px-2 py-2 border-b border-gray-200 text-sm text-center"
+                                          style={{ backgroundColor }}
+                                        >
+                                          {formatValueString(valueString) ||
+                                            "0"}
+                                        </td>
+                                      );
+                                    })}
+                                  </tr>
+                                )
+                              );
                             })()
                           ) : (
                             <tr>
                               {!isFetching7 && (
-                                <td style={{ border: 'none' }}
+                                <td
+                                  style={{ border: "none" }}
                                   colSpan={PriceBreakup1?.years?.length + 1}
                                   className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center"
                                 >
@@ -5060,7 +5652,10 @@ useEffect(() => {
                       </table>
                       {isFetching7 && (
                         <div className="text-center text-gray-600 py-2">
-                          <div className="spinner-border gray-spinner" role="status">
+                          <div
+                            className="spinner-border gray-spinner"
+                            role="status"
+                          >
                             <span className="sr-only">Loading...</span>
                           </div>
                         </div>
@@ -5073,7 +5668,10 @@ useEffect(() => {
                     <h3 className="text-l font-medium text-center text-gray-900 dark:text-white py-2">
                       Price Breakup2
                     </h3>
-                    <div className="overflow-x-auto max-h-[330px]" style={{ border: '1px solid #80808075' }}>
+                    <div
+                      className="overflow-x-auto max-h-[330px]"
+                      style={{ border: "1px solid #80808075" }}
+                    >
                       <table className="w-full leading-normal m-0">
                         <thead className="sticky top-0">
                           <tr>
@@ -5095,14 +5693,20 @@ useEffect(() => {
                           </tr>
                         </thead>
                         <tbody>
-                          {PriceBreakup2 && PriceBreakup2.values && PriceBreakup2.years && Object.keys(PriceBreakup2.values).length > 0 ? (
+                          {PriceBreakup2 &&
+                          PriceBreakup2.values &&
+                          PriceBreakup2.years &&
+                          Object.keys(PriceBreakup2.values).length > 0 ? (
                             (() => {
-                              const numericValues = Object.entries(PriceBreakup2.values).flatMap(
-                                ([, yearValues]) =>
-                                  PriceBreakup2?.years?.map((year) => {
-                                    const valueString = yearValues[year];
-                                    return valueString ? parseFloat(valueString) : 0;
-                                  })
+                              const numericValues = Object.entries(
+                                PriceBreakup2.values
+                              ).flatMap(([, yearValues]) =>
+                                PriceBreakup2?.years?.map((year) => {
+                                  const valueString = yearValues[year];
+                                  return valueString
+                                    ? parseFloat(valueString)
+                                    : 0;
+                                })
                               );
                               const maxPriceValue = Math.max(...numericValues);
                               const calculateOpacity = (value) => {
@@ -5110,41 +5714,55 @@ useEffect(() => {
                                 const opacity = value / maxPriceValue;
                                 return Math.max(opacity, 0.1);
                               };
-                              const sortedEntries = Object.entries(PriceBreakup2.values).sort(
-                                ([rangeA], [rangeB]) => {
-                                  const startA = parseInt(rangeA.split('-')[0], 10);
-                                  const startB = parseInt(rangeB.split('-')[0], 10);
-                                  return startA - startB;
-                                }
+                              const sortedEntries = Object.entries(
+                                PriceBreakup2.values
+                              ).sort(([rangeA], [rangeB]) => {
+                                const startA = parseInt(
+                                  rangeA.split("-")[0],
+                                  10
+                                );
+                                const startB = parseInt(
+                                  rangeB.split("-")[0],
+                                  10
+                                );
+                                return startA - startB;
+                              });
+                              return sortedEntries.map(
+                                ([range, yearValues]) => (
+                                  <tr key={range}>
+                                    <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
+                                      {range}
+                                    </td>
+                                    {PriceBreakup2?.years?.map((year) => {
+                                      const valueString = yearValues[year];
+                                      const numericValue = valueString
+                                        ? parseFloat(valueString)
+                                        : 0;
+                                      const backgroundColor = valueString
+                                        ? `rgba(5, 127, 163, ${calculateOpacity(
+                                            numericValue
+                                          )})`
+                                        : "transparent";
+                                      return (
+                                        <td
+                                          key={year}
+                                          className="px-2 py-2 border-b border-gray-200 text-sm text-center"
+                                          style={{ backgroundColor }}
+                                        >
+                                          {formatValueString(valueString) ||
+                                            "0"}
+                                        </td>
+                                      );
+                                    })}
+                                  </tr>
+                                )
                               );
-                              return sortedEntries.map(([range, yearValues]) => (
-                                <tr key={range}>
-                                  <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
-                                    {range}
-                                  </td>
-                                  {PriceBreakup2?.years?.map((year) => {
-                                    const valueString = yearValues[year];
-                                    const numericValue = valueString ? parseFloat(valueString) : 0;
-                                    const backgroundColor = valueString
-                                      ? `rgba(5, 127, 163, ${calculateOpacity(numericValue)})`
-                                      : "transparent";
-                                    return (
-                                      <td
-                                        key={year}
-                                        className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                        style={{ backgroundColor }}
-                                      >
-                                        {formatValueString(valueString) || '0'}
-                                      </td>
-                                    );
-                                  })}
-                                </tr>
-                              ));
                             })()
                           ) : (
                             <tr>
                               {!isFetching8 && (
-                                <td style={{ border: 'none' }}
+                                <td
+                                  style={{ border: "none" }}
                                   colSpan={PriceBreakup2?.years?.length + 1}
                                   className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center"
                                 >
@@ -5157,18 +5775,18 @@ useEffect(() => {
                       </table>
                       {isFetching8 && (
                         <div className="text-center text-gray-600 py-2">
-                          <div className="spinner-border gray-spinner" role="status">
+                          <div
+                            className="spinner-border gray-spinner"
+                            role="status"
+                          >
                             <span className="sr-only">Loading...</span>
                           </div>
                         </div>
                       )}
                     </div>
                   </div>
-
-
                 </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -5186,7 +5804,6 @@ useEffect(() => {
       </div>
     </div>
     )} */}
-
     </div>
   );
 }

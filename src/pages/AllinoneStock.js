@@ -220,7 +220,7 @@ function AllinoneStock() {
       (key) => filters[key] !== initialFilters[key]
     );
     setIsApplyDisabled(!filtersChanged);
-  }, [filters,initialFilters]);
+  }, [filters, initialFilters]);
 
   const handleBranchScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
@@ -228,7 +228,8 @@ function AllinoneStock() {
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       HasMoreDataBranch &&
-      !ByBranchloading
+      !ByBranchloading &&
+      Branchpage > 1
     ) {
       fetchBrandwise(Branchpage);
     }
@@ -240,7 +241,8 @@ function AllinoneStock() {
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDataCity &&
-      !ByCityloading
+      !ByCityloading &&
+      Citypage > 1
     ) {
       fetchCitywise(Citypage);
     }
@@ -252,7 +254,8 @@ function AllinoneStock() {
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDataSection &&
-      !BySectionloading
+      !BySectionloading &&
+      BySectionpage > 1
     ) {
       fetchSectionwise(BySectionpage);
     }
@@ -263,7 +266,8 @@ function AllinoneStock() {
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDataItemcat &&
-      !ByItemCategoryloading
+      !ByItemCategoryloading &&
+      ByItemPage > 1
     ) {
       fetchItemwise(ByItemPage);
     }
@@ -275,7 +279,8 @@ function AllinoneStock() {
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDataProduct &&
-      !ByProductloading
+      !ByProductloading &&
+      Productpage > 1
     ) {
       fetchProductwise(Productpage);
     }
@@ -287,7 +292,8 @@ function AllinoneStock() {
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDataBrand &&
-      !ByBrandloading
+      !ByBrandloading &&
+      Brandpage > 1
     ) {
       fetchBrandAna(Brandpage);
     }
@@ -298,7 +304,8 @@ function AllinoneStock() {
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDataItemana &&
-      !ByItemloading
+      !ByItemloading &&
+      Itempage > 1
     ) {
       fetchItemAnas(Itempage);
     }
@@ -310,7 +317,8 @@ function AllinoneStock() {
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
       hasMoreDatamodel &&
-      !ByModelloading
+      !ByModelloading &&
+      Modelpage > 1
     ) {
       fetchPriceAna(Modelpage);
     }
@@ -1519,44 +1527,43 @@ function AllinoneStock() {
   };
   const [currentDateTime, setCurrentDateTime] = useState("");
 
- // Helper to get month number from month name
- function getMonthNumber(monthName) {
-  const months = {
-    Jan: "01",
-    Feb: "02",
-    Mar: "03",
-    Apr: "04",
-    May: "05",
-    Jun: "06",
-    Jul: "07",
-    Aug: "08",
-    Sep: "09",
-    Oct: "10",
-    Nov: "11",
-    Dec: "12",
-  };
-  return months[monthName] || "01"; // Default to January if not found
-}
-    const [formatteddate, setLiveDate] = useState();
-    const [formattedTime, setformattedTime] = useState();
+  // Helper to get month number from month name
+  function getMonthNumber(monthName) {
+    const months = {
+      Jan: "01",
+      Feb: "02",
+      Mar: "03",
+      Apr: "04",
+      May: "05",
+      Jun: "06",
+      Jul: "07",
+      Aug: "08",
+      Sep: "09",
+      Oct: "10",
+      Nov: "11",
+      Dec: "12",
+    };
+    return months[monthName] || "01"; // Default to January if not found
+  }
+  const [formatteddate, setLiveDate] = useState();
+  const [formattedTime, setformattedTime] = useState();
   const fetchliveData = async () => {
     try {
       const response = await axios.get("/stock_analysis/table_modificatio");
 
       const currentDate = response?.data?.last_modified;
 
-
       if (currentDate) {
         // Split the date and time from the last_modified string
-        const [dayOfWeek, day, month, year, time] = currentDate.split(' ');
-  
+        const [dayOfWeek, day, month, year, time] = currentDate.split(" ");
+
         // Format the date as DD/MM/YYYY
         const formattedDate = `${day}/${getMonthNumber(month)}/${year}`;
-  
+
         // Bind the date and time
         setLiveDate(formattedDate);
         setformattedTime(time);
-  
+
         console.log("Date:", formattedDate);
         console.log("Time:", time);
       } else {
@@ -1965,7 +1972,6 @@ function AllinoneStock() {
     { value: "271-365", label: "9-12 Months" },
     { value: "366+", label: "More than a year" },
     { value: "BLANK", label: "Null" },
-
   ];
 
   const defaultOptions =
@@ -2002,13 +2008,13 @@ function AllinoneStock() {
   //   { value: "5001-8000", label: "5001-8000" },
   //   { value: "8001-10000", label: "8001-10000" },
   //   { value: "40001-70000", label: "40001-70000" },
- 
+
   //   { value: "30001-40000", label: "30001-40000" },
   //   { value: "15001-20000", label: "15001-20000" },
   //   { value: "10001-15000", label: "10001-15000" },
-  
+
   //   { value: "20001-30000", label: "20001-30000" },
-  
+
   //   { value: "70001-100000", label: "70001-100000" },
   //   { value: ">100000", label: "100000" },
   // ];
@@ -2195,7 +2201,8 @@ function AllinoneStock() {
                     }}
                   >
                     {/* {currentDateTime} */}
-                    {formatteddate}<br></br>
+                    {formatteddate}
+                    <br></br>
                     {formattedTime}
                   </span>
                 </div>
@@ -2229,7 +2236,6 @@ function AllinoneStock() {
                     options={optionstime}
                     value={dropdownValuetime}
                     onChange={handletimeChange}
-                 
                     defaultValue={[
                       { label: "IMEI", value: "IMEI" },
                       { label: "NON IMEI", value: "NON IMEI" },
@@ -2733,8 +2739,7 @@ function AllinoneStock() {
                     >
                       {AgeingData.map((item, index) => (
                         <h5 key={index} className="card-text">
-                        {formatNumber(Number(item.total_average)?.toFixed(2))}
-
+                          {formatNumber(Number(item.total_average)?.toFixed(2))}
                         </h5>
                       ))}
                     </div>
@@ -2929,18 +2934,18 @@ function AllinoneStock() {
                           //   return sortDirection === "asc" ? 1 : -1;
                           // return 0;
                           const isNumber =
-                          !isNaN(parseFloat(aValue)) &&
-                          !isNaN(parseFloat(bValue));
+                            !isNaN(parseFloat(aValue)) &&
+                            !isNaN(parseFloat(bValue));
 
-                        if (isNumber) {
-                          return sortDirection === "asc"
-                            ? parseFloat(aValue) - parseFloat(bValue)
-                            : parseFloat(bValue) - parseFloat(aValue);
-                        } else {
-                          return sortDirection === "asc"
-                            ? aValue.localeCompare(bValue)
-                            : bValue.localeCompare(aValue);
-                        }
+                          if (isNumber) {
+                            return sortDirection === "asc"
+                              ? parseFloat(aValue) - parseFloat(bValue)
+                              : parseFloat(bValue) - parseFloat(aValue);
+                          } else {
+                            return sortDirection === "asc"
+                              ? aValue.localeCompare(bValue)
+                              : bValue.localeCompare(aValue);
+                          }
                         })
                         .map((section, index) => {
                           const qtypacity = calculateOpacity(
@@ -2965,6 +2970,7 @@ function AllinoneStock() {
                               style={{
                                 display: "flex",
                                 justifyContent: "space-between",
+                                borderBottom: "1px solid #6b728038",
                               }}
                             >
                               <span
@@ -3202,18 +3208,18 @@ function AllinoneStock() {
                         //   return sortDirectioncity === "asc" ? 1 : -1;
                         // return 0;
                         const isNumber =
-                        !isNaN(parseFloat(aValue)) &&
-                        !isNaN(parseFloat(bValue));
+                          !isNaN(parseFloat(aValue)) &&
+                          !isNaN(parseFloat(bValue));
 
-                      if (isNumber) {
-                        return sortDirectioncity === "asc"
-                          ? parseFloat(aValue) - parseFloat(bValue)
-                          : parseFloat(bValue) - parseFloat(aValue);
-                      } else {
-                        return sortDirectioncity === "asc"
-                          ? aValue.localeCompare(bValue)
-                          : bValue.localeCompare(aValue);
-                      }
+                        if (isNumber) {
+                          return sortDirectioncity === "asc"
+                            ? parseFloat(aValue) - parseFloat(bValue)
+                            : parseFloat(bValue) - parseFloat(aValue);
+                        } else {
+                          return sortDirectioncity === "asc"
+                            ? aValue.localeCompare(bValue)
+                            : bValue.localeCompare(aValue);
+                        }
                       })
                       .map((section, index) => {
                         const qtypacity = calculateOpacity(
@@ -3237,6 +3243,7 @@ function AllinoneStock() {
                             style={{
                               display: "flex",
                               justifyContent: "space-between",
+                              borderBottom: "1px solid #6b728038",
                             }}
                           >
                             <span
@@ -3458,6 +3465,7 @@ function AllinoneStock() {
                           style={{
                             display: "flex",
                             justifyContent: "space-between",
+                            borderBottom: "1px solid #6b728038",
                           }}
                         >
                           <span
@@ -3665,6 +3673,7 @@ function AllinoneStock() {
                           style={{
                             display: "flex",
                             justifyContent: "space-between",
+                            borderBottom: "1px solid #6b728038",
                           }}
                         >
                           <span
@@ -3912,18 +3921,18 @@ function AllinoneStock() {
                         //   return sortDirectionsection === "asc" ? 1 : -1;
                         // return 0;
                         const isNumber =
-                        !isNaN(parseFloat(aValue)) &&
-                        !isNaN(parseFloat(bValue));
+                          !isNaN(parseFloat(aValue)) &&
+                          !isNaN(parseFloat(bValue));
 
-                      if (isNumber) {
-                        return sortDirectionsection === "asc"
-                          ? parseFloat(aValue) - parseFloat(bValue)
-                          : parseFloat(bValue) - parseFloat(aValue);
-                      } else {
-                        return sortDirectionsection === "asc"
-                          ? aValue.localeCompare(bValue)
-                          : bValue.localeCompare(aValue);
-                      }
+                        if (isNumber) {
+                          return sortDirectionsection === "asc"
+                            ? parseFloat(aValue) - parseFloat(bValue)
+                            : parseFloat(bValue) - parseFloat(aValue);
+                        } else {
+                          return sortDirectionsection === "asc"
+                            ? aValue.localeCompare(bValue)
+                            : bValue.localeCompare(aValue);
+                        }
                       })
                       .map((section, index) => {
                         const qtypacity = calculateOpacity(
@@ -3948,6 +3957,7 @@ function AllinoneStock() {
                             style={{
                               display: "flex",
                               justifyContent: "space-between",
+                              borderBottom: "1px solid #6b728038",
                             }}
                           >
                             <span
@@ -4182,18 +4192,18 @@ function AllinoneStock() {
                         //   return sortDirectionitem === "asc" ? 1 : -1;
                         // return 0;
                         const isNumber =
-                        !isNaN(parseFloat(aValue)) &&
-                        !isNaN(parseFloat(bValue));
+                          !isNaN(parseFloat(aValue)) &&
+                          !isNaN(parseFloat(bValue));
 
-                      if (isNumber) {
-                        return sortDirectionitem === "asc"
-                          ? parseFloat(aValue) - parseFloat(bValue)
-                          : parseFloat(bValue) - parseFloat(aValue);
-                      } else {
-                        return sortDirectionitem === "asc"
-                          ? aValue.localeCompare(bValue)
-                          : bValue.localeCompare(aValue);
-                      }
+                        if (isNumber) {
+                          return sortDirectionitem === "asc"
+                            ? parseFloat(aValue) - parseFloat(bValue)
+                            : parseFloat(bValue) - parseFloat(aValue);
+                        } else {
+                          return sortDirectionitem === "asc"
+                            ? aValue.localeCompare(bValue)
+                            : bValue.localeCompare(aValue);
+                        }
                       })
                       .map((section, index) => {
                         const qtypacity = calculateOpacity(
@@ -4218,6 +4228,7 @@ function AllinoneStock() {
                             style={{
                               display: "flex",
                               justifyContent: "space-between",
+                              borderBottom: "1px solid #6b728038",
                             }}
                           >
                             <span
@@ -4459,18 +4470,18 @@ function AllinoneStock() {
                         //   return sortDirectionproduct === "asc" ? 1 : -1;
                         // return 0;
                         const isNumber =
-                        !isNaN(parseFloat(aValue)) &&
-                        !isNaN(parseFloat(bValue));
+                          !isNaN(parseFloat(aValue)) &&
+                          !isNaN(parseFloat(bValue));
 
-                      if (isNumber) {
-                        return sortDirectionproduct === "asc"
-                          ? parseFloat(aValue) - parseFloat(bValue)
-                          : parseFloat(bValue) - parseFloat(aValue);
-                      } else {
-                        return sortDirectionproduct === "asc"
-                          ? aValue.localeCompare(bValue)
-                          : bValue.localeCompare(aValue);
-                      }
+                        if (isNumber) {
+                          return sortDirectionproduct === "asc"
+                            ? parseFloat(aValue) - parseFloat(bValue)
+                            : parseFloat(bValue) - parseFloat(aValue);
+                        } else {
+                          return sortDirectionproduct === "asc"
+                            ? aValue.localeCompare(bValue)
+                            : bValue.localeCompare(aValue);
+                        }
                       })
                       .map((section, index) => {
                         const qtypacity = calculateOpacity(
@@ -4495,6 +4506,7 @@ function AllinoneStock() {
                             style={{
                               display: "flex",
                               justifyContent: "space-between",
+                              borderBottom: "1px solid #6b728038",
                             }}
                           >
                             <span
@@ -4727,18 +4739,18 @@ function AllinoneStock() {
                         //   return sortDirectionbrand === "asc" ? 1 : -1;
                         // return 0;
                         const isNumber =
-                        !isNaN(parseFloat(aValue)) &&
-                        !isNaN(parseFloat(bValue));
+                          !isNaN(parseFloat(aValue)) &&
+                          !isNaN(parseFloat(bValue));
 
-                      if (isNumber) {
-                        return sortDirectionbrand === "asc"
-                          ? parseFloat(aValue) - parseFloat(bValue)
-                          : parseFloat(bValue) - parseFloat(aValue);
-                      } else {
-                        return sortDirectionbrand === "asc"
-                          ? aValue.localeCompare(bValue)
-                          : bValue.localeCompare(aValue);
-                      }
+                        if (isNumber) {
+                          return sortDirectionbrand === "asc"
+                            ? parseFloat(aValue) - parseFloat(bValue)
+                            : parseFloat(bValue) - parseFloat(aValue);
+                        } else {
+                          return sortDirectionbrand === "asc"
+                            ? aValue.localeCompare(bValue)
+                            : bValue.localeCompare(aValue);
+                        }
                       })
                       .map((section, index) => {
                         const qtypacity = calculateOpacity(
@@ -4763,6 +4775,7 @@ function AllinoneStock() {
                             style={{
                               display: "flex",
                               justifyContent: "space-between",
+                              borderBottom: "1px solid #6b728038",
                             }}
                           >
                             <span
@@ -5045,6 +5058,7 @@ function AllinoneStock() {
                             style={{
                               display: "flex",
                               justifyContent: "space-between",
+                              borderBottom: "1px solid #6b728038",
                             }}
                           >
                             <span
@@ -5312,6 +5326,7 @@ function AllinoneStock() {
                             style={{
                               display: "flex",
                               justifyContent: "space-between",
+                              borderBottom: "1px solid #6b728038",
                             }}
                           >
                             <span

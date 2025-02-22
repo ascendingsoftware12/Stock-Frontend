@@ -480,46 +480,58 @@ function BrandAchievement() {
   //     }
   //   };
 
-  const fetchDropdownData = async () => {
+  const fetchDropdownData = async (initial1) => {
     setSummaryloading(true);
     setBrandWiseloading(true);
-
+  
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
-
+  
       const response = await axios.get(
         `/brand_achievement_analysis/brandachivementcolumn?&asm=${asm}&brand=${filters.BRAND}&tgt_timeline=${filters.TGT_TIMELINE}&store_name=${filters.STORE_NAME}`
       );
-
+  
       console.log("API Response:", response.data);
-
+  
       setDropdownData(response.data);
-
+  
       if (response.data.TGT_TIMELINE?.length > 0) {
         const timelineArray = response.data.TGT_TIMELINE;
         const targetValue = "01 OCT 2024 - 10 NOV 2024";
-        const selectedIndex = timelineArray.findIndex(
-          (item) => item === targetValue
-        );
+        const selectedIndex = timelineArray.findIndex(item => item === targetValue);
+  
+        if (timelineArray.length > 0) {
 
-        if (selectedIndex !== -1) {
-          const selectedTimeValue = timelineArray[selectedIndex];
-
-          setSelectedOptiontime({
-            label: selectedTimeValue,
-            value: selectedTimeValue,
-          });
-
-          fetchsetOverALLDetails(1, selectedTimeValue);
-          fetchsetBrandWise(1, selectedTimeValue);
+          if(initial1===true){
+            const selectedTimeValue = timelineArray[selectedIndex];
+            setSelectedOptiontime({
+              label: selectedTimeValue,
+              value: selectedTimeValue,
+            });
+    
+            fetchsetOverALLDetails(1, selectedTimeValue);
+            fetchsetBrandWise(1, selectedTimeValue);
+          }else{
+            const selectedTimeValue = timelineArray;
+            setSelectedOptiontime({
+              label: selectedTimeValue,
+              value: selectedTimeValue,
+            });
+    
+            fetchsetOverALLDetails(1, selectedTimeValue);
+            fetchsetBrandWise(1, selectedTimeValue);
+          }
+          
+  
+          
         } else {
           console.warn("Target timeline value not found.");
         }
       } else {
         console.warn("TGT_TIMELINE is empty or undefined.");
       }
-
+  
       console.log("Dropdown Data Fetched:", response.data);
     } catch (error) {
       console.error("Error fetching Stocksummary Data:", error);
