@@ -172,25 +172,25 @@ function SalesAllinone() {
     demo_flag: "",
     sale_type: "",
     item_category: "",
-    gstfilter: "cr",
+    gstfilter: "lk",
     price_breakup: "",
   });
   let controller;
   let latestRequestId = 0;
 
   // Fetch dropdown data
-
-  const [Dropdownresponse, setDropdownresponse] = useState("");
-  const controllerRef = useRef(null);
-
+  const [DropdownDataresponse, setDropdownDataresponse] = useState("");
+  const controllerRef1 = useRef(null);
   const fetchDropdownData = async () => {
     // setProductionDimensionLoading(true);
-    if (controllerRef.current) {
-      controllerRef.current.abort();
+    if (controllerRef1.current) {
+      controllerRef1.current.abort();
     }
-    controllerRef.current = new AbortController();
-    const signal = controllerRef.current.signal;
-
+    controllerRef1.current = new AbortController();
+    const signal = controllerRef1.current.signal;
+    const storedname = sessionStorage.getItem("store");
+    const storecode =
+      storedname === "null" || storedname === null ? "" : storedname;
     const cleanEncode = (value) => {
       let decodedValue = value || "";
       while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -215,17 +215,16 @@ function SalesAllinone() {
       item_category: cleanEncode(filters.item_category),
     };
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      // const storedAsm = sessionStorage.getItem("asm");
+      // const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
 
       const response = await axios.get(
-        `sales_all_in_one_live/column?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}`,
+        `sales_all_in_one_live_kore/kore_column?period_from=${period.from}&period_to=${period.to}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&storecode=${storecode}`,
         { signal }
       );
-      setDropdownresponse(response.statusText);
+      setDropdownDataresponse(response.statusText);
       setDropdownData(response.data);
     } catch (error) {
-      console.error("Error fetching Stocksummary Data:", error);
       if (axios.isCancel(error)) {
         console.warn(
           "Previous request aborted. Only the last request is processed."
@@ -306,17 +305,18 @@ function SalesAllinone() {
     fetchWeekAnalysis(1);
     // fetchData();
     fetchMonthlyCalendar();
-    fetchProductionDimension(1);
+    // fetchProductionDimension(1);
+
     fetchBrandDimension(1);
     fetchItemDimension(1);
     fetchSectionDimension(1);
-    fetchItemCategoryDimension(1);
+    // fetchItemCategoryDimension(1);
     fetchDayAnalysis();
     fetchPriceBreakup1();
     fetchPriceBreakup2();
     fetchYTD();
-    fetchBranchDimension(1);
-    fetchCityDimension(1);
+    // fetchBranchDimension(1);
+    // fetchCityDimension(1);
     setInitialFilters(filters);
   };
 
@@ -425,7 +425,7 @@ function SalesAllinone() {
 
       // console.log("Filters updated:", filters);
       const queryString = new URLSearchParams(filters).toString();
-      const baseUrl = "sales_all_in_one_live/";
+      const baseUrl = "sales_all_in_one_live_kore/";
       const clearedUrl = `${baseUrl}?${queryString}`;
       // console.log("API URL being called:", clearedUrl);
 
@@ -444,22 +444,22 @@ function SalesAllinone() {
       //   gstfilter: "cr",
       //   price_breakup: ""
       // })
-      // fetchDropdownData()
+      fetchDropdownData();
       fetchData();
       fetchWeekAnalysis(1);
 
       fetchMonthlyCalendar();
-      fetchProductionDimension(1);
+      // fetchProductionDimension(1);
       fetchBrandDimension(1);
       fetchItemDimension(1);
       fetchSectionDimension(1);
-      fetchItemCategoryDimension(1);
+      // fetchItemCategoryDimension(1);
       fetchDayAnalysis();
       fetchPriceBreakup1();
       fetchPriceBreakup2();
       fetchYTD();
-      fetchBranchDimension(1);
-      fetchCityDimension(1);
+      // fetchBranchDimension(1);
+      // fetchCityDimension(1);
       setIsFiltersUpdated(false);
     }
   }, [filters, isFiltersUpdated]);
@@ -540,7 +540,7 @@ function SalesAllinone() {
     fetchDropdownData();
     fetchData();
     if (!mcFlag) fetchMonthlyCalendar();
-    if (!pdFlag) fetchProductionDimension(1);
+    // if (!pdFlag) fetchProductionDimension(1);
     if (!bdFlag) fetchBrandDimension(1);
     if (!idFlag) fetchItemDimension(1);
     if (!waFlag) fetchWeekAnalysis(1);
@@ -549,15 +549,17 @@ function SalesAllinone() {
     if (!pb2Flag) fetchPriceBreakup2();
     if (!YTDFlag) fetchYTD();
     if (!bdFlag) fetchSectionDimension(1);
-    if (!bdFlag) fetchBranchDimension(1);
-    if (!bdFlag) fetchCityDimension(1);
-    if (!bdFlag) fetchItemCategoryDimension(1);
+    // if (!bdFlag) fetchBranchDimension(1);
+    // if (!bdFlag) fetchCityDimension(1);
+
+    // if (!bdFlag) fetchItemCategoryDimension(1);
   }, [period.from, period.to]);
 
   // Fetch Data
   const fetchData = async () => {
-    const storedAsm = sessionStorage.getItem("asm");
-    const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+    const storedAsm = sessionStorage.getItem("store");
+    const storecode =
+      storedAsm === "null" || storedAsm === null ? "" : storedAsm;
     const cleanEncode = (value) => {
       let decodedValue = value || "";
       while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -584,7 +586,7 @@ function SalesAllinone() {
     // console.log("Decoded and Encoded Filters:", encodedFilters);
     try {
       const response = await axios.get(
-        `sales_all_in_one_live/date?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}`
+        `sales_all_in_one_live_kore/koredate?period_from=${period.from}&period_to=${period.to}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&storecode=${storecode}&sales_type=${encodedFilters.sale_type}`
       );
       const responseData = response.data.data[0];
       if (responseData) {
@@ -618,7 +620,7 @@ function SalesAllinone() {
   const liveData = async () => {
     try {
       const response = await axios.get(
-        `sales_all_in_one_live/table_modificatio`
+        `sales_all_in_one_live_kore/koretable_modificatio`
       );
 
       const LiveData = response?.data?.last_modified;
@@ -664,18 +666,19 @@ function SalesAllinone() {
   }
 
   // Fetch YTD
-  const [BrandItemSalesresponse7, setBrandItemSalesresponse7] = useState("");
-  const controllerRef11 = useRef(null);
+  const [YTDresponse, setYTDresponse] = useState("");
+  const controllerRef9 = useRef(null);
   const fetchYTD = async () => {
     setIsFetching5(true);
-    if (controllerRef11.current) {
-      controllerRef11.current.abort();
+    if (controllerRef9.current) {
+      controllerRef9.current.abort();
     }
-    controllerRef11.current = new AbortController();
-    const signal = controllerRef11.current.signal;
+    controllerRef9.current = new AbortController();
+    const signal = controllerRef9.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const storedAsm = sessionStorage.getItem("store");
+      const storecode =
+        storedAsm === "null" || storedAsm === null ? "" : storedAsm;
 
       const cleanEncode = (value) => {
         let decodedValue = value || "";
@@ -702,17 +705,15 @@ function SalesAllinone() {
 
       // console.log("Decoded and Encoded Filters:", encodedFilters);
       const response = await axios.get(
-        `sales_all_in_one_live/ytd_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}`,
+        `sales_all_in_one_live_kore/kore_ytd_cr?period_from=${period.from}&period_to=${period.to}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&storecode=${storecode}&sales_type=${encodedFilters.sale_type}`,
         { signal }
       );
-
-      setBrandItemSalesresponse7(response.statusText);
+      setYTDresponse(response.statusText);
       const stockpositionData = response.data;
 
       setYTD(stockpositionData);
       setYTDFlag(true);
     } catch (error) {
-      console.error("Error fetching YTD Data:", error);
       if (axios.isCancel(error)) {
         console.warn(
           "Previous request aborted. Only the last request is processed."
@@ -727,19 +728,19 @@ function SalesAllinone() {
   };
 
   // Fetch MonthCalender
-
-  const [Monthresponse, setMonthresponse] = useState("");
-  const controllerRef2 = useRef(null);
+  const [MonthlyCalendarresponse, setMonthlyCalendarresponse] = useState("");
+  const controllerRef10 = useRef(null);
   const fetchMonthlyCalendar = async () => {
     setIsFetching6(true);
-    if (controllerRef2.current) {
-      controllerRef2.current.abort();
+    if (controllerRef10.current) {
+      controllerRef10.current.abort();
     }
-    controllerRef2.current = new AbortController();
-    const signal = controllerRef2.current.signal;
+    controllerRef10.current = new AbortController();
+    const signal = controllerRef10.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const storedAsm = sessionStorage.getItem("store");
+      const storecode =
+        storedAsm === "null" || storedAsm === null ? "" : storedAsm;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -764,11 +765,10 @@ function SalesAllinone() {
       };
 
       const response = await axios.get(
-        `sales_all_in_one_live/month_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}`,
+        `sales_all_in_one_live_kore/kore_month_cr?period_from=${period.from}&period_to=${period.to}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&storecode=${storecode}&sales_type=${encodedFilters.sale_type}`,
         { signal }
       );
-
-      setMonthresponse(response.statusText);
+      setMonthlyCalendarresponse(response.statusText);
       const stockpositionData = response.data;
       setmonthcalender(stockpositionData);
       setmcFlag(true);
@@ -787,20 +787,19 @@ function SalesAllinone() {
   };
 
   // FetchPriceBreakUp1
-
-  const [BrandItemSalesresponse5, setBrandItemSalesresponse5] = useState("");
-  const controllerRef9 = useRef(null);
+  const [PriceBreakup1response, setPriceBreakup1response] = useState("");
+  const controllerRef11 = useRef(null);
   const fetchPriceBreakup1 = async () => {
     setIsFetching7(true);
-
-    if (controllerRef9.current) {
-      controllerRef9.current.abort();
+    if (controllerRef11.current) {
+      controllerRef11.current.abort();
     }
-    controllerRef9.current = new AbortController();
-    const signal = controllerRef9.current.signal;
+    controllerRef11.current = new AbortController();
+    const signal = controllerRef11.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const storedname = sessionStorage.getItem("store");
+      const storecode =
+        storedname === "null" || storedname === null ? "" : storedname;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -825,11 +824,10 @@ function SalesAllinone() {
         item_category: cleanEncode(filters.item_category),
       };
       const response = await axios.get(
-        `sales_all_in_one_live/price_breakup_one_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}`,
+        `sales_all_in_one_live_kore/kore_price_breakup_one_cr?period_from=${period.from}&period_to=${period.to}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&storecode=${storecode}&sales_type=${encodedFilters.sale_type}`,
         { signal }
       );
-
-      setBrandItemSalesresponse5(response.statusText);
+      setPriceBreakup1response(response.statusText);
       const stockpositionData = response.data;
       setPriceBreakup1(stockpositionData);
       setpb1Flag(true);
@@ -848,20 +846,19 @@ function SalesAllinone() {
   };
 
   // FetchPriceBreakUp2
-
-  const [BrandItemSalesresponse6, setBrandItemSalesresponse6] = useState("");
-  const controllerRef10 = useRef(null);
+  const [PriceBreakup2response, setPriceBreakup2response] = useState("");
+  const controllerRef12 = useRef(null);
   const fetchPriceBreakup2 = async () => {
     setIsFetching8(true);
-
-    if (controllerRef10.current) {
-      controllerRef10.current.abort();
+    if (controllerRef12.current) {
+      controllerRef12.current.abort();
     }
-    controllerRef10.current = new AbortController();
-    const signal = controllerRef10.current.signal;
+    controllerRef12.current = new AbortController();
+    const signal = controllerRef12.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const storedname = sessionStorage.getItem("store");
+      const storecode =
+        storedname === "null" || storedname === null ? "" : storedname;
 
       const cleanEncode = (value) => {
         let decodedValue = value || "";
@@ -889,16 +886,14 @@ function SalesAllinone() {
 
       // console.log("Decoded and Encoded Filters:", encodedFilters);
       const response = await axios.get(
-        `sales_all_in_one_live/price_breakup_two_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}`,
+        `sales_all_in_one_live_kore/kore_price_breakup_two_cr?period_from=${period.from}&period_to=${period.to}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&storecode=${storecode}&sales_type=${encodedFilters.sale_type}`,
         { signal }
       );
-
-      setBrandItemSalesresponse6(response.statusText);
+      setPriceBreakup2response(response.statusText);
       const stockpositionData = response.data;
       setPriceBreakup2(stockpositionData);
       setpb2Flag(true);
     } catch (error) {
-      console.error("Error fetching PriceBreakup2 Data:", error);
       if (axios.isCancel(error)) {
         console.warn(
           "Previous request aborted. Only the last request is processed."
@@ -1097,102 +1092,75 @@ function SalesAllinone() {
   };
 
   // city
-  const handleScroll = (e, dataKey) => {
-    if (finalsize9 > 0) {
-      const { scrollHeight, scrollTop, clientHeight } = e.target;
-      const isVerticalScroll = scrollTop !== lastScrollTop;
-      lastScrollTop = scrollTop;
-      if (isVerticalScroll) {
-        const isNearBottom = scrollHeight - scrollTop <= clientHeight + 1;
-        if (isNearBottom) {
-          setCitypage((prevPage) => {
-            const newPage = prevPage + 1;
+  // const handleScroll = (e, dataKey) => {
+  //   if (finalsize9 > 0) {
+  //     const { scrollHeight, scrollTop, clientHeight } = e.target;
+  //     const isVerticalScroll = scrollTop !== lastScrollTop;
+  //     lastScrollTop = scrollTop;
+  //     if (isVerticalScroll) {
+  //       const isNearBottom = scrollHeight - scrollTop <= clientHeight + 1;
+  //       if (isNearBottom) {
+  //         setCitypage((prevPage) => {
+  //           const newPage = prevPage + 1;
 
-            // Prevent duplicate fetches
-            if (newPage !== lastFetchedPage.current) {
-              console.log(newPage, "Updated WeekAnalysispage");
-              fetchCityDimension(newPage);
-              lastFetchedPage.current = newPage; // Update last fetched page
-            }
+  //           // Prevent duplicate fetches
+  //           if (newPage !== lastFetchedPage.current) {
+  //             console.log(newPage, "Updated WeekAnalysispage");
+  //             fetchCityDimension(newPage);
+  //             lastFetchedPage.current = newPage; // Update last fetched page
+  //           }
 
-            return newPage;
-          });
-        }
-      }
-    }
-  };
+  //           return newPage;
+  //         });
+  //       }
+  //     }
+  //   }
+  // };
 
   // ItemCategory
-  const handleScrol6 = (e, dataKey) => {
-    if (finalsize5 > 0) {
-      const { scrollHeight, scrollTop, clientHeight } = e.target;
+  // const handleScrol6 = (e, dataKey) => {
+  //   if (finalsize5 > 0) {
+  //     const { scrollHeight, scrollTop, clientHeight } = e.target;
 
-      const isVerticalScroll = scrollTop !== lastScrollTop;
-      lastScrollTop = scrollTop;
+  //     const isVerticalScroll = scrollTop !== lastScrollTop;
+  //     lastScrollTop = scrollTop;
 
-      if (isVerticalScroll && !isFetchingcategoryloading) {
-        const isNearBottom = scrollHeight - scrollTop <= clientHeight + 1;
+  //     if (isVerticalScroll && !isFetchingcategoryloading) {
+  //       const isNearBottom = scrollHeight - scrollTop <= clientHeight + 1;
 
-        if (isNearBottom) {
-          setItemCategorypage((prevPage) => {
-            const newPage = prevPage + 1;
+  //       if (isNearBottom) {
+  //         setItemCategorypage((prevPage) => {
+  //           const newPage = prevPage + 1;
 
-            // Prevent duplicate fetches
-            if (newPage !== lastFetchedPage.current) {
-              console.log(newPage, "Updated WeekAnalysispage");
-              fetchItemCategoryDimension(newPage);
-              lastFetchedPage.current = newPage; // Update last fetched page
-            }
+  //           // Prevent duplicate fetches
+  //           if (newPage !== lastFetchedPage.current) {
+  //             console.log(newPage, "Updated WeekAnalysispage");
+  //             fetchItemCategoryDimension(newPage);
+  //             lastFetchedPage.current = newPage; // Update last fetched page
+  //           }
 
-            return newPage;
-          });
-          // setItemCategorypage(ItemCategorypage+1);
-          // const fetchMap = {
-          //   ItemCategoryDimension: fetchItemCategoryDimension,
-          // };
-          // if (fetchMap[dataKey]) {
-          //   fetchMap[dataKey]()
-          //     .then(() => {
-          //       setIsFetchingcategoryloading(false);
-          //     })
-          //     .catch((error) => {
-          //       console.error("Error in lazy loading:", error);
-          //       setIsFetchingcategoryloading(false);
-          //     });
-          // }
-        }
-      }
-    }
-  };
+  //           return newPage;
+  //         });
+  //         // setItemCategorypage(ItemCategorypage+1);
+  //         // const fetchMap = {
+  //         //   ItemCategoryDimension: fetchItemCategoryDimension,
+  //         // };
+  //         // if (fetchMap[dataKey]) {
+  //         //   fetchMap[dataKey]()
+  //         //     .then(() => {
+  //         //       setIsFetchingcategoryloading(false);
+  //         //     })
+  //         //     .catch((error) => {
+  //         //       console.error("Error in lazy loading:", error);
+  //         //       setIsFetchingcategoryloading(false);
+  //         //     });
+  //         // }
+  //       }
+  //     }
+  //   }
+  // };
 
   // Product
-  const handleScrol7 = (e, dataKey) => {
-    if (finalsize6 > 0) {
-      const { scrollHeight, scrollTop, clientHeight } = e.target;
-
-      const isVerticalScroll = scrollTop !== lastScrollTop;
-      lastScrollTop = scrollTop;
-
-      if (isVerticalScroll && !isFetching2) {
-        const isNearBottom = scrollHeight - scrollTop <= clientHeight + 1;
-
-        if (isNearBottom) {
-          setProductpage((prevPage) => {
-            const newPage = prevPage + 1;
-
-            // Prevent duplicate fetches
-            if (newPage !== lastFetchedPage.current) {
-              console.log(newPage, "Updated WeekAnalysispage");
-              fetchProductionDimension(newPage);
-              lastFetchedPage.current = newPage; // Update last fetched page
-            }
-
-            return newPage;
-          });
-        }
-      }
-    }
-  };
 
   // Brand
   const handleScrol8 = (e, dataKey) => {
@@ -1286,20 +1254,21 @@ function SalesAllinone() {
   const [finalsize, setfinalsize] = useState();
 
   // Fetch Week
-  const [Weekanaresponse, setWeekanaresponse] = useState("");
-  const controllerRef1 = useRef(null);
-
+  const [WeekAnalysisresponse, setWeekAnalysisresponse] = useState("");
+  const controllerRef2 = useRef(null);
   const fetchWeekAnalysis = async (page) => {
     setIsFetching(true);
-    if (controllerRef1.current) {
-      controllerRef1.current.abort();
+    if (controllerRef2.current) {
+      controllerRef2.current.abort();
     }
-    controllerRef1.current = new AbortController();
-    const signal = controllerRef1.current.signal;
+    controllerRef2.current = new AbortController();
+    const signal = controllerRef2.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
-
+      // const storedAsm = sessionStorage.getItem("asm");
+      // const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const storedname = sessionStorage.getItem("store");
+      const storecode =
+        storedname === "null" || storedname === null ? "" : storedname;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -1328,10 +1297,10 @@ function SalesAllinone() {
 
       // Use the updated `page` instead of stale `WeekAnalysispage`
       const response = await axios.get(
-        `sales_all_in_one_live/weekly_analysis_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&page=${page}&limit=${limit}`,
+        `sales_all_in_one_live_kore/kore_weekly_analysis_cr?period_from=${period.from}&period_to=${period.to}&item_description=${encodedFilters.item_description}&sales_type=${encodedFilters.sale_type}&brand_name=${encodedFilters.brand_name}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&storecode=${storecode}&page=${page}&limit=${limit}`,
         { signal }
       );
-      setWeekanaresponse(response.statusText);
+      setWeekAnalysisresponse(response.statusText);
       const size = Object.keys(response.data?.values || {}).length;
 
       setfinalsize(size);
@@ -1362,26 +1331,28 @@ function SalesAllinone() {
         console.error("Error fetching SalesCity Data:", error);
       }
     } finally {
-      setIsFetching(false); // Ensure loading state is reset
+      setIsFetching(false);
     }
   };
 
   // Fetch Day
   const [finalsize1, setfinalsize1] = useState();
-
-  const [BrandItemSalesresponse4, setBrandItemSalesresponse4] = useState("");
-  const controllerRef8 = useRef(null);
+  const [DayAnalysisresponse, setDayAnalysisresponse] = useState("");
+  const controllerRef3 = useRef(null);
   const fetchDayAnalysis = async () => {
     // if (isFetching1) return;
     setIsFetching1(true);
-    if (controllerRef8.current) {
-      controllerRef8.current.abort();
+    if (controllerRef3.current) {
+      controllerRef3.current.abort();
     }
-    controllerRef8.current = new AbortController();
-    const signal = controllerRef8.current.signal;
+    controllerRef3.current = new AbortController();
+    const signal = controllerRef3.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const storedname = sessionStorage.getItem("store");
+      const storecode =
+        storedname === "null" || storedname === null ? "" : storedname;
+      // const storedAsm = sessionStorage.getItem("asm");
+      // const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -1405,11 +1376,10 @@ function SalesAllinone() {
         item_category: cleanEncode(filters.item_category),
       };
       const response = await axios.get(
-        `sales_all_in_one_live/day_analysis_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}`,
+        `sales_all_in_one_live_kore/kore_day_analysis_cr?period_from=${period.from}&period_to=${period.to}&sales_type=${encodedFilters.sale_type}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&storecode=${storecode}`,
         { signal }
       );
-
-      setBrandItemSalesresponse4(response.statusText);
+      setDayAnalysisresponse(response.statusText);
       const stockpositionData = response.data;
       setDayAnalysis(stockpositionData);
       const size = Object.keys(response.data || {}).length;
@@ -1439,7 +1409,6 @@ function SalesAllinone() {
       //   }
       // }
     } catch (error) {
-      console.error("Error fetching Day Analysis Data:", error);
       if (axios.isCancel(error)) {
         console.warn(
           "Previous request aborted. Only the last request is processed."
@@ -1454,19 +1423,10 @@ function SalesAllinone() {
 
   // Fetch Product
   const [finalsize6, setfinalsize6] = useState();
-
-  const [Productdimresponse, setProductdimresponse] = useState("");
-  const controllerRef3 = useRef(null);
   const fetchProductionDimension = async (page) => {
     console.log(productpage);
 
     setIsFetching2(true);
-
-    if (controllerRef3.current) {
-      controllerRef3.current.abort();
-    }
-    controllerRef3.current = new AbortController();
-    const signal = controllerRef3.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
@@ -1497,10 +1457,8 @@ function SalesAllinone() {
 
       // console.log("Decoded and Encoded Filters:", encodedFilters);
       const response = await axios.get(
-        `sales_all_in_one_live/product_dimension_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&page=${page}&limit=${productlimit}`,
-        { signal }
+        `sales_all_in_one_live/product_dimension_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&page=${page}&limit=${productlimit}`
       );
-      setProductdimresponse(response.statusText);
       const size = Object.keys(response.data?.values || {}).length;
       setfinalsize6(size);
       if (response.data && response.data?.values && size > 0) {
@@ -1528,13 +1486,6 @@ function SalesAllinone() {
       }
     } catch (error) {
       console.error("Error fetching Production Dimension Data:", error);
-      if (axios.isCancel(error)) {
-        console.warn(
-          "Previous request aborted. Only the last request is processed."
-        );
-      } else {
-        console.error("Error fetching SalesCity Data:", error);
-      }
     } finally {
       setIsFetching2(false);
     }
@@ -1542,23 +1493,21 @@ function SalesAllinone() {
 
   // fetch Brand
   const [finalsize7, setfinalsize7] = useState();
-
-  const [Branddimresponse, setBranddimresponse] = useState("");
-  const controllerRef4 = useRef(null);
-
+  const [BrandDimensionresponse, setBrandDimensionresponse] = useState("");
+  const controllerRef5 = useRef(null);
   const fetchBrandDimension = async (page) => {
     console.log("fetchBrandDimension");
 
     setIsFetching3(true);
-
-    if (controllerRef4.current) {
-      controllerRef4.current.abort();
+    if (controllerRef5.current) {
+      controllerRef5.current.abort();
     }
-    controllerRef4.current = new AbortController();
-    const signal = controllerRef4.current.signal;
+    controllerRef5.current = new AbortController();
+    const signal = controllerRef5.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const storedname = sessionStorage.getItem("store");
+      const storecode =
+        storedname === "null" || storedname === null ? "" : storedname;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -1584,27 +1533,47 @@ function SalesAllinone() {
       };
       // console.log("Decoded and Encoded Filters:", encodedFilters);
       const response = await axios.get(
-        `sales_all_in_one_live/brand_dimension_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&page=${page}&limit=${BrandLimit}`,
+        `sales_all_in_one_live_kore/Kore_brand_dimension_cr?period_from=${period.from}&period_to=${period.to}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&storecode=${storecode}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&sales_type=${encodedFilters.sale_type}&page=${page}&limit=${BrandLimit}`,
         { signal }
       );
-
-      setBranddimresponse(response.statusText);
+      setBrandDimensionresponse(response.statusText);
       const size = Object.keys(response.data?.values || {}).length;
       setfinalsize7(size);
       if (response.data && response.data?.values && size > 0) {
         const { values } = response.data;
         if (Object.keys(values)?.length > 0) {
           if (page === 1) {
-            setBrandDimension(response.data);
+            setBrandDimension({
+              ...response.data,
+              values: Object.fromEntries(
+                Object.entries(response.data.values).map(([brand, yearlyData]) => [
+                  brand,
+                  Object.fromEntries(
+                    Object.entries(yearlyData).sort(([yearA], [yearB]) => yearB - yearA) // Sort years in descending order
+                  ),
+                ])
+              ),
+              years: response.data.years.sort((a, b) => b - a), // Ensure the 'years' array is sorted
+            });
           } else {
             setBrandDimension((prevData) => ({
               ...prevData,
               values: {
                 ...prevData?.values,
-                ...values,
+                ...Object.fromEntries(
+                  Object.entries(values).map(([brand, yearlyData]) => [
+                    brand,
+                    Object.fromEntries(
+                      Object.entries(yearlyData).sort(([yearA], [yearB]) => yearB - yearA)
+                    ),
+                  ])
+                ),
               },
+              years: [...new Set([...prevData.years, ...response.data.years])].sort((a, b) => b - a), // Merge and sort years
             }));
           }
+          
+          
           setbdFlag(true);
         } else {
           console.error(
@@ -1638,20 +1607,20 @@ function SalesAllinone() {
 
   // Fetch Item
   const [finalsize8, setfinalsize8] = useState();
-
-  const [BrandItemSalesresponse1, setBrandItemSalesresponse1] = useState("");
-  const controllerRef5 = useRef(null);
+  const [ItemDimensionresponse, setItemDimensionresponse] = useState("");
+  const controllerRef6 = useRef(null);
   const fetchItemDimension = async (page) => {
     setIsFetching4(true);
-
-    if (controllerRef5.current) {
-      controllerRef5.current.abort();
+    if (controllerRef6.current) {
+      controllerRef6.current.abort();
     }
-    controllerRef5.current = new AbortController();
-    const signal = controllerRef5.current.signal;
+    controllerRef6.current = new AbortController();
+    const signal = controllerRef6.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      // const storedAsm = sessionStorage.getItem("asm");
+      const storedname = sessionStorage.getItem("store");
+      const storecode =
+        storedname === "null" || storedname === null ? "" : storedname;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -1679,10 +1648,10 @@ function SalesAllinone() {
       // console.log("Decoded and Encoded Filters:", encodedFilters);
 
       const response = await axios.get(
-        `sales_all_in_one_live/item_dimension_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&page=${page}&limit=${ItemLimit}`,
+        `sales_all_in_one_live_kore/kore_item_dimension_cr?period_from=${period.from}&period_to=${period.to}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&storecode=${storecode}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&sales_type=${encodedFilters.sale_type}&page=${page}&limit=${ItemLimit}`,
         { signal }
       );
-      setBrandItemSalesresponse1(response.statusText);
+      setItemDimensionresponse(response.statusText);
       const size = Object.keys(response.data?.values || {}).length;
       setfinalsize8(size);
       if (response.data && response.data?.values && size > 0) {
@@ -1727,20 +1696,21 @@ function SalesAllinone() {
 
   // Fetch Section
   const [finalsize4, setfinalsize4] = useState();
-
-  const [BrandItemSalesresponse2, setBrandItemSalesresponse2] = useState("");
-  const controllerRef6 = useRef(null);
+  const [SectionDimensionresponse, setSectionDimensionresponse] = useState("");
+  const controllerRef7 = useRef(null);
   const fetchSectionDimension = async (page3) => {
     setIsFetchingSectionloading(true);
-    if (controllerRef6.current) {
-      controllerRef6.current.abort();
+    if (controllerRef7.current) {
+      controllerRef7.current.abort();
     }
-    controllerRef6.current = new AbortController();
-    const signal = controllerRef6.current.signal;
+    controllerRef7.current = new AbortController();
+    const signal = controllerRef7.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
-
+      // const storedAsm = sessionStorage.getItem("asm");
+      // const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const storedname = sessionStorage.getItem("store");
+      const storecode =
+        storedname === "null" || storedname === null ? "" : storedname;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -1766,10 +1736,10 @@ function SalesAllinone() {
       };
 
       const response = await axios.get(
-        `sales_all_in_one_live/section_dimension_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&page=${page3}&limit=${SectionLimit}`,
+        `sales_all_in_one_live_kore/kore_section_dimension_cr?period_from=${period.from}&period_to=${period.to}&storecode=${storecode}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&sales_type=${encodedFilters.sale_type}&page=${page3}&limit=${SectionLimit}`,
         { signal }
       );
-      setBrandItemSalesresponse2(response.statusText);
+      setSectionDimensionresponse(response.statusText);
       const size = Object.keys(response.data?.values || {}).length;
       setfinalsize4(size);
 
@@ -1791,7 +1761,6 @@ function SalesAllinone() {
         console.log("No more data available");
       }
     } catch (error) {
-      console.error("Error fetching BrandDimension Data:", error);
       if (axios.isCancel(error)) {
         console.warn(
           "Previous request aborted. Only the last request is processed."
@@ -1810,19 +1779,19 @@ function SalesAllinone() {
   const [Branchpage, setBranchpage] = useState(1);
   const BranchLimit = 250;
   const [finalsize2, setfinalsize2] = useState();
-
-  const [BrandItemSalesresponse8, setBrandItemSalesresponse8] = useState("");
-  const controllerRef12 = useRef(null);
+  const [BranchDimensionresponse, setBranchDimensionresponse] = useState("");
+  const controllerRef8 = useRef(null);
   const fetchBranchDimension = async (page1) => {
     setIsFetchingBranchloading(true);
-    if (controllerRef12.current) {
-      controllerRef12.current.abort();
+    if (controllerRef8.current) {
+      controllerRef8.current.abort();
     }
-    controllerRef12.current = new AbortController();
-    const signal = controllerRef12.current.signal;
+    controllerRef8.current = new AbortController();
+    const signal = controllerRef8.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const storedname = sessionStorage.getItem("store");
+      const storecode =
+        storedname === "null" || storedname === null ? "" : storedname;
 
       const cleanEncode = (value) => {
         let decodedValue = value || "";
@@ -1850,10 +1819,10 @@ function SalesAllinone() {
 
       // console.log("Decoded and Encoded Filters:", encodedFilters);
       const response = await axios.get(
-        `sales_all_in_one_live/branch_dimension_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&page=${page1}&limit=${BranchLimit}`,
+        `sales_all_in_one_live/branch_dimension_cr?period_from=${period.from}&period_to=${period.to}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&storecode=${storecode}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&page=${page1}&limit=${BranchLimit}`,
         { signal }
       );
-      setBrandItemSalesresponse8(response.statusText);
+      setBranchDimensionresponse(response.statusText);
       const size = Object.keys(response.data?.values || {}).length;
       setfinalsize2(size);
       if (response.data && response.data?.values && size > 0) {
@@ -1878,7 +1847,6 @@ function SalesAllinone() {
         }
       }
     } catch (error) {
-      console.error("Error fetching BranchDimension data:", error);
       if (axios.isCancel(error)) {
         console.warn(
           "Previous request aborted. Only the last request is processed."
@@ -1897,17 +1865,8 @@ function SalesAllinone() {
   const [Citypage, setCitypage] = useState(1);
   const CityLimit = 52;
   const [finalsize9, setfinalsize9] = useState();
-
-  const [BrandItemSalesresponse9, setBrandItemSalesresponse9] = useState("");
-  const controllerRef13 = useRef(null);
   const fetchCityDimension = async (page) => {
     setIsFetchingCityloading(true);
-
-    if (controllerRef13.current) {
-      controllerRef13.current.abort();
-    }
-    controllerRef13.current = new AbortController();
-    const signal = controllerRef13.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
@@ -1939,11 +1898,8 @@ function SalesAllinone() {
       // console.log("Decoded and Encoded Filters:", encodedFilters);
 
       const response = await axios.get(
-        `sales_all_in_one_live/city_dimension_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&page=${page}&limit=${CityLimit}`,
-        { signal }
+        `sales_all_in_one_live/city_dimension_cr?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&page=${page}&limit=${CityLimit}`
       );
-
-      setBrandItemSalesresponse9(response.statusText);
       const size = Object.keys(response.data?.values || {}).length;
       setfinalsize9(size);
       if (response.data && response.data?.values) {
@@ -1975,28 +1931,15 @@ function SalesAllinone() {
       }
     } catch (error) {
       console.error("Error fetching BrandDimension Data:", error);
-      if (axios.isCancel(error)) {
-        console.warn(
-          "Previous request aborted. Only the last request is processed."
-        );
-      } else {
-        console.error("Error fetching SalesCity Data:", error);
-      }
     } finally {
       setIsFetchingCityloading(false);
     }
   };
   // Fetch ItemCategory
   const [finalsize5, setfinalsize5] = useState();
-  const [BrandItemSalesresponse3, setBrandItemSalesresponse3] = useState("");
-  const controllerRef7 = useRef(null);
+
   const fetchItemCategoryDimension = async (page) => {
     setIsFetchingcategoryloading(true);
-    if (controllerRef7.current) {
-      controllerRef7.current.abort();
-    }
-    controllerRef7.current = new AbortController();
-    const signal = controllerRef7.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
@@ -2026,10 +1969,9 @@ function SalesAllinone() {
       };
 
       const response = await axios.get(
-        `sales_all_in_one_live/itemcategory?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&page=${page}&limit=${ItemCategoryLimit}`,
-        { signal }
+        `sales_all_in_one_live/itemcategory?period_from=${period.from}&period_to=${period.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&item_description=${encodedFilters.item_description}&brand_name=${encodedFilters.brand_name}&product_group=${encodedFilters.product_group}&section=${encodedFilters.section}&model_no=${encodedFilters.model_no}&srn_flag=${encodedFilters.srn_flag}&demo_flag=${encodedFilters.demo_flag}&gstfilter=${encodedFilters.gstfilter}&PriceBreakup2=${encodedFilters.price_breakup}&asm=${asm}&sales_type=${encodedFilters.sale_type}&item_category=${encodedFilters.item_category}&page=${page}&limit=${ItemCategoryLimit}`
       );
-      setBrandItemSalesresponse3(response.statusText);
+
       const size = Object.keys(response.data?.values || {}).length;
       setfinalsize5(size);
       if (response.data && response.data?.values && size > 0) {
@@ -2051,13 +1993,6 @@ function SalesAllinone() {
       }
     } catch (error) {
       console.error("Error fetching Item Dimension Data:", error);
-      if (axios.isCancel(error)) {
-        console.warn(
-          "Previous request aborted. Only the last request is processed."
-        );
-      } else {
-        console.error("Error fetching SalesCity Data:", error);
-      }
     } finally {
       setIsFetchingcategoryloading(false); // Ensure the loader stops regardless of success or failure
     }
@@ -2954,7 +2889,7 @@ function SalesAllinone() {
 
                 {/* //section */}
                 <div className="w-1/5 filterstock">
-                  <label htmlFor="section">Section:</label>
+                  <label htmlFor="section">Product:</label>
                   <Select
                     options={options5}
                     value={dropdownValuesection}
@@ -2969,61 +2904,7 @@ function SalesAllinone() {
                     classNamePrefix="select"
                   />
                 </div>
-                <div className="w-1/5 filterstock">
-                  <label htmlFor="product_group">Item Category:</label>
-                  <Select
-                    options={options10}
-                    value={dropdownValue10}
-                    onChange={handleitemcategoryChange}
-                    isMulti
-                    defaultValue={
-                      Array.isArray(dropdownData.item_category) &&
-                      dropdownData.item_category
-                        .slice()
-                        .sort((a, b) => a.localeCompare(b))?.length > 2
-                        ? [
-                            {
-                              label: dropdownData.item_category[2],
-                              value: dropdownData.item_category[2],
-                            },
-                          ]
-                        : null
-                    }
-                    onFocus={() => setPlaceholder11("Search...")}
-                    onBlur={() => setPlaceholder11("All")}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    placeholder={placeholder11}
-                  />
-                </div>
 
-                <div className="w-1/5 filterstock">
-                  <label htmlFor="product_group">Product:</label>
-                  <Select
-                    options={options4}
-                    value={dropdownValueproduct}
-                    onChange={handleproductgroupChange}
-                    isMulti
-                    defaultValue={
-                      Array.isArray(dropdownData.product_group) &&
-                      dropdownData.product_group
-                        .slice()
-                        .sort((a, b) => a.localeCompare(b))?.length > 2
-                        ? [
-                            {
-                              label: dropdownData.product_group[2],
-                              value: dropdownData.product_group[2],
-                            },
-                          ]
-                        : null
-                    }
-                    onFocus={() => setPlaceholder5("Search...")}
-                    onBlur={() => setPlaceholder5("All")}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    placeholder={placeholder5}
-                  />
-                </div>
                 <div className="w-1/5 filterstock">
                   <label htmlFor="brand_name">Brand Name:</label>
                   <Select
@@ -3108,63 +2989,6 @@ function SalesAllinone() {
                     className="basic-multi-select"
                     classNamePrefix="select"
                     placeholder={placeholder3}
-                  />
-                </div>
-                <div className="w-1/5 filterstock">
-                  <label htmlFor="store_name">Branch:</label>
-                  <div className="App">
-                    <Select
-                      options={options}
-                      value={dropdownValuebranch}
-                      onChange={handleChange}
-                      isMulti
-                      defaultValue={
-                        Array.isArray(dropdownData.store_name) &&
-                        dropdownData.store_name
-                          .slice()
-                          .sort((a, b) => a.localeCompare(b))?.length > 2
-                          ? [
-                              {
-                                label: dropdownData.store_name[2],
-                                value: dropdownData.store_name[2],
-                              },
-                            ]
-                          : null
-                      }
-                      onFocus={() => setPlaceholder2("Search...")}
-                      onBlur={() => setPlaceholder2("All")}
-                      className="basic-multi-select"
-                      classNamePrefix="select"
-                      placeholder={placeholder2}
-                    />
-                  </div>
-                </div>
-
-                <div className="w-1/5 filterstock">
-                  <label htmlFor="city">City:</label>
-                  <Select
-                    options={options2}
-                    value={dropdownValuecity}
-                    onChange={handleCityChange}
-                    isMulti
-                    defaultValue={
-                      Array.isArray(dropdownData.city) &&
-                      dropdownData.city
-                        .slice()
-                        .sort((a, b) => a.localeCompare(b))?.length > 2
-                        ? [
-                            {
-                              label: dropdownData.city[2],
-                              value: dropdownData.city[2],
-                            },
-                          ]
-                        : null
-                    }
-                    onFocus={() => setPlaceholder1("Search...")}
-                    onBlur={() => setPlaceholder1("All")}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    placeholder={placeholder1}
                   />
                 </div>
 
@@ -3371,7 +3195,7 @@ function SalesAllinone() {
                         </tbody>
                       </table>
 
-                      {(isFetching5 || BrandItemSalesresponse7 !== "OK") && (
+                      {(isFetching5||(YTDresponse!=="OK")) && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -3496,7 +3320,7 @@ function SalesAllinone() {
                           )}
                         </tbody>
                       </table>
-                      {(isFetching6 || Monthresponse !== "OK") && (
+                      {(isFetching6||(MonthlyCalendarresponse!=="OK")) && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -3662,7 +3486,7 @@ function SalesAllinone() {
                       </table>
 
                       {/* Lazy Loader */}
-                      {(isFetching || Weekanaresponse !== "OK") && (
+                      {(isFetching||(WeekAnalysisresponse!=="OK")) && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -3947,7 +3771,7 @@ function SalesAllinone() {
                       </table>
 
                       {/* Lazy Loader */}
-                      {(isFetching1 || BrandItemSalesresponse4 !== "OK") && (
+                      {(isFetching1||(DayAnalysisresponse!=="OK")) && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -3961,497 +3785,6 @@ function SalesAllinone() {
                   </div>
                 </div>
                 <br />
-              </div>
-            </div>
-            <div
-              class="d-flex"
-              style={{
-                gap: "8px",
-                width: "100%",
-              }}
-            >
-              {/* Branch Dimension */}
-              <div
-                style={{
-                  background: " #1C3644",
-                  width: "3%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <div class="rotated-text">Place Analysis</div>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  border: "2px solid #1C3644",
-                  width: "97%",
-                }}
-              >
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <h3 className="text-l font-medium text-center text-gray-900 dark:text-white py-2">
-                      Branch Dimension
-                    </h3>
-                    <div
-                      className="overflow-x-auto max-h-[400px]"
-                      onScroll={(e) => handleScroll3(e, "BranchDimension")}
-                      style={{
-                        height: "348px",
-                        overflow: "scroll",
-                        border: "1px solid #80808075",
-                      }}
-                    >
-                      <table className="w-full leading-normal m-0">
-                        <thead className="sticky top-0">
-                          <tr>
-                            <th
-                              style={{ background: "#1C3644" }}
-                              className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                            >
-                              FY
-                            </th>
-                            {BranchDimension &&
-                              Array.isArray(BranchDimension.years) &&
-                              BranchDimension.years
-                                .sort((a, b) => b - a)
-                                .map((year) => (
-                                  <th
-                                    style={{ background: "#1C3644" }}
-                                    className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                                    colSpan={months.length}
-                                    key={year}
-                                  >
-                                    {year}
-                                  </th>
-                                ))}
-                          </tr>
-                          <tr>
-                            <th
-                              style={{ background: "#1C3644" }}
-                              className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                            >
-                              STORE NAME
-                            </th>
-                            {BranchDimension?.years?.length > 0 &&
-                              BranchDimension?.years?.map((year) =>
-                                months.map((month) => (
-                                  <th
-                                    style={{ background: "#1C3644" }}
-                                    key={`${year}-${month}`}
-                                    className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                                  >
-                                    {month}
-                                  </th>
-                                ))
-                              )}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {BranchDimension ? (
-                            (() => {
-                              if (
-                                !BranchDimension.values ||
-                                !BranchDimension.years
-                              ) {
-                                return (
-                                  <tr>
-                                    <td
-                                      style={{ border: "none" }}
-                                      rowSpan="1"
-                                      colSpan={
-                                        BranchDimension.years?.length *
-                                          months?.length +
-                                          1 || 1
-                                      }
-                                      className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center"
-                                    >
-                                      No data available
-                                    </td>
-                                  </tr>
-                                );
-                              }
-                              const allValues = Object.values(
-                                BranchDimension.values
-                              )
-                                .flatMap((yearsData) =>
-                                  BranchDimension.years.flatMap((year) =>
-                                    months.map((month) => {
-                                      const valueString =
-                                        yearsData[year]?.[month];
-                                      return valueString
-                                        ? parseFloat(valueString.split(" ")[0])
-                                        : 0;
-                                    })
-                                  )
-                                )
-                                .filter((val) => !isNaN(val));
-
-                              const maxValue = Math.max(...allValues);
-                              const minValue = Math.min(...allValues);
-
-                              // console.log('Max Value:', maxValue, 'Min Value:', minValue);
-                              const calculateOpacity = (value) => {
-                                if (maxValue === minValue) return 0.5;
-                                return (
-                                  ((value - minValue) / (maxValue - minValue)) *
-                                    0.9 +
-                                  0.1
-                                );
-                              };
-                              const sortedRows = Object.entries(
-                                BranchDimension.values
-                              )
-                                .map(([brand, yearsData]) => {
-                                  const currentMonthValue =
-                                    BranchDimension.years?.reduce(
-                                      (max, year) => {
-                                        return Math.max(
-                                          ...months.map((month) => {
-                                            const valueString =
-                                              yearsData[year]?.[month];
-                                            return valueString
-                                              ? parseFloat(
-                                                  valueString.split(" ")[0]
-                                                )
-                                              : 0;
-                                          })
-                                        );
-                                      },
-                                      0
-                                    );
-                                  return { brand, currentMonthValue };
-                                })
-                                .sort(
-                                  (a, b) =>
-                                    a.currentMonthValue - b.currentMonthValue
-                                );
-                              return sortedRows.length > 0 ? (
-                                sortedRows.map(
-                                  ({ brand, currentMonthValue }) => {
-                                    const yearsData =
-                                      BranchDimension.values[brand];
-                                    return (
-                                      <tr key={brand} className="bg-white">
-                                        <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
-                                          {brand}
-                                        </td>
-                                        {BranchDimension.years.map((year) =>
-                                          months.map((month) => {
-                                            if (month === "Total") {
-                                              const totalValue =
-                                                BranchDimension.yearly_totals[
-                                                  brand
-                                                ]?.[year] || 0;
-
-                                              return (
-                                                <td
-                                                  key={`${year}-${month}`}
-                                                  className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                                >
-                                                  {totalValue
-                                                    ? formatNumber(totalValue)
-                                                    : "0"}
-                                                </td>
-                                              );
-                                            }
-
-                                            const valueString =
-                                              yearsData[year]?.[month];
-                                            const numericValue = valueString
-                                              ? parseFloat(
-                                                  valueString
-                                                    .replace("(0.0%)")
-                                                    .split(" ")[0]
-                                                ) ||
-                                                valueString
-                                                  .replace("(0.0%)")
-                                                  .split(" ")[0]
-                                              : 0;
-                                            const formattedValue =
-                                              formatNumber(numericValue);
-                                            const isNegativeZero = Object.is(
-                                              numericValue,
-                                              -0
-                                            );
-                                            const opacity = isNegativeZero
-                                              ? 0.1
-                                              : calculateOpacity(numericValue);
-                                            // const opacity = calculateOpacity(numericValue);
-                                            const backgroundColor =
-                                              Object.is(numericValue, -0) ||
-                                              numericValue !== 0 ||
-                                              (valueString &&
-                                                valueString.includes("-0"))
-                                                ? `rgba(5, 127, 163, ${opacity})`
-                                                : "transparent";
-
-                                            // console.log(`Value: ${numericValue}, Opacity: ${opacity}, Background: ${backgroundColor}`);
-
-                                            return (
-                                              <td
-                                                key={`${year}-${month}`}
-                                                className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                                style={{ backgroundColor }}
-                                              >
-                                                {valueString
-                                                  ? `${formattedValue} ${
-                                                      valueString?.split(" ")[1]
-                                                    }`
-                                                  : "0"}
-                                              </td>
-                                            );
-                                          })
-                                        )}
-                                      </tr>
-                                    );
-                                  }
-                                )
-                              ) : (
-                                <tr>
-                                  <td
-                                    style={{ border: "none" }}
-                                    rowSpan="2"
-                                    colSpan={
-                                      BranchDimension.years?.length *
-                                        months?.length +
-                                        1 || 1
-                                    }
-                                    className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center"
-                                  >
-                                    No data available
-                                  </td>
-                                </tr>
-                              );
-                            })()
-                          ) : (
-                            <tr>
-                              {!isFetchingBranchloading && (
-                                <td
-                                  style={{ border: "none" }}
-                                  colSpan={1}
-                                  className="text-center text-gray-500 py-2"
-                                >
-                                  No data available
-                                </td>
-                              )}
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                      {(isFetchingBranchloading ||
-                        BrandItemSalesresponse8 !== "OK") && (
-                        <div className="text-center text-gray-600 py-2">
-                          <div
-                            className="spinner-border gray-spinner"
-                            role="status"
-                          >
-                            <span className="sr-only">Loading...</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* City Dimension */}
-                  <div>
-                    <h3 className="text-l font-medium text-center text-gray-900 dark:text-white py-2">
-                      City Dimension
-                    </h3>
-                    <div
-                      className="overflow-x-auto max-h-[400px]"
-                      onScroll={(e) => handleScroll(e, "CityDimension")}
-                      style={{
-                        height: "348px",
-                        overflow: "auto",
-                        border: "1px solid #80808075",
-                      }}
-                    >
-                      <table className="w-full leading-normal m-0">
-                        <thead className="sticky top-0">
-                          <tr>
-                            <th
-                              style={{ background: "#1C3644" }}
-                              className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                            >
-                              FY
-                            </th>
-                            {CityDimension &&
-                              CityDimension?.years?.map((year) => (
-                                <th
-                                  style={{ background: "#1C3644" }}
-                                  className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                                  colSpan={months.length}
-                                  key={year}
-                                >
-                                  {year}
-                                </th>
-                              ))}
-                          </tr>
-                          <tr>
-                            <th
-                              style={{ background: "#1C3644" }}
-                              className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                            >
-                              CITY
-                            </th>
-                            {CityDimension &&
-                              CityDimension?.years?.map((year) =>
-                                months?.map((month) => (
-                                  <th
-                                    style={{ background: "#1C3644" }}
-                                    key={month}
-                                    className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                                  >
-                                    {month}
-                                  </th>
-                                ))
-                              )}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {CityDimension &&
-                          Object.keys(CityDimension.values).length > 0 ? (
-                            (() => {
-                              const maxItemValue = CityDimension.max;
-
-                              const calculateOpacity = (value) => {
-                                if (!maxItemValue || maxItemValue === 0) {
-                                  return 0.1;
-                                }
-                                const opacity = value / maxItemValue;
-                                return Math.min(Math.max(opacity, 0.1), 1);
-                              };
-
-                              const sortedEntries = Object.entries(
-                                CityDimension.values
-                              ).sort(([, yearsDataA], [, yearsDataB]) => {
-                                const valueA = yearsDataA[
-                                  CityDimension.years[0]
-                                ]?.[months[0]]
-                                  ? parseFloat(
-                                      yearsDataA[CityDimension.years[0]][
-                                        months[0]
-                                      ].split(" ")[0]
-                                    )
-                                  : 0;
-                                const valueB = yearsDataB[
-                                  CityDimension.years[0]
-                                ]?.[months[0]]
-                                  ? parseFloat(
-                                      yearsDataB[CityDimension.years[0]][
-                                        months[0]
-                                      ].split(" ")[0]
-                                    )
-                                  : 0;
-                                return valueB - valueA;
-                              });
-
-                              return sortedEntries.map(([item, yearsData]) => (
-                                <tr key={item} className="bg-white">
-                                  <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
-                                    {item}
-                                  </td>
-                                  {CityDimension.years.map((year) =>
-                                    months.map((month) => {
-                                      if (month === "Total") {
-                                        const totalValue =
-                                          CityDimension.yearly_totals[item]?.[
-                                            year
-                                          ];
-                                        const numericValue = totalValue
-                                          ? parseFloat(totalValue)
-                                          : 0;
-                                        const opacity =
-                                          !isNaN(numericValue) &&
-                                          numericValue !== 0
-                                            ? calculateOpacity(numericValue)
-                                            : 0.1;
-                                        const backgroundColor = totalValue
-                                          ? `rgba(5, 127, 163, ${opacity})`
-                                          : "transparent";
-
-                                        return (
-                                          <td
-                                            key={`${year}-${month}`}
-                                            className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                            style={{ backgroundColor }}
-                                          >
-                                            {totalValue
-                                              ? formatNumber(numericValue)
-                                              : "0"}
-                                          </td>
-                                        );
-                                      }
-
-                                      const valueString =
-                                        yearsData[year]?.[month];
-                                      const numericValue = valueString
-                                        ? parseFloat(valueString.split(" ")[0])
-                                        : 0;
-                                      const opacity =
-                                        !isNaN(numericValue) &&
-                                        numericValue !== 0
-                                          ? calculateOpacity(numericValue)
-                                          : 0.1;
-                                      const backgroundColor = valueString
-                                        ? `rgba(5, 127, 163, ${opacity})`
-                                        : "transparent";
-
-                                      return (
-                                        <td
-                                          key={`${year}-${month}`}
-                                          className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                          style={{ backgroundColor }}
-                                        >
-                                          {valueString
-                                            ? `${formatNumber(numericValue)} ${
-                                                valueString.split(" ")[1]
-                                              }`
-                                            : "0"}
-                                        </td>
-                                      );
-                                    })
-                                  )}
-                                </tr>
-                              ));
-                            })()
-                          ) : (
-                            <tr>
-                              {!isFetchingCityloading && (
-                                <td
-                                  style={{ border: "none" }}
-                                  colSpan={
-                                    CityDimension?.years?.length *
-                                      months.length +
-                                      1 || 1
-                                  }
-                                  className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center"
-                                >
-                                  No Data Available
-                                </td>
-                              )}
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                      {(isFetchingCityloading ||
-                        BrandItemSalesresponse9 !== "OK") && (
-                        <div className="text-center text-gray-600 py-2">
-                          <div
-                            className="spinner-border gray-spinner"
-                            role="status"
-                          >
-                            <span className="sr-only">Loading...</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -4483,10 +3816,14 @@ function SalesAllinone() {
                   width: "97%",
                 }}
               >
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4"></div>
+                <br />
+
+                {/*Product Dimension */}
+                <div className="grid grid-cols-3 gap-4">
                   <div>
                     <h3 className="text-l font-medium text-center text-gray-900 dark:text-white py-2">
-                      Section Dimension
+                      Product Dimension
                     </h3>
                     <div
                       className="overflow-x-auto max-h-[400px]"
@@ -4525,7 +3862,7 @@ function SalesAllinone() {
                               style={{ background: "#1C3644" }}
                               className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
                             >
-                              Section
+                              Product
                             </th>
                             {SectionDimension &&
                               SectionDimension?.years?.map((year) =>
@@ -4698,8 +4035,7 @@ function SalesAllinone() {
                           )}
                         </tbody>
                       </table>
-                      {(isFetchingSectionloading ||
-                        BrandItemSalesresponse2 !== "OK") && (
+                      {(isFetchingSectionloading||(SectionDimensionresponse!=="OK")) && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -4707,468 +4043,6 @@ function SalesAllinone() {
                           >
                             <span className="sr-only">Loading...</span>
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Item Category Dimension */}
-                  <div>
-                    <h3 className="text-l font-medium text-center text-gray-900 dark:text-white py-2">
-                      Item Category Dimension
-                    </h3>
-                    <div
-                      className="overflow-x-auto max-h-[400px]"
-                      onScroll={(e) => handleScrol6(e, "ItemCategoryDimension")}
-                      style={{
-                        height: "361px",
-                        overflow: "auto",
-                        border: "1px solid #80808075",
-                      }}
-                    >
-                      <table className="w-full leading-normal m-0">
-                        <thead className="sticky top-0">
-                          <tr>
-                            <th
-                              style={{ background: "#1C3644" }}
-                              className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                            >
-                              FY
-                            </th>
-                            {ItemCategoryDimension?.years
-                              ?.sort((a, b) => b - a)
-                              ?.map((year) => (
-                                <th
-                                  style={{ background: "#1C3644" }}
-                                  className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                                  colSpan={months.length}
-                                  key={year}
-                                >
-                                  {year}
-                                </th>
-                              ))}
-                          </tr>
-                          <tr>
-                            <th
-                              style={{ background: "#1C3644" }}
-                              className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                            >
-                              Item Category
-                            </th>
-                            {ItemCategoryDimension?.years?.map((year) =>
-                              months?.map((month) => (
-                                <th
-                                  style={{ background: "#1C3644" }}
-                                  key={month}
-                                  className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                                >
-                                  {month}
-                                </th>
-                              ))
-                            )}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {ItemCategoryDimension &&
-                          Object.keys(ItemCategoryDimension.values).length >
-                            0 ? (
-                            (() => {
-                              const currentMonth = months[months.length - 1];
-                              const sortedItems = Object.entries(
-                                ItemCategoryDimension.values
-                              ).sort(
-                                ([itemA, yearsDataA], [itemB, yearsDataB]) => {
-                                  const calculateMaxValue = (yearsData) => {
-                                    let highestValue = 0;
-                                    ItemCategoryDimension.years?.forEach(
-                                      (year) => {
-                                        months.forEach((month) => {
-                                          const valueString =
-                                            yearsData[year]?.[month];
-                                          const numericValue = valueString
-                                            ? parseFloat(
-                                                valueString?.split(" ")[0]
-                                              )
-                                            : 0;
-                                          highestValue = Math.max(
-                                            highestValue,
-                                            numericValue
-                                          );
-                                        });
-                                      }
-                                    );
-                                    return highestValue;
-                                  };
-                                  const maxA = calculateMaxValue(yearsDataA);
-                                  const maxB = calculateMaxValue(yearsDataB);
-                                  return maxB - maxA;
-                                }
-                              );
-                              const maxItemValue = ItemCategoryDimension.max;
-
-                              const calculateOpacity = (value, maxValue) => {
-                                const safeMaxValue =
-                                  maxValue !== undefined ? maxValue : 1;
-                                if (safeMaxValue === 0) return 0.1;
-                                const opacity = value / safeMaxValue;
-                                return Math.max(opacity, 0.1);
-                              };
-
-                              return sortedItems.map(([item, yearsData]) => (
-                                <tr key={item} className="bg-white">
-                                  <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
-                                    {item}
-                                  </td>
-                                  {ItemCategoryDimension?.years?.map((year) =>
-                                    months?.map((month) => {
-                                      const valueString =
-                                        yearsData[year]?.[month];
-                                      const numericValue = valueString
-                                        ? parseFloat(valueString?.split(" ")[0])
-                                        : 0;
-                                      const calculateTotalValueForYear = (
-                                        yearsData,
-                                        year
-                                      ) => {
-                                        let total = 0;
-                                        for (const month of months) {
-                                          const valueString =
-                                            yearsData[year]?.[month];
-                                          const numericValue = valueString
-                                            ? parseFloat(
-                                                valueString.split(" ")[0]
-                                              )
-                                            : 0;
-                                          total += numericValue;
-                                        }
-                                        return Math.round(total * 100) / 100;
-                                      };
-
-                                      const formattedValue =
-                                        formatNumber(numericValue);
-                                      const yearTotal =
-                                        calculateTotalValueForYear(
-                                          yearsData,
-                                          year
-                                        );
-
-                                      if (month === "Total") {
-                                        return (
-                                          <td
-                                            key={`${year}-${month}`}
-                                            className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                          >
-                                            {/* {formatValueString(yearTotal ?? "0")} */}
-                                            {formatValueString(
-                                              yearTotal.toFixed(2) ?? "0"
-                                            )}
-                                          </td>
-                                        );
-                                      }
-                                      const backgroundColor = valueString
-                                        ? `rgba(5, 127, 163, ${calculateOpacity(
-                                            numericValue,
-                                            maxItemValue
-                                          )})`
-                                        : "transparent";
-
-                                      return (
-                                        <td
-                                          key={`${year}-${month}`}
-                                          className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                          style={{ backgroundColor }}
-                                        >
-                                          {valueString
-                                            ? `${formattedValue} ${
-                                                valueString?.split(" ")[1]
-                                              }`
-                                            : "0"}
-                                        </td>
-                                      );
-                                    })
-                                  )}
-                                </tr>
-                              ));
-                            })()
-                          ) : (
-                            <tr>
-                              {!isFetchingcategoryloading && (
-                                <td
-                                  style={{ border: "none" }}
-                                  colSpan={
-                                    ItemCategoryDimension?.years?.length *
-                                      months.length +
-                                      1 || 1
-                                  }
-                                  className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center"
-                                >
-                                  No Data Available
-                                </td>
-                              )}
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                      {(isFetchingcategoryloading ||
-                        BrandItemSalesresponse3 !== "OK") && (
-                        <div className="text-center text-gray-600 py-2">
-                          <div
-                            className="spinner-border gray-spinner"
-                            role="status"
-                          >
-                            <span className="sr-only">Loading...</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <br />
-
-                {/*Product Dimension */}
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <h3 className="text-l font-medium text-center text-gray-900 dark:text-white py-2">
-                      Product Dimension
-                    </h3>
-                    <div
-                      style={{
-                        height: "359px",
-                        overflow: "auto",
-                        border: "1px solid #80808075",
-                      }}
-                      className="overflow-x-auto max-h-[400px]  "
-                      onScroll={(e) => handleScrol7(e, "ProductionDimension")}
-                    >
-                      <table className="w-full  m-0">
-                        <thead className="sticky top-0">
-                          <tr>
-                            <th
-                              style={{ background: "#1C3644" }}
-                              className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                            >
-                              FY
-                            </th>
-                            {ProductionDimension &&
-                              ProductionDimension?.years?.map((year) => (
-                                <th
-                                  style={{ background: "#1C3644" }}
-                                  className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                                  colSpan={months.length}
-                                  key={year}
-                                >
-                                  {year}
-                                </th>
-                              ))}
-                          </tr>
-                          <tr>
-                            <th
-                              style={{ background: "#1C3644" }}
-                              className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                            >
-                              Product
-                            </th>
-                            {ProductionDimension &&
-                              ProductionDimension?.years?.map((year) =>
-                                months?.map((month) => (
-                                  <th
-                                    style={{ background: "#1C3644" }}
-                                    key={month}
-                                    className="px-2 py-2 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-100 uppercase text-center"
-                                  >
-                                    {month}
-                                  </th>
-                                ))
-                              )}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {ProductionDimension &&
-                          ProductionDimension.values &&
-                          Object.keys(ProductionDimension?.values)?.length >
-                            0 ? (
-                            (() => {
-                              const currentYear = new Date()
-                                .getFullYear()
-                                .toString();
-
-                              const calculateMaxValueForMonth = (
-                                products,
-                                month
-                              ) => {
-                                return Math.max(
-                                  ...products.map(({ yearsData }) =>
-                                    Object.keys(yearsData).reduce(
-                                      (max, year) => {
-                                        const valueString =
-                                          yearsData[year]?.[month];
-                                        const numericValue = valueString
-                                          ? parseFloat(
-                                              valueString.split(" ")[0]
-                                            )
-                                          : 0;
-                                        return Math.max(max, numericValue);
-                                      },
-                                      0
-                                    )
-                                  ),
-                                  0
-                                );
-                              };
-
-                              const calculateTotalValueForCurrentYear = (
-                                yearsData
-                              ) => {
-                                if (!yearsData[currentYear]) return 0; // If the year doesn't exist, return 0
-
-                                return Object.values(
-                                  yearsData[currentYear]
-                                ).reduce((total, valueString) => {
-                                  const numericValue = valueString
-                                    ? parseFloat(valueString.split(" ")[0])
-                                    : 0;
-                                  return total + numericValue;
-                                }, 0);
-                              };
-
-                              const currentMonth =
-                                months[new Date().getMonth()];
-
-                              const sortedProducts = Object.entries(
-                                ProductionDimension?.values
-                              )
-                                .map(([product, yearsData]) => ({
-                                  product,
-                                  yearsData,
-                                  currentYearTotal:
-                                    calculateTotalValueForCurrentYear(
-                                      yearsData
-                                    ), // Calculate total value for sorting
-                                }))
-
-                                .sort(
-                                  (a, b) =>
-                                    b.currentYearTotal - a.currentYearTotal
-                                );
-                              const maxValuesPerMonth = {};
-                              months.forEach((month) => {
-                                maxValuesPerMonth[month] =
-                                  calculateMaxValueForMonth(
-                                    sortedProducts,
-                                    month
-                                  );
-                              });
-
-                              return sortedProducts.map(
-                                ({ product, yearsData }) => (
-                                  <tr key={product}>
-                                    <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
-                                      {product}
-                                    </td>
-
-                                    {ProductionDimension?.years?.map((year) =>
-                                      months?.map((month) => {
-                                        const valueString =
-                                          yearsData[year]?.[month];
-                                        const numericValue = valueString
-                                          ? parseFloat(
-                                              valueString.split(" ")[0]
-                                            )
-                                          : null;
-
-                                        const maxMonthValue =
-                                          maxValuesPerMonth[month] || 1;
-
-                                        const opacity =
-                                          numericValue !== null &&
-                                          maxMonthValue > 0
-                                            ? Math.max(
-                                                numericValue / maxMonthValue,
-                                                0.1
-                                              )
-                                            : 0.1;
-
-                                        const backgroundColor =
-                                          numericValue === null
-                                            ? "transparent"
-                                            : `rgba(5, 127, 163, ${opacity})`;
-
-                                        // Handling the "Total" month (if present)
-                                        if (month === "Total") {
-                                          const yearTotal = Object.values(
-                                            yearsData[year] || {}
-                                          ).reduce((sum, val) => {
-                                            const num = val
-                                              ? parseFloat(val.split(" ")[0])
-                                              : 0;
-                                            return sum + num;
-                                          }, 0);
-
-                                          return (
-                                            <td
-                                              key={`${year}-${month}`}
-                                              className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                            >
-                                              {formatValueString(
-                                                yearTotal.toFixed(2) ?? "0"
-                                              )}
-                                            </td>
-                                          );
-                                        }
-
-                                        return (
-                                          <td
-                                            key={`${year}-${month}`}
-                                            className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                            style={{ backgroundColor }}
-                                          >
-                                            {/* {valueString || "0"} */}
-                                            {valueString &&
-                                            numericValue !== null
-                                              ? `${formatValueString(
-                                                  numericValue.toFixed(2)
-                                                )} ${valueString.split(" ")[1]}`
-                                              : "0"}
-                                          </td>
-                                        );
-                                      })
-                                    )}
-                                  </tr>
-                                )
-                              );
-                            })()
-                          ) : (
-                            <tr>
-                              {!isFetching2 && (
-                                <td
-                                  style={{
-                                    border: "none",
-                                    backgroundColor: "transparent",
-                                  }}
-                                  colSpan={
-                                    ProductionDimension?.years?.length *
-                                      months?.length +
-                                    1
-                                  }
-                                  className="px-2 py-2 text-center text-gray-500"
-                                >
-                                  No data available
-                                </td>
-                              )}
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-
-                      {/* Lazy Loader */}
-                      {(isFetching2 || Productdimresponse !== "OK") && (
-                        <div className="text-center text-gray-600 py-2">
-                          <div
-                            className="spinner-border gray-spinner"
-                            role="status"
-                          >
-                            <span className="sr-only">Loading...</span>
-                          </div>{" "}
                         </div>
                       )}
                     </div>
@@ -5460,7 +4334,7 @@ function SalesAllinone() {
                           )}
                         </tbody>
                       </table>
-                      {(isFetching3 || Branddimresponse !== "OK") && (
+                      {(isFetching3||(BrandDimensionresponse!=="OK")) && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -5735,7 +4609,7 @@ function SalesAllinone() {
                           )}
                         </tbody>
                       </table>
-                      {(isFetching4 || BrandItemSalesresponse1 !== "OK") && (
+                      {(isFetching4||(ItemDimensionresponse!=="OK")) && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -5896,7 +4770,7 @@ function SalesAllinone() {
                           )}
                         </tbody>
                       </table>
-                      {(isFetching7 || BrandItemSalesresponse5 !== "OK") && (
+                      {(isFetching7||(PriceBreakup1response!=="OK")) && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -6019,7 +4893,7 @@ function SalesAllinone() {
                           )}
                         </tbody>
                       </table>
-                      {(isFetching8 || BrandItemSalesresponse6 !== "OK") && (
+                      {(isFetching8||(PriceBreakup2response!=="OK")) && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"

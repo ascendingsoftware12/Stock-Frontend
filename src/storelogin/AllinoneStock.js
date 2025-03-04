@@ -10,7 +10,7 @@ import "../style/overall.css";
 import SelectArrow from "../images/ArrowDn.png";
 
 function AllinoneStock() {
-  const [asm, setasm] = useState(null);
+  const [storecode, setstorecode] = useState(null);
 
   const [brandSection, setBrandSection] = useState([]);
   const [citySection, setCitySection] = useState([]);
@@ -22,29 +22,20 @@ function AllinoneStock() {
   const [sections3, setSections3] = useState([]);
   const [sections4, setSections4] = useState([]);
   const [sections5, setSections5] = useState([]);
-  const [placeholdertime, setPlaceholdertime] = useState("All");
-  const [placeholderbranch, setPlaceholderbranch] = useState("All");
-  const [placeholdercity, setPlaceholdercity] = useState("All");
+
   const [placeholdersection, setPlaceholdersection] = useState("All");
   const [placeholderbrand, setPlaceholderbrand] = useState("All");
-  const [placeholderitem, setPlaceholderitem] = useState("All");
-  const [placeholderproduct, setPlaceholderproduct] = useState("All");
   const [placeholdermodule, setPlaceholdermodule] = useState("All");
   const [placeholderdes, setPlaceholderdes] = useState("All");
   const [placeholderdemo, setPlaceholderdemo] = useState("All");
   const [placeholderage, setPlaceholderage] = useState("All");
   const [placeholderprice, setPlaceholderprice] = useState("All");
-  const [sortColumn, setSortColumn] = useState("value");
-  const [sortDirection, setSortDirection] = useState("desc");
 
   const [sortColumnsection, setSortColumnsection] = useState("value");
   const [sortDirectionsection, setSortDirectionsection] = useState("desc");
 
   const [sortColumnitem, setSortColumnitem] = useState("value");
   const [sortDirectionitem, setSortDirectionitem] = useState("desc");
-
-  const [sortColumnproduct, setSortColumnproduct] = useState("value");
-  const [sortDirectionproduct, setSortDirectionproduct] = useState("desc");
 
   const [sortColumnbrand, setSortColumnbrand] = useState("value");
   const [sortDirectionbrand, setSortDirectionbrand] = useState("desc");
@@ -53,39 +44,9 @@ function AllinoneStock() {
   const [sortDirectionmodel, setSortDirectionmodel] = useState("desc");
   const [sortColumnitem1, setSortColumnitem1] = useState("value");
   const [sortDirectionitem1, setSortDirectionitem1] = useState("desc");
-  const [sortColumncity, setSortColumncity] = useState("value");
-  const [sortDirectioncity, setSortDirectioncity] = useState("desc");
-  // const [sortColumnageing, setSortColumnageing] = useState("value");
-  // const [sortDirectionageing, setSortDirectionageing] = useState("desc");
 
-  // const [sortColumnprice, setSortColumnprice] = useState("value");
-  // const [sortDirectionprice, setSortDirectionprice] = useState("desc");
-  //brandsection
-
-  // const formatNumber = (value) => {
-  //   if (value !== undefined && value !== null) {
-  //     return new Intl.NumberFormat().format(value);
-  //   }
-  //   return "";
-  // };
   const formatNumber = (value) => {
     return new Intl.NumberFormat("en-IN").format(value);
-  };
-  const handleSort = (column) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortColumn(column);
-      setSortDirection("desc");
-    }
-  };
-  const handleSort2 = (column) => {
-    if (sortColumncity === column) {
-      setSortDirectioncity(sortDirectioncity === "asc" ? "desc" : "asc");
-    } else {
-      setSortColumncity(column);
-      setSortDirectioncity("desc");
-    }
   };
 
   const handleSort5 = (column) => {
@@ -96,22 +57,7 @@ function AllinoneStock() {
       setSortDirectionsection("desc");
     }
   };
-  const handleSort6 = (column) => {
-    if (sortColumnitem === column) {
-      setSortDirectionitem(sortDirectionitem === "asc" ? "desc" : "asc");
-    } else {
-      setSortColumnitem(column);
-      setSortDirectionitem("desc");
-    }
-  };
-  const handleSort7 = (column) => {
-    if (sortColumnproduct === column) {
-      setSortDirectionproduct(sortDirectionproduct === "asc" ? "desc" : "asc");
-    } else {
-      setSortColumnproduct(column);
-      setSortDirectionproduct("desc");
-    }
-  };
+
   const handleSort8 = (column) => {
     if (sortColumnbrand === column) {
       setSortDirectionbrand(sortDirectionbrand === "asc" ? "desc" : "asc");
@@ -137,35 +83,17 @@ function AllinoneStock() {
       setSortDirectionitem1("desc");
     }
   };
-  const [sortConfig, setSortConfig] = useState({ key: "", direction: "desc" });
-  const handleSort1 = (key) => {
-    console.log("hhhh", key);
 
-    const direction =
-      sortConfig.key === key && sortConfig.direction === "asc" ? "desc" : "asc";
+  // const storecode = sessionStorage.getItem("storecode");
 
-    const sortedData = [...brandSection].sort((a, b) => {
-      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
-
-      return 0;
-    });
-    setSortConfig({ key, direction });
-    setBrandSection(sortedData);
-  };
-
-  // const asm = sessionStorage.getItem("asm");
-
-  // setasm(asm);
+  // setstorecode(storecode);
   useEffect(() => {
     console.log("useEffect triggered");
-    fetchBrandwise(1, true);
-    fetchCitywise(1, true);
+
     fetchAgeing();
     fetchPrice();
     fetchSectionwise(1, true);
-    fetchItemwise(1, true);
-    fetchProductwise(1, true);
+
     fetchBrandAna(1, true);
     fetchItemAnas(1, true);
     fetchPriceAna(1, true);
@@ -222,67 +150,16 @@ function AllinoneStock() {
     setIsApplyDisabled(!filtersChanged);
   }, [filters, initialFilters]);
 
-  const handleBranchScroll = (e) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.target;
-    console.log("handlel");
-    if (
-      scrollHeight - scrollTop <= clientHeight + 50 &&
-      HasMoreDataBranch &&
-      !ByBranchloading &&
-      Branchpage > 1
-    ) {
-      fetchBrandwise(Branchpage);
-    }
-  };
-
-  const handleCityScroll = (e) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.target;
-
-    if (
-      scrollHeight - scrollTop <= clientHeight + 50 &&
-      hasMoreDataCity &&
-      !ByCityloading &&
-      Citypage > 1
-    ) {
-      fetchCitywise(Citypage);
-    }
-  };
-
   const handleSectionScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.target;
 
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
-      hasMoreDataSection &&
+      hstorecodeoreDataSection &&
       !BySectionloading &&
       BySectionpage > 1
     ) {
       fetchSectionwise(BySectionpage);
-    }
-  };
-  const handleItemwiseScroll = (e) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.target;
-
-    if (
-      scrollHeight - scrollTop <= clientHeight + 50 &&
-      hasMoreDataItemcat &&
-      !ByItemCategoryloading &&
-      ByItemPage > 1
-    ) {
-      fetchItemwise(ByItemPage);
-    }
-  };
-
-  const handleProductScroll = (e) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.target;
-
-    if (
-      scrollHeight - scrollTop <= clientHeight + 50 &&
-      hasMoreDataProduct &&
-      !ByProductloading &&
-      Productpage > 1
-    ) {
-      fetchProductwise(Productpage);
     }
   };
 
@@ -291,7 +168,7 @@ function AllinoneStock() {
 
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
-      hasMoreDataBrand &&
+      hstorecodeoreDataBrand &&
       !ByBrandloading &&
       Brandpage > 1
     ) {
@@ -303,7 +180,7 @@ function AllinoneStock() {
 
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
-      hasMoreDataItemana &&
+      hstorecodeoreDataItemana &&
       !ByItemloading &&
       Itempage > 1
     ) {
@@ -316,30 +193,30 @@ function AllinoneStock() {
 
     if (
       scrollHeight - scrollTop <= clientHeight + 50 &&
-      hasMoreDatamodel &&
+      hstorecodeoreDatamodel &&
       !ByModelloading &&
       Modelpage > 1
     ) {
       fetchPriceAna(Modelpage);
     }
   };
-  const [Branchpage, setBranchpage] = useState(1);
-  const [ByBranchloading, setBranchloading] = useState(false);
-  const [HasMoreDataBranch, setHasMoreDataBranch] = useState(true);
-  const Branchlimit = 10;
-  const [Brandwiseresponse, setBrandwiseresponse] = useState("");
+
+  //ageing
+  const [ByAgeingloading, setAgeingloading] = useState(false);
+
+  // const [HstorecodeoreDataAgeing, setHstorecodeoreDataAgeing] = useState(true);
+  const [Ageingresponse, setAgeingresponse] = useState("");
   const controllerRef1 = useRef(null);
-  const fetchBrandwise = async (page = 1, resetData = false) => {
-    console.log(page, "branchpage");
-    setBranchloading(true);
+  const fetchAgeing = async () => {
+    setAgeingloading(true);
     if (controllerRef1.current) {
       controllerRef1.current.abort();
     }
     controllerRef1.current = new AbortController();
     const signal = controllerRef1.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const stored = sessionStorage.getItem("store");
+      const storecode = stored === "null" || stored === null ? "" : stored;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -349,165 +226,19 @@ function AllinoneStock() {
       };
 
       const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
         item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
+
         section: cleanEncode(filters.section),
         modelno: cleanEncode(filters.modelno),
         demo_flag: cleanEncode(filters.demo_flag),
         PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
+
         overall_age: cleanEncode(filters.overall_age),
         IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
         brand: cleanEncode(filters.brand),
       };
       const response = await axios.get(
-        `/stock_analysis/stockAnalysisBranch?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}&page=${Branchpage}&limit=${Branchlimit}`,
-        { signal }
-      );
-      setBrandwiseresponse(response.statusText);
-      const data = response.data.data;
-      const sortedData = data.sort((a, b) => {
-        if (a.value < b.value) return -1;
-        if (a.value > b.value) return 1;
-        return 0;
-      });
-      setBrandSection((prevData) =>
-        resetData ? sortedData : [...prevData, ...sortedData]
-      );
-
-      if (sortedData.length < Branchlimit) {
-        setHasMoreDataBranch(false);
-      } else {
-        setHasMoreDataBranch(true);
-        setBranchpage(page + 1);
-      }
-    } catch (error) {
-      if (axios.isCancel(error)) {
-        console.warn(
-          "Previous request aborted. Only the last request is processed."
-        );
-      } else {
-        console.error("Error fetching SalesCity Data:", error);
-      }
-    } finally {
-      setBranchloading(false);
-    }
-  };
-
-  const [ByCityloading, setCityloading] = useState(false);
-  const Citylimit = 60;
-  const [Citypage, setCitypage] = useState(1);
-  const [hasMoreDataCity, setHasMoreDataCity] = useState(true);
-  const [Citywiseresponse, setCitywiseresponse] = useState("");
-  const controllerRef2 = useRef(null);
-  const fetchCitywise = async (page = 1, resetData = false) => {
-    setCityloading(true);
-    if (controllerRef2.current) {
-      controllerRef2.current.abort();
-    }
-    controllerRef2.current = new AbortController();
-    const signal = controllerRef2.current.signal;
-    try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
-      const cleanEncode = (value) => {
-        let decodedValue = value || "";
-        while (decodedValue !== decodeURIComponent(decodedValue)) {
-          decodedValue = decodeURIComponent(decodedValue);
-        }
-        return encodeURIComponent(decodedValue);
-      };
-
-      const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
-        item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
-        section: cleanEncode(filters.section),
-        modelno: cleanEncode(filters.modelno),
-        demo_flag: cleanEncode(filters.demo_flag),
-        PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
-        overall_age: cleanEncode(filters.overall_age),
-        IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
-        brand: cleanEncode(filters.brand),
-      };
-      const response = await axios.get(
-        `/stock_analysis/stockAnalysisCity?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}&page=${Citypage}&limit=${Citylimit}`,
-        { signal }
-      );
-      setCitywiseresponse(response.statusText);
-      const data = response.data.data;
-      const sortedData = data.sort((a, b) => {
-        if (a.value < b.value) return -1;
-        if (a.value > b.value) return 1;
-        return 0;
-      });
-      setCitySection((prevData) =>
-        resetData ? sortedData : [...prevData, ...sortedData]
-      );
-
-      if (sortedData.length < Citylimit) {
-        setHasMoreDataCity(false);
-      } else {
-        setHasMoreDataCity(true);
-        setCitypage(page + 1);
-      }
-    } catch (error) {
-      if (axios.isCancel(error)) {
-        console.warn(
-          "Previous request aborted. Only the last request is processed."
-        );
-      } else {
-        console.error("Error fetching SalesCity Data:", error);
-      }
-    } finally {
-      setCityloading(false);
-    }
-  };
-
-  //ageing
-  const [ByAgeingloading, setAgeingloading] = useState(false);
-
-  // const [HasMoreDataAgeing, setHasMoreDataAgeing] = useState(true);
-  const [Ageingresponse, setAgeingresponse] = useState("");
-  const controllerRef3 = useRef(null);
-  const fetchAgeing = async () => {
-    setAgeingloading(true);
-    if (controllerRef3.current) {
-      controllerRef3.current.abort();
-    }
-    controllerRef3.current = new AbortController();
-    const signal = controllerRef3.current.signal;
-    try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
-      const cleanEncode = (value) => {
-        let decodedValue = value || "";
-        while (decodedValue !== decodeURIComponent(decodedValue)) {
-          decodedValue = decodeURIComponent(decodedValue);
-        }
-        return encodeURIComponent(decodedValue);
-      };
-
-      const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
-        item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
-        section: cleanEncode(filters.section),
-        modelno: cleanEncode(filters.modelno),
-        demo_flag: cleanEncode(filters.demo_flag),
-        PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
-        overall_age: cleanEncode(filters.overall_age),
-        IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
-        brand: cleanEncode(filters.brand),
-      };
-      const response = await axios.get(
-        `/stock_analysis/stockAnalysisOverAllBucket?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}
+        `stock_analysis_kore/stockAnalysisKoreOverAllBucket?&section=${encodedFilters.section}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&storecode=${storecode}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}
         `,
         { signal }
       );
@@ -535,6 +266,8 @@ function AllinoneStock() {
 
       setAgeing(sortedData);
     } catch (error) {
+      console.error("Error fetching data:", error);
+      setAgeingloading(false);
       if (axios.isCancel(error)) {
         console.warn(
           "Previous request aborted. Only the last request is processed."
@@ -549,17 +282,17 @@ function AllinoneStock() {
   //price
   const [ByPriceloading, setPriceloading] = useState(false);
   const [Priceresponse, setPriceresponse] = useState("");
-  const controllerRef4 = useRef(null);
+  const controllerRef2 = useRef(null);
   const fetchPrice = async () => {
     setPriceloading(true);
-    if (controllerRef4.current) {
-      controllerRef4.current.abort();
+    if (controllerRef2.current) {
+      controllerRef2.current.abort();
     }
-    controllerRef4.current = new AbortController();
-    const signal = controllerRef4.current.signal;
+    controllerRef2.current = new AbortController();
+    const signal = controllerRef2.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const stored = sessionStorage.getItem("store");
+      const storecode = stored === "null" || stored === null ? "" : stored;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -569,21 +302,19 @@ function AllinoneStock() {
       };
 
       const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
         item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
+
         section: cleanEncode(filters.section),
         modelno: cleanEncode(filters.modelno),
         demo_flag: cleanEncode(filters.demo_flag),
         PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
+
         overall_age: cleanEncode(filters.overall_age),
         IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
         brand: cleanEncode(filters.brand),
       };
       const response = await axios.get(
-        `/stock_analysis/stockAnalysisPriceBucket?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}`,
+        `stock_analysis_kore/stockAnalysisPriceBucket?&section=${encodedFilters.section}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&storecode=${storecode}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}`,
         { signal }
       );
       setPriceresponse(response.statusText);
@@ -605,6 +336,8 @@ function AllinoneStock() {
 
       setPrice(sortedData);
     } catch (error) {
+      console.error("Error fetching data:", error);
+      setPriceloading(false);
       if (axios.isCancel(error)) {
         console.warn(
           "Previous request aborted. Only the last request is processed."
@@ -621,19 +354,20 @@ function AllinoneStock() {
   const [BySectionloading, setSectionloading] = useState(false);
   const [BySectionpage, setSectionpage] = useState(1);
   const Sectionlimit = 30;
-  const [hasMoreDataSection, setHasMoreDataSection] = useState(true);
+  const [hstorecodeoreDataSection, setHstorecodeoreDataSection] =
+    useState(true);
   const [Sectionwiseresponse, setSectionwiseresponse] = useState("");
-  const controllerRef5 = useRef(null);
+  const controllerRef3 = useRef(null);
   const fetchSectionwise = async (page = 1, resetData = false) => {
     setSectionloading(true);
-    if (controllerRef5.current) {
-      controllerRef5.current.abort();
+    if (controllerRef3.current) {
+      controllerRef3.current.abort();
     }
-    controllerRef5.current = new AbortController();
-    const signal = controllerRef5.current.signal;
+    controllerRef3.current = new AbortController();
+    const signal = controllerRef3.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const stored = sessionStorage.getItem("store");
+      const storecode = stored === "null" || stored === null ? "" : stored;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -643,25 +377,24 @@ function AllinoneStock() {
       };
 
       const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
         item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
+
         section: cleanEncode(filters.section),
         modelno: cleanEncode(filters.modelno),
         demo_flag: cleanEncode(filters.demo_flag),
         PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
+
         overall_age: cleanEncode(filters.overall_age),
         IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
         brand: cleanEncode(filters.brand),
       };
       const response = await axios.get(
-        `/stock_analysis/stockAnalysisSection?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}&page=${BySectionpage}&limit=${Sectionlimit}`,
+        `stock_analysis_kore/stockAnalysisKoreSection?&section=${encodedFilters.section}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&storecode=${storecode}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}&page=${BySectionpage}&limit=${Sectionlimit}`,
         { signal }
       );
-      console.log(response);
       setSectionwiseresponse(response.statusText);
+      console.log(response);
+
       const data = response.data.data || [];
       const sortedData = data.sort((a, b) => {
         if (a.value < b.value) return -1;
@@ -672,12 +405,13 @@ function AllinoneStock() {
         resetData ? sortedData : [...prevData, ...sortedData]
       );
       if (sortedData.length < Sectionlimit) {
-        setHasMoreDataSection(false);
+        setHstorecodeoreDataSection(false);
       } else {
-        setHasMoreDataSection(true);
+        setHstorecodeoreDataSection(true);
         setSectionpage(page + 1);
       }
     } catch (error) {
+      setHstorecodeoreDataSection(false);
       if (axios.isCancel(error)) {
         console.warn(
           "Previous request aborted. Only the last request is processed."
@@ -690,177 +424,23 @@ function AllinoneStock() {
     }
   };
 
-  //item
-  const [ByItemPage, setByItemPage] = useState(1);
-  const ItemLimit = 15;
-  const [ByItemCategoryloading, setItemCategoryLoading] = useState(false);
-  const [hasMoreDataItemcat, setHasMoreDataItemcat] = useState(true);
-  const [Itemwiseresponse, setItemwiseresponse] = useState("");
-  const controllerRef6 = useRef(null);
-  const fetchItemwise = async (page = 1, resetData = false) => {
-    setItemCategoryLoading(true);
-    if (controllerRef6.current) {
-      controllerRef6.current.abort();
-    }
-    controllerRef6.current = new AbortController();
-    const signal = controllerRef6.current.signal;
-    try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
-      const cleanEncode = (value) => {
-        let decodedValue = value || "";
-        while (decodedValue !== decodeURIComponent(decodedValue)) {
-          decodedValue = decodeURIComponent(decodedValue);
-        }
-        return encodeURIComponent(decodedValue);
-      };
-
-      const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
-        item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
-        section: cleanEncode(filters.section),
-        modelno: cleanEncode(filters.modelno),
-        demo_flag: cleanEncode(filters.demo_flag),
-        PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
-        overall_age: cleanEncode(filters.overall_age),
-        IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
-        brand: cleanEncode(filters.brand),
-      };
-      const response = await axios.get(
-        `/stock_analysis/stockAnalysisItemCategory?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}&page=${ByItemPage}&limit=${ItemLimit}`,
-        { signal }
-      );
-      setItemwiseresponse(response.statusText);
-      const data = response.data.data || [];
-      const sortedData = data.sort((a, b) => {
-        if (a.value < b.value) return -1;
-        if (a.value > b.value) return 1;
-        return 0;
-      });
-      if (ByItemPage === 1) {
-        setSections1(sortedData);
-        setSections1(sortedData);
-      } else {
-        setSections1((prevData) =>
-          resetData ? sortedData : [...prevData, ...sortedData]
-        );
-      }
-      if (sortedData.length < ItemLimit) {
-        setHasMoreDataItemcat(false);
-      } else {
-        setHasMoreDataItemcat(true);
-        setByItemPage(page + 1);
-      }
-    } catch (error) {
-      if (axios.isCancel(error)) {
-        console.warn(
-          "Previous request aborted. Only the last request is processed."
-        );
-      } else {
-        console.error("Error fetching SalesCity Data:", error);
-      }
-    } finally {
-      setItemCategoryLoading(false);
-    }
-  };
-
-  //product
-  const [ByProductloading, setProductloading] = useState(false);
-  const [Productpage, setProductpage] = useState(1);
-  const Productlimit = 30;
-  const [hasMoreDataProduct, setHasMoreDataProduct] = useState(true);
-  const [Productwiseresponse, setProductwiseresponse] = useState("");
-  const controllerRef7 = useRef(null);
-  const fetchProductwise = async (page = 1, resetData = false) => {
-    setProductloading(true);
-    if (controllerRef7.current) {
-      controllerRef7.current.abort();
-    }
-    controllerRef7.current = new AbortController();
-    const signal = controllerRef7.current.signal;
-    try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
-      const cleanEncode = (value) => {
-        let decodedValue = value || "";
-        while (decodedValue !== decodeURIComponent(decodedValue)) {
-          decodedValue = decodeURIComponent(decodedValue);
-        }
-        return encodeURIComponent(decodedValue);
-      };
-
-      const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
-        item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
-        section: cleanEncode(filters.section),
-        modelno: cleanEncode(filters.modelno),
-        demo_flag: cleanEncode(filters.demo_flag),
-        PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
-        overall_age: cleanEncode(filters.overall_age),
-        IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
-        brand: cleanEncode(filters.brand),
-      };
-      const response = await axios.get(
-        `/stock_analysis/stockAnalysisProduct?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}&page=${Productpage}&limit=${Productlimit}`,
-        { signal }
-      );
-      setProductwiseresponse(response.statusText);
-      const data = response.data.data;
-      const sortedData = data.sort((a, b) => {
-        if (a.value < b.value) return -1;
-        if (a.value > b.value) return 1;
-        return 0;
-      });
-      if (Productpage === 1) {
-        setSections2(sortedData);
-      } else {
-        setSections2((prevData) =>
-          resetData ? sortedData : [...prevData, ...sortedData]
-        );
-      }
-      if (sortedData.length < Productlimit) {
-        setHasMoreDataProduct(false);
-      } else {
-        setHasMoreDataProduct(true);
-        setProductpage(page + 1);
-        console.log("proooooodddd", Productpage);
-      }
-    } catch (error) {
-      if (axios.isCancel(error)) {
-        console.warn(
-          "Previous request aborted. Only the last request is processed."
-        );
-      } else {
-        console.error("Error fetching SalesCity Data:", error);
-      }
-    } finally {
-      setProductloading(false);
-    }
-  };
-
   //brandana
   const [ByBrandloading, setBrandloading] = useState(false);
   const [Brandpage, setBrandpage] = useState(1);
-  const [hasMoreDataBrand, setHasMoreDataBrand] = useState(true);
+  const [hstorecodeoreDataBrand, setHstorecodeoreDataBrand] = useState(true);
   const Brandlimit = 30;
   const [BrandAnaresponse, setBrandAnaresponse] = useState("");
-  const controllerRef8 = useRef(null);
+  const controllerRef4 = useRef(null);
   const fetchBrandAna = async (page = 1, resetData = false) => {
     setBrandloading(true);
-    if (controllerRef8.current) {
-      controllerRef8.current.abort();
+    if (controllerRef4.current) {
+      controllerRef4.current.abort();
     }
-    controllerRef8.current = new AbortController();
-    const signal = controllerRef8.current.signal;
+    controllerRef4.current = new AbortController();
+    const signal = controllerRef4.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const stored = sessionStorage.getItem("store");
+      const storecode = stored === "null" || stored === null ? "" : stored;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -870,21 +450,19 @@ function AllinoneStock() {
       };
 
       const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
         item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
+
         section: cleanEncode(filters.section),
         modelno: cleanEncode(filters.modelno),
         demo_flag: cleanEncode(filters.demo_flag),
         PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
+
         overall_age: cleanEncode(filters.overall_age),
         IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
         brand: cleanEncode(filters.brand),
       };
       const response = await axios.get(
-        `/stock_analysis/stockAnalysisBrand?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}&page=${Brandpage}&limit=${Brandlimit}`,
+        `stock_analysis_kore/stockAnalysisKoreBrand?&section=${encodedFilters.section}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&storecode=${storecode}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}&page=${Brandpage}&limit=${Brandlimit}`,
         { signal }
       );
       setBrandAnaresponse(response.statusText);
@@ -903,12 +481,13 @@ function AllinoneStock() {
       }
 
       if (sortedData.length < Brandlimit) {
-        setHasMoreDataBrand(false);
+        setHstorecodeoreDataBrand(false);
       } else {
-        setHasMoreDataBrand(true);
+        setHstorecodeoreDataBrand(true);
         setBrandpage(page + 1);
       }
     } catch (error) {
+      console.error("Error fetching data:", error);
       if (axios.isCancel(error)) {
         console.warn(
           "Previous request aborted. Only the last request is processed."
@@ -924,20 +503,21 @@ function AllinoneStock() {
   //itemAnaly
   const [ByItemloading, setItemloading] = useState(false);
   const [Itempage, setItempage] = useState(1);
-  const [hasMoreDataItemana, setHasMoreDataItemana] = useState(true);
+  const [hstorecodeoreDataItemana, setHstorecodeoreDataItemana] =
+    useState(true);
   const Itemlimit = 30;
   const [ItemAnasresponse, setItemAnasresponse] = useState("");
-  const controllerRef9 = useRef(null);
+  const controllerRef5 = useRef(null);
   const fetchItemAnas = async (page = 1, resetData = false) => {
     setItemloading(true);
-    if (controllerRef9.current) {
-      controllerRef9.current.abort();
+    if (controllerRef5.current) {
+      controllerRef5.current.abort();
     }
-    controllerRef9.current = new AbortController();
-    const signal = controllerRef9.current.signal;
+    controllerRef5.current = new AbortController();
+    const signal = controllerRef5.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const stored = sessionStorage.getItem("store");
+      const storecode = stored === "null" || stored === null ? "" : stored;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -947,21 +527,19 @@ function AllinoneStock() {
       };
 
       const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
         item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
+
         section: cleanEncode(filters.section),
         modelno: cleanEncode(filters.modelno),
         demo_flag: cleanEncode(filters.demo_flag),
         PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
+
         overall_age: cleanEncode(filters.overall_age),
         IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
         brand: cleanEncode(filters.brand),
       };
       const response = await axios.get(
-        `/stock_analysis/stockAnalysisItem?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}&page=${Itempage}&limit=${Itemlimit}`,
+        `stock_analysis_kore/stockAnalysisKoreItem?&section=${encodedFilters.section}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&storecode=${storecode}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}&page=${Itempage}&limit=${Itemlimit}`,
         { signal }
       );
       setItemAnasresponse(response.statusText);
@@ -980,12 +558,14 @@ function AllinoneStock() {
       }
 
       if (sortedData.length < Itemlimit) {
-        setHasMoreDataItemana(false);
+        setHstorecodeoreDataItemana(false);
       } else {
-        setHasMoreDataItemana(true);
+        setHstorecodeoreDataItemana(true);
         setItempage(page + 1);
       }
     } catch (error) {
+      setHstorecodeoreDataItemana(false);
+      console.error("Error fetching data:", error);
       if (axios.isCancel(error)) {
         console.warn(
           "Previous request aborted. Only the last request is processed."
@@ -1001,20 +581,20 @@ function AllinoneStock() {
   //price
   const [ByModelloading, setModelloading] = useState(false);
   const [Modelpage, setModelpage] = useState(1);
-  const [hasMoreDatamodel, setHasMoreDatamodel] = useState(true);
+  const [hstorecodeoreDatamodel, setHstorecodeoreDatamodel] = useState(true);
   const Modellimit = 30;
   const [PriceAnaresponse, setPriceAnaresponse] = useState("");
-  const controllerRef10 = useRef(null);
+  const controllerRef6 = useRef(null);
   const fetchPriceAna = async (page = 1, resetData = false) => {
     setModelloading(true);
-    if (controllerRef10.current) {
-      controllerRef10.current.abort();
+    if (controllerRef6.current) {
+      controllerRef6.current.abort();
     }
-    controllerRef10.current = new AbortController();
-    const signal = controllerRef10.current.signal;
+    controllerRef6.current = new AbortController();
+    const signal = controllerRef6.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const stored = sessionStorage.getItem("store");
+      const storecode = stored === "null" || stored === null ? "" : stored;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -1024,21 +604,19 @@ function AllinoneStock() {
       };
 
       const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
         item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
+
         section: cleanEncode(filters.section),
         modelno: cleanEncode(filters.modelno),
         demo_flag: cleanEncode(filters.demo_flag),
         PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
+
         overall_age: cleanEncode(filters.overall_age),
         IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
         brand: cleanEncode(filters.brand),
       };
       const response = await axios.get(
-        `/stock_analysis/stockAnalysisModelNo?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}&page=${Modelpage}&limit=${Modellimit}`,
+        `stock_analysis_kore/stockAnalysisKoreModelNo?&section=${encodedFilters.section}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&storecode=${storecode}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}&page=${Modelpage}&limit=${Modellimit}`,
         { signal }
       );
       setPriceAnaresponse(response.statusText);
@@ -1057,12 +635,14 @@ function AllinoneStock() {
       }
 
       if (sortedData.length < Itemlimit) {
-        setHasMoreDatamodel(false);
+        setHstorecodeoreDatamodel(false);
       } else {
-        setHasMoreDatamodel(true);
+        setHstorecodeoreDatamodel(true);
         setModelpage(page + 1);
       }
     } catch (error) {
+      console.error("Error fetching data:", error);
+      setHstorecodeoreDatamodel(false);
       if (axios.isCancel(error)) {
         console.warn(
           "Previous request aborted. Only the last request is processed."
@@ -1082,16 +662,16 @@ function AllinoneStock() {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
   const [DropdownDataresponse, setDropdownDataresponse] = useState("");
-  const controllerRef11 = useRef(null);
+  const controllerRef7 = useRef(null);
   const fetchDropdownData = async () => {
-    if (controllerRef11.current) {
-      controllerRef11.current.abort();
+    if (controllerRef7.current) {
+      controllerRef7.current.abort();
     }
-    controllerRef11.current = new AbortController();
-    const signal = controllerRef11.current.signal;
+    controllerRef7.current = new AbortController();
+    const signal = controllerRef7.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const stored = sessionStorage.getItem("store");
+      const storecode = stored === "null" || stored === null ? "" : stored;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -1101,27 +681,26 @@ function AllinoneStock() {
       };
 
       const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
         item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
+
         section: cleanEncode(filters.section),
         modelno: cleanEncode(filters.modelno),
         demo_flag: cleanEncode(filters.demo_flag),
         PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
+
         overall_age: cleanEncode(filters.overall_age),
         IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
         brand: cleanEncode(filters.brand),
       };
       const response = await axios.get(
-        `/stock_analysis/stockAnalysisColumn?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}`,
+        `stock_analysis_kore/stockAnalysisKoreColumn?&section=${encodedFilters.section}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&storecode=${storecode}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}`,
         { signal }
       );
       setDropdownDataresponse(response.statusText);
       setDropdownData(response.data);
       console.log("dropdown");
     } catch (error) {
+      console.error("Error fetching Stocksummary Data:", error);
       if (axios.isCancel(error)) {
         console.warn(
           "Previous request aborted. Only the last request is processed."
@@ -1139,13 +718,11 @@ function AllinoneStock() {
     setInitialFilters("");
     fetchliveData();
     setIsFiltersUpdated(true);
-    setBrandSection([]);
-    setCitySection([]);
+
     setAgeing([]);
     setPrice([]);
     setSections([]);
-    setSections1([]);
-    setSections2([]);
+
     setSections3([]);
     setSections4([]);
     setSections5([]);
@@ -1155,11 +732,9 @@ function AllinoneStock() {
     setItemData([]);
     setAgeingData([]);
     setHoldingData([]);
-    setBranchpage(1);
-    setCitypage(1);
+
     setSectionpage(1);
-    setByItemPage(1);
-    setProductpage(1);
+
     setBrandpage(1);
     setItempage(1);
     setModelpage(1);
@@ -1197,16 +772,14 @@ function AllinoneStock() {
       IMEI_STATUS: [],
       overall_age: [],
     });
-    setSelectedOptionbranch(null);
-    setSelectedOptioncity(null);
+
     setSelectedOptionsection(null);
     setSelectedOptionbrand(null);
-    setSelectedOptionitem(null);
-    setSelectedOptionproduct(null);
+
     setSelectedOptionmodule(null);
     setSelectedOptioncateg(null);
     setSelectedOptiondemo(null);
-    setSelectedOptiontime(null);
+
     setSelectedOptionprice(null);
     setSelectedOptionage(null);
     setrefresh(false);
@@ -1214,22 +787,18 @@ function AllinoneStock() {
 
   const reloadWithFilters = () => {
     setrefresh(true);
-    setBrandSection([]);
-    setCitySection([]);
+
     setAgeing([]);
     setPrice([]);
     setSections([]);
-    setSections1([]);
-    setSections2([]);
+
     setSections3([]);
     setSections4([]);
     setSections5([]);
     setIsFiltersUpdated(true);
-    setBranchpage(1);
-    setCitypage(1);
+
     setSectionpage(1);
-    setByItemPage(1);
-    setProductpage(1);
+
     setBrandpage(1);
     setItempage(1);
     setModelpage(1);
@@ -1238,13 +807,11 @@ function AllinoneStock() {
   useEffect(() => {
     if (isFiltersUpdated) {
       setIsApplyDisabled(true);
-      setBrandSection([]);
-      setCitySection([]);
+
       setAgeing([]);
       setPrice([]);
       setSections([]);
-      setSections1([]);
-      setSections2([]);
+
       setSections3([]);
       setSections4([]);
       setSections5([]);
@@ -1254,27 +821,22 @@ function AllinoneStock() {
       setItemData([]);
       setAgeingData([]);
       setHoldingData([]);
-      setBranchpage(1);
-      setCitypage(1);
+
       setSectionpage(1);
-      setByItemPage(1);
-      setProductpage(1);
       setBrandpage(1);
       setItempage(1);
       setModelpage(1);
 
       setIsFiltersUpdated(false);
       const queryString = new URLSearchParams(filters).toString();
-      const baseUrl = "stock_analysis/";
+      const baseUrl = "stock_analysis_kore/";
       const clearedUrl = `${baseUrl}?${queryString}`;
       console.log("API URL being called:", clearedUrl);
       fetchDropdownData();
-      fetchBrandwise();
-      fetchCitywise();
+
       fetchAgeing();
       fetchSectionwise();
-      fetchItemwise();
-      fetchProductwise();
+
       fetchBrandAna();
       fetchItemAnas();
       fetchPriceAna();
@@ -1300,28 +862,7 @@ function AllinoneStock() {
     ...sections.map((section) => section.value_sum_percentage)
   );
   //branc
-  const minQtybrand = Math.min(...brandSection.map((section) => section.qty));
-  const maxQtybrand = Math.max(...brandSection.map((section) => section.qty));
-  const minValuebrand = Math.min(
-    ...brandSection.map((section) => section.value)
-  );
-  const maxValuebrand = Math.max(
-    ...brandSection.map((section) => section.value)
-  );
-  const minPercentagebrand = Math.min(
-    ...brandSection.map((section) => section.value_sum_percentage)
-  );
-  const maxPercentagebrand = Math.max(
-    ...brandSection.map((section) => section.value_sum_percentage)
-  );
-  //city
-  const minQtycity = Math.min(...citySection.map((section) => section.qty));
-  const maxQtycity = Math.max(...citySection.map((section) => section.qty));
-  const minValuecity = Math.min(...citySection.map((section) => section.value));
-  const maxValuecity = Math.max(...citySection.map((section) => section.value));
-  const minPercentagecity = Math.min(
-    ...citySection.map((section) => section.value_sum_percentage)
-  );
+
   const maxPercentagecity = Math.max(
     ...citySection.map((section) => section.value_sum_percentage)
   );
@@ -1360,35 +901,6 @@ function AllinoneStock() {
     ...price.map((section) => section.percentage)
   );
   //itemcat
-  const minQtyitemcat = Math.min(...sections1.map((section) => section.qty));
-  const maxQtyitemcat = Math.max(...sections1.map((section) => section.qty));
-  const minValueitemcat = Math.min(
-    ...sections1.map((section) => section.value)
-  );
-  const maxValueitemcat = Math.max(
-    ...sections1.map((section) => section.value)
-  );
-  const minPercentageitemcat = Math.min(
-    ...sections1.map((section) => section.value_sum_percentage)
-  );
-  const maxPercentageitemcat = Math.max(
-    ...sections1.map((section) => section.value_sum_percentage)
-  );
-  //product
-  const minQtyproduct = Math.min(...sections2.map((section) => section.qty));
-  const maxQtyproduct = Math.max(...sections2.map((section) => section.qty));
-  const minValueproduct = Math.min(
-    ...sections2.map((section) => section.value)
-  );
-  const maxValueproduct = Math.max(
-    ...sections2.map((section) => section.value)
-  );
-  const minPercentageproduct = Math.min(
-    ...sections2.map((section) => section.value_sum_percentage)
-  );
-  const maxPercentageproduct = Math.max(
-    ...sections2.map((section) => section.value_sum_percentage)
-  );
 
   //brandby
   const minQtybrandby = Math.min(...sections3.map((section) => section.qty));
@@ -1460,17 +972,11 @@ function AllinoneStock() {
   const [ItemData, setItemData] = useState([]);
   const [AgeingData, setAgeingData] = useState([]);
   const [HoldingData, setHoldingData] = useState([]);
-  const [QuantityDataresponse, setQuantityDataresponse] = useState("");
-  const controllerRef12 = useRef(null);
+
   const fetchQuantityData = async () => {
-    if (controllerRef12.current) {
-      controllerRef12.current.abort();
-    }
-    controllerRef12.current = new AbortController();
-    const signal = controllerRef12.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const stored = sessionStorage.getItem("store");
+      const storecode = stored === "null" || stored === null ? "" : stored;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -1480,48 +986,30 @@ function AllinoneStock() {
       };
 
       const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
         item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
+
         section: cleanEncode(filters.section),
         modelno: cleanEncode(filters.modelno),
         demo_flag: cleanEncode(filters.demo_flag),
         PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
+
         overall_age: cleanEncode(filters.overall_age),
         IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
         brand: cleanEncode(filters.brand),
       };
       const response = await axios.get(
-        `/stock_analysis/stockAnalysisQuantity?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}`,
-        { signal }
+        `stock_analysis_kore/stockAnalysisKoreQuantity?&section=${encodedFilters.section}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&storecode=${storecode}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}`
       );
-      setQuantityDataresponse(response.statusText);
       setQuantityData([response.data.data]);
       console.log("fetchQuantityData");
     } catch (error) {
       console.error("Error fetching Stocksummary Data:", error);
-      if (axios.isCancel(error)) {
-        console.warn(
-          "Previous request aborted. Only the last request is processed."
-        );
-      } else {
-        console.error("Error fetching SalesCity Data:", error);
-      }
     }
   };
-  const [ValueDataresponse, setValueDataresponse] = useState("");
-  const controllerRef13 = useRef(null);
   const fetchValueData = async () => {
-    if (controllerRef13.current) {
-      controllerRef13.current.abort();
-    }
-    controllerRef13.current = new AbortController();
-    const signal = controllerRef13.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const stored = sessionStorage.getItem("store");
+      const storecode = stored === "null" || stored === null ? "" : stored;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -1531,48 +1019,30 @@ function AllinoneStock() {
       };
 
       const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
         item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
+
         section: cleanEncode(filters.section),
         modelno: cleanEncode(filters.modelno),
         demo_flag: cleanEncode(filters.demo_flag),
         PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
+
         overall_age: cleanEncode(filters.overall_age),
         IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
         brand: cleanEncode(filters.brand),
       };
       const response = await axios.get(
-        `/stock_analysis/stockAnalysisSellingPrice?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}`,
-        { signal }
+        `stock_analysis_kore/stockAnalysisKoreSellingPrice?&section=${encodedFilters.section}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&storecode=${storecode}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}`
       );
-      setValueDataresponse(response.statusText);
       setValueData([response.data.data]);
       console.log("fetchValueData");
     } catch (error) {
       console.error("Error fetching Stocksummary Data:", error);
-      if (axios.isCancel(error)) {
-        console.warn(
-          "Previous request aborted. Only the last request is processed."
-        );
-      } else {
-        console.error("Error fetching SalesCity Data:", error);
-      }
     }
   };
-  const [BrandDataresponse, setBrandDataresponse] = useState("");
-  const controllerRef14 = useRef(null);
   const fetchBrandData = async () => {
-    if (controllerRef14.current) {
-      controllerRef14.current.abort();
-    }
-    controllerRef14.current = new AbortController();
-    const signal = controllerRef14.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const stored = sessionStorage.getItem("store");
+      const storecode = stored === "null" || stored === null ? "" : stored;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -1582,48 +1052,30 @@ function AllinoneStock() {
       };
 
       const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
         item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
+
         section: cleanEncode(filters.section),
         modelno: cleanEncode(filters.modelno),
         demo_flag: cleanEncode(filters.demo_flag),
         PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
+
         overall_age: cleanEncode(filters.overall_age),
         IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
         brand: cleanEncode(filters.brand),
       };
       const response = await axios.get(
-        `/stock_analysis/stockAnalysisNoOfBrands?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}`,
-        { signal }
+        `stock_analysis_kore/stockAnalysisKoreNoOfBrands?&section=${encodedFilters.section}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&storecode=${storecode}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}`
       );
-      setBrandDataresponse(response.statusText);
       setBrandData([response.data.data]);
       console.log("fetchBrandData");
     } catch (error) {
       console.error("Error fetching Stocksummary Data:", error);
-      if (axios.isCancel(error)) {
-        console.warn(
-          "Previous request aborted. Only the last request is processed."
-        );
-      } else {
-        console.error("Error fetching SalesCity Data:", error);
-      }
     }
   };
-  const [ItemDataresponse, setItemDataresponse] = useState("");
-  const controllerRef15 = useRef(null);
   const fetchItemData = async () => {
-    if (controllerRef15.current) {
-      controllerRef15.current.abort();
-    }
-    controllerRef15.current = new AbortController();
-    const signal = controllerRef15.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const stored = sessionStorage.getItem("store");
+      const storecode = stored === "null" || stored === null ? "" : stored;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -1633,48 +1085,30 @@ function AllinoneStock() {
       };
 
       const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
         item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
+
         section: cleanEncode(filters.section),
         modelno: cleanEncode(filters.modelno),
         demo_flag: cleanEncode(filters.demo_flag),
         PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
+
         overall_age: cleanEncode(filters.overall_age),
         IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
         brand: cleanEncode(filters.brand),
       };
       const response = await axios.get(
-        `/stock_analysis/stockAnalysisNoOfItems?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}`,
-        { signal }
+        `stock_analysis_kore/stockAnalysisKoreNoOfItems?&section=${encodedFilters.section}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&storecode=${storecode}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}`
       );
-      setItemDataresponse(response.statusText);
       setItemData([response.data.data]);
       console.log("fetchItemData");
     } catch (error) {
       console.error("Error fetching Stocksummary Data:", error);
-      if (axios.isCancel(error)) {
-        console.warn(
-          "Previous request aborted. Only the last request is processed."
-        );
-      } else {
-        console.error("Error fetching SalesCity Data:", error);
-      }
     }
   };
-  const [AgeingDataresponse, setAgeingDataresponse] = useState("");
-  const controllerRef16 = useRef(null);
   const fetchAgeingData = async () => {
-    if (controllerRef16.current) {
-      controllerRef16.current.abort();
-    }
-    controllerRef16.current = new AbortController();
-    const signal = controllerRef16.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const stored = sessionStorage.getItem("store");
+      const storecode = stored === "null" || stored === null ? "" : stored;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -1684,48 +1118,30 @@ function AllinoneStock() {
       };
 
       const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
         item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
+
         section: cleanEncode(filters.section),
         modelno: cleanEncode(filters.modelno),
         demo_flag: cleanEncode(filters.demo_flag),
         PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
+
         overall_age: cleanEncode(filters.overall_age),
         IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
         brand: cleanEncode(filters.brand),
       };
       const response = await axios.get(
-        `/stock_analysis/stockAnalysisAgeing?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}`,
-        { signal }
+        `stock_analysis_kore/stockAnalysisKoreAgeing?&section=${encodedFilters.section}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&storecode=${storecode}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}`
       );
-      setAgeingDataresponse(response.statusText);
       setAgeingData([response.data.data]);
       console.log("fetchAgeingData");
     } catch (error) {
       console.error("Error fetching Stocksummary Data:", error);
-      if (axios.isCancel(error)) {
-        console.warn(
-          "Previous request aborted. Only the last request is processed."
-        );
-      } else {
-        console.error("Error fetching SalesCity Data:", error);
-      }
     }
   };
-  const [HoldingDataresponse, setHoldingDataresponse] = useState("");
-  const controllerRef17 = useRef(null);
   const fetchHoldingData = async () => {
-    if (controllerRef17.current) {
-      controllerRef17.current.abort();
-    }
-    controllerRef17.current = new AbortController();
-    const signal = controllerRef17.current.signal;
     try {
-      const storedAsm = sessionStorage.getItem("asm");
-      const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+      const stored = sessionStorage.getItem("store");
+      const storecode = stored === "null" || stored === null ? "" : stored;
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -1735,35 +1151,24 @@ function AllinoneStock() {
       };
 
       const encodedFilters = {
-        city: cleanEncode(filters.city),
-        branch_name: cleanEncode(filters.branch_name),
         item_name: cleanEncode(filters.item_name),
-        product: cleanEncode(filters.product),
+
         section: cleanEncode(filters.section),
         modelno: cleanEncode(filters.modelno),
         demo_flag: cleanEncode(filters.demo_flag),
         PriceBreakup2: cleanEncode(filters.PriceBreakup2),
-        item_category: cleanEncode(filters.item_category),
+
         overall_age: cleanEncode(filters.overall_age),
         IMEI_STATUS: cleanEncode(filters.IMEI_STATUS),
         brand: cleanEncode(filters.brand),
       };
       const response = await axios.get(
-        `/stock_analysis/stockAnalysisHoldingCost?city=${encodedFilters.city}&branch_name=${encodedFilters.branch_name}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product=${encodedFilters.product}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&asm=${asm}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}`,
-        { signal }
+        `stock_analysis_kore/stockAnalysisKoreHoldingCost?&section=${encodedFilters.section}&brand=${encodedFilters.brand}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&modelno=${encodedFilters.modelno}&item_name=${encodedFilters.item_name}&storecode=${storecode}&IMEI_STATUS=${encodedFilters.IMEI_STATUS}&overall_age=${encodedFilters.overall_age}`
       );
-      setHoldingDataresponse(response.statusText);
       setHoldingData([response.data.data]);
       console.log("fetchHoldingData");
     } catch (error) {
       console.error("Error fetching Stocksummary Data:", error);
-      if (axios.isCancel(error)) {
-        console.warn(
-          "Previous request aborted. Only the last request is processed."
-        );
-      } else {
-        console.error("Error fetching SalesCity Data:", error);
-      }
     }
   };
   const [currentDateTime, setCurrentDateTime] = useState("");
@@ -1790,7 +1195,9 @@ function AllinoneStock() {
   const [formattedTime, setformattedTime] = useState();
   const fetchliveData = async () => {
     try {
-      const response = await axios.get("/stock_analysis/table_modificatio");
+      const response = await axios.get(
+        "/stock_analysis_kore/kore_table_modificatio"
+      );
 
       const currentDate = response?.data?.last_modified;
 
@@ -1841,104 +1248,6 @@ function AllinoneStock() {
 
   //   return () => clearInterval(intervalId);
   // }, []);
-
-  const [selectedOptiontime, setSelectedOptiontime] = useState([]);
-  const dropdownValuetime = selectedOptiontime || filters.IMEI_STATUS;
-  const optionstime = [
-    { label: "IMEI", value: "IMEI" },
-    { label: "NON IMEI", value: "NON IMEI" },
-  ];
-  const handletimeChange = (selectedOptions) => {
-    setSelectedOptiontime(selectedOptions);
-    if (selectedOptions) {
-      // const selectedValues = selectedOptions.map((option) => option.value);
-      // const selectedValuesString = selectedValues.join(",");
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        IMEI_STATUS: selectedOptions.value,
-      }));
-    } else {
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        IMEI_STATUS: "",
-      }));
-    }
-  };
-
-  const [selectedOptionbranch, setSelectedOptionbranch] = useState(
-    dropdownData?.filters?.branch_name?.length > 2
-      ? [
-          {
-            label: dropdownData.branch_name[2],
-            value: dropdownData.branch_name[2],
-          },
-        ]
-      : null
-  );
-  const dropdownValuebranch = selectedOptionbranch || filters.branch_name;
-  const optionsbranch = Array.isArray(dropdownData?.branch_name)
-    ? dropdownData.branch_name
-        .slice()
-        .sort((a, b) => a.localeCompare(b))
-        .map((store) => ({
-          label: store,
-          value: store,
-        }))
-    : [];
-  const handlebranchChange = (selectedOptions) => {
-    setSelectedOptionbranch(selectedOptions);
-    console.log("Selected item options:brannnnnnnnnnnn", selectedOptions);
-    if (selectedOptions) {
-      const selectedValues = selectedOptions.map((option) => option.value);
-      const selectedValuesString = selectedValues.join(",");
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        branch_name: selectedValuesString,
-      }));
-    } else {
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        branch_name: "",
-      }));
-    }
-  };
-
-  const [selectedOptioncity, setSelectedOptioncity] = useState(
-    dropdownData?.filters?.city?.length > 2
-      ? [
-          {
-            label: dropdownData.city[2],
-            value: dropdownData.city[2],
-          },
-        ]
-      : null
-  );
-  const dropdownValuecity = selectedOptioncity || filters.city;
-  const optionscity = dropdownData.city
-    .slice()
-    .sort((a, b) => a.localeCompare(b))
-    .map((store) => ({
-      label: store,
-      value: store,
-    }));
-  const handlecityChange = (selectedOptions) => {
-    setSelectedOptioncity(selectedOptions);
-    console.log("Selected item options:", selectedOptions);
-    if (selectedOptions) {
-      const selectedValues = selectedOptions.map((option) => option.value);
-      const selectedValuesString = selectedValues.join(",");
-
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        city: selectedValuesString,
-      }));
-    } else {
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        city: "",
-      }));
-    }
-  };
 
   const [selectedOptionsection, setSelectedOptionsection] = useState(
     dropdownData?.filters?.section?.length > 2
@@ -2024,70 +1333,6 @@ function AllinoneStock() {
         ]
       : null
   );
-  const dropdownValueitem = selectedOptionitem || filters.item_category;
-  const optionsitem = dropdownData.item_category
-    .slice()
-    .sort((a, b) => a.localeCompare(b))
-    .map((store) => ({
-      label: store,
-      value: store,
-    }));
-  const handleitemChange = (selectedOptions) => {
-    setSelectedOptionitem(selectedOptions);
-    console.log("Selected item options:", selectedOptions);
-    if (selectedOptions) {
-      const selectedValues = selectedOptions.map((option) => option.value);
-
-      const selectedValuesString = selectedValues.join(",");
-
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        item_category: selectedValuesString,
-      }));
-    } else {
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        item_category: "",
-      }));
-    }
-  };
-
-  const [selectedOptionproduct, setSelectedOptionproduct] = useState(
-    dropdownData?.filters?.product?.length > 2
-      ? [
-          {
-            label: dropdownData.product[2],
-            value: dropdownData.product[2],
-          },
-        ]
-      : null
-  );
-  const dropdownValueproduct = selectedOptionproduct || filters.product;
-  const optionsproduct = dropdownData.product
-    .slice()
-    .sort((a, b) => a.localeCompare(b))
-    .map((store) => ({
-      label: store,
-      value: store,
-    }));
-  const handleproductChange = (selectedOptions) => {
-    setSelectedOptionproduct(selectedOptions);
-    console.log("Selected item options:", selectedOptions);
-    if (selectedOptions) {
-      const selectedValues = selectedOptions.map((option) => option.value);
-      const selectedValuesString = selectedValues.join(",");
-
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        product: selectedValuesString,
-      }));
-    } else {
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        product: "",
-      }));
-    }
-  };
 
   const [selectedOptionmodule, setSelectedOptionmodule] = useState(
     dropdownData?.filters?.modelno?.length > 2
@@ -2461,105 +1706,7 @@ function AllinoneStock() {
               >
                 {/* Dropdown Filters */}
                 {/* <div className="col-md-2">{renderDropdown("Sale Type")}</div> */}
-                <div className="col-md-2">
-                  <label
-                    htmlFor="Sales Type"
-                    style={{
-                      color: "black",
-                      fontSize: 14,
-                      fontFamily: "Inter",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    IMEI/NON IMEI
-                  </label>
-                  <Select
-                    options={optionstime}
-                    value={dropdownValuetime}
-                    onChange={handletimeChange}
-                    defaultValue={[
-                      { label: "IMEI", value: "IMEI" },
-                      { label: "NON IMEI", value: "NON IMEI" },
-                    ]}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    onFocus={() => setPlaceholdertime("Search...")}
-                    onBlur={() => setPlaceholdertime("All")}
-                    placeholder={placeholdertime}
-                  />
-                </div>
-                <div className="col-md-2">
-                  <label
-                    htmlFor="division"
-                    style={{
-                      color: "black",
-                      fontSize: 14,
-                      fontFamily: "Inter",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Branch
-                  </label>
-                  <Select
-                    options={optionsbranch}
-                    value={dropdownValuebranch}
-                    onChange={handlebranchChange}
-                    isMulti
-                    defaultValue={
-                      Array.isArray(dropdownData?.branch_name) &&
-                      dropdownData.branch_name.length > 2
-                        ? [
-                            {
-                              label: dropdownData.branch_name[2],
-                              value: dropdownData.branch_name[2],
-                            },
-                          ]
-                        : null
-                    }
-                    onFocus={() => setPlaceholderbranch("Search...")}
-                    onBlur={() => setPlaceholderbranch("All")}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    placeholder={placeholderbranch}
-                  />
-                </div>
-                <div className="col-md-2">
-                  <label
-                    htmlFor="division"
-                    style={{
-                      color: "black",
-                      fontSize: 14,
-                      fontFamily: "Inter",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    City
-                  </label>
 
-                  <Select
-                    options={optionscity}
-                    value={dropdownValuecity}
-                    onChange={handlecityChange}
-                    isMulti
-                    defaultValue={
-                      dropdownData.city
-                        .slice()
-                        .sort((a, b) => a.localeCompare(b))?.length > 2
-                        ? [
-                            {
-                              label: dropdownData.city[2],
-                              value: dropdownData.city[2],
-                            },
-                          ]
-                        : null
-                    }
-                    onFocus={() => setPlaceholdercity("Search...")}
-                    onBlur={() => setPlaceholdercity("All")}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    placeholder={placeholdercity}
-                  />
-                </div>
                 <div className="col-md-2">
                   <label
                     htmlFor="division"
@@ -2570,7 +1717,7 @@ function AllinoneStock() {
                       fontWeight: "bold",
                     }}
                   >
-                    Section
+                    Product
                   </label>
 
                   <Select
@@ -2597,6 +1744,7 @@ function AllinoneStock() {
                     placeholder={placeholdersection}
                   />
                 </div>
+
                 <div className="col-md-2">
                   <label
                     htmlFor="division"
@@ -2634,80 +1782,7 @@ function AllinoneStock() {
                     placeholder={placeholderbrand}
                   />
                 </div>
-                <div className="col-md-2">
-                  <label
-                    htmlFor="division"
-                    style={{
-                      color: "black",
-                      fontSize: 14,
-                      fontFamily: "Inter",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Item Category
-                  </label>
 
-                  <Select
-                    options={optionsitem}
-                    value={dropdownValueitem}
-                    onChange={handleitemChange}
-                    isMulti
-                    defaultValue={
-                      dropdownData.item_category
-                        .slice()
-                        .sort((a, b) => a.localeCompare(b))?.length > 2
-                        ? [
-                            {
-                              label: dropdownData.item_category[2],
-                              value: dropdownData.item_category[2],
-                            },
-                          ]
-                        : null
-                    }
-                    onFocus={() => setPlaceholderitem("Search...")}
-                    onBlur={() => setPlaceholderitem("All")}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    placeholder={placeholderitem}
-                  />
-                </div>
-                <div className="col-md-2">
-                  <label
-                    htmlFor="division"
-                    style={{
-                      color: "black",
-                      fontSize: 14,
-                      fontFamily: "Inter",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Product
-                  </label>
-
-                  <Select
-                    options={optionsproduct}
-                    value={dropdownValueproduct}
-                    onChange={handleproductChange}
-                    isMulti
-                    defaultValue={
-                      dropdownData.product
-                        .slice()
-                        .sort((a, b) => a.localeCompare(b))?.length > 2
-                        ? [
-                            {
-                              label: dropdownData.product[2],
-                              value: dropdownData.product[2],
-                            },
-                          ]
-                        : null
-                    }
-                    onFocus={() => setPlaceholderproduct("Search...")}
-                    onBlur={() => setPlaceholderproduct("All")}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    placeholder={placeholderproduct}
-                  />
-                </div>
                 <div className="col-md-2">
                   <label
                     htmlFor="division"
@@ -2917,7 +1992,7 @@ function AllinoneStock() {
                     >
                       {ValueData.map((item, index) => (
                         <h5 key={index} className="card-text">
-                          {formatNumber(item.Selling_Price)}
+                          {formatNumber(item.Purchase_rate)}
                         </h5>
                       ))}
                     </div>
@@ -3012,561 +2087,6 @@ function AllinoneStock() {
             </div>
 
             {/* //table */}
-            <div>
-              <div
-                className="row"
-                // style={{
-                //   height: "433px",
-                // }}
-              >
-                {/* First Row: Three Tables */}
-                <div
-                  style={{
-                    display: "flex",
-                    backgroundColor: "white",
-                    width: "50%",
-                    border: "1px solid black",
-                    height: "433px",
-                    borderLeft: "none",
-                    borderBottom: "none",
-                    borderTop: "none",
-                    flexDirection: "column",
-                    // overflow: "auto",
-                    // height: "248px",
-                    height: "382px",
-                    overflow: "scroll",
-                    borderBottom: "1px solid black",
-                  }}
-                >
-                  {/* Header */}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: 18,
-                        fontFamily: "Inter",
-                        fontWeight: "bold",
-                        color: "black",
-                        padding: "10px",
-                      }}
-                    >
-                      By Branch
-                    </span>
-                  </div>
-                  {/* Table Header */}
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      fontWeight: "bold",
-                      marginBottom: "10px",
-                      borderBottom: "2px solid black",
-                      paddingBottom: "5px",
-                      paddingTop: "9px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        flex: 1,
-                        textAlign: "center",
-                        fontFamily: "Inter",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Branch Name
-                    </span>
-
-                    <img
-                      src={SelectArrow}
-                      alt=""
-                      style={{
-                        width: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleSort("branch_name")}
-                    />
-                    <span
-                      style={{
-                        flex: 1,
-                        textAlign: "right",
-                        fontFamily: "Inter",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Qty
-                    </span>
-
-                    <img
-                      src={SelectArrow}
-                      alt=""
-                      style={{
-                        width: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleSort("qty")}
-                    />
-                    <span
-                      style={{
-                        flex: 1,
-                        textAlign: "right",
-                        fontFamily: "Inter",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Value
-                    </span>
-
-                    <img
-                      src={SelectArrow}
-                      alt=""
-                      style={{
-                        width: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleSort("value")}
-                    />
-                    <span
-                      style={{
-                        flex: 1,
-                        textAlign: "right",
-                        fontFamily: "Inter",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Value%
-                    </span>
-
-                    <img
-                      src={SelectArrow}
-                      alt=""
-                      style={{
-                        width: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleSort("value_sum_percentage")}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      height: "400px",
-                      overflow: "auto",
-                    }}
-                    onScroll={handleBranchScroll}
-                  >
-                    {/* Table Rows */}
-                    {Array.isArray(brandSection) &&
-                      brandSection
-                        .sort((a, b) => {
-                          const aValue = a[sortColumn];
-                          const bValue = b[sortColumn];
-
-                          // if (aValue < bValue)
-                          //   return sortDirection === "asc" ? -1 : 1;
-                          // if (aValue > bValue)
-                          //   return sortDirection === "asc" ? 1 : -1;
-                          // return 0;
-                          const isNumber =
-                            !isNaN(parseFloat(aValue)) &&
-                            !isNaN(parseFloat(bValue));
-
-                          if (isNumber) {
-                            return sortDirection === "asc"
-                              ? parseFloat(aValue) - parseFloat(bValue)
-                              : parseFloat(bValue) - parseFloat(aValue);
-                          } else {
-                            return sortDirection === "asc"
-                              ? aValue.localeCompare(bValue)
-                              : bValue.localeCompare(aValue);
-                          }
-                        })
-                        .map((section, index) => {
-                          const qtypacity = calculateOpacity(
-                            section.qty,
-                            minQtybrand,
-                            maxQtybrand
-                          );
-                          const valueOpacity = calculateOpacity(
-                            section.value,
-                            minValuebrand,
-                            maxValuebrand
-                          );
-                          const valueSumPercentage = calculateOpacity1(
-                            section.value_sum_percentage,
-                            minPercentagebrand,
-                            maxPercentagebrand
-                          );
-
-                          return (
-                            <div
-                              key={index}
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                borderBottom: "1px solid #6b728038",
-                              }}
-                            >
-                              <span
-                                style={{
-                                  flex: 1,
-                                  textAlign: "left",
-                                  fontSize: 11,
-
-                                  fontFamily: "Inter",
-                                  fontWeight: "bold",
-                                  lineBreak: "anywhere",
-                                }}
-                              >
-                                {section.branch_name}
-                              </span>
-
-                              <span
-                                style={{
-                                  flex: 1,
-                                  textAlign: "right",
-                                  fontSize: 13,
-                                  fontFamily: "Inter",
-                                  backgroundColor: `rgba(4, 126, 163, ${qtypacity})`,
-                                  padding: "5px",
-                                  fontWeight: "bold",
-                                }}
-                              >
-                                {formatNumber(section.qty || "")}
-                              </span>
-
-                              <span
-                                style={{
-                                  flex: 1,
-                                  textAlign: "right",
-                                  fontSize: 13,
-
-                                  fontFamily: "Inter",
-                                  backgroundColor: `rgba(4, 126, 163, ${valueOpacity})`,
-                                  padding: "5px",
-                                  fontWeight: "bold",
-                                }}
-                              >
-                                {formatNumber(section.value || "")}
-                              </span>
-
-                              <span
-                                style={{
-                                  flex: 1,
-                                  textAlign: "right",
-                                  fontSize: 13,
-                                  fontFamily: "Inter",
-                                  fontWeight: "bold",
-                                  backgroundColor: `rgba(4, 126, 163, ${valueSumPercentage})`,
-                                }}
-                              >
-                                {section.value_sum_percentage || ""}
-                              </span>
-                            </div>
-                          );
-                        })}
-
-                    {/* Lazy Loader */}
-                    {ByBranchloading || Brandwiseresponse !== "OK" ? (
-                      <div className="text-center text-gray-600 py-2">
-                        <div
-                          className="spinner-border gray-spinner"
-                          role="status"
-                        >
-                          <span className="sr-only">Loading...</span>
-                        </div>{" "}
-                      </div>
-                    ) : (
-                      <>
-                        {brandSection.length === 0 && (
-                          <div className="text-center text-gray-600 py-2">
-                            <p>No data available</p>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-                {/* //second row */}
-                <div
-                  style={{
-                    display: "flex",
-                    backgroundColor: "white",
-                    width: "50%",
-                    border: "1px solid black",
-                    height: "433px",
-                    borderLeft: "none",
-                    borderBottom: "none",
-                    borderTop: "none",
-                    flexDirection: "column",
-                    // height: "248px",
-                    height: "382px",
-                    overflow: "auto",
-                    borderBottom: "1px solid black",
-                  }}
-                  // onScroll={(e) => handleScroll(e, "ByCity")}
-                >
-                  {/* Header */}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: 18,
-                        fontFamily: "Inter",
-                        fontWeight: "bold",
-                        color: "black",
-                        padding: "10px",
-                      }}
-                    >
-                      By City
-                    </span>
-                  </div>
-                  {/* Table Header */}
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      fontWeight: "bold",
-                      marginBottom: "10px",
-                      borderBottom: "2px solid black",
-                      paddingBottom: "5px",
-                      paddingTop: "9px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        flex: 1,
-                        textAlign: "center",
-                        fontFamily: "Inter",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      City
-                    </span>
-
-                    <img
-                      src={SelectArrow}
-                      alt=""
-                      style={{
-                        width: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleSort2("city")}
-                    />
-                    <span
-                      style={{
-                        flex: 1,
-                        textAlign: "right",
-                        fontFamily: "Inter",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Qty
-                    </span>
-
-                    <img
-                      src={SelectArrow}
-                      alt=""
-                      style={{
-                        width: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleSort2("qty")}
-                    />
-                    <span
-                      style={{
-                        flex: 1,
-                        textAlign: "right",
-                        fontFamily: "Inter",
-                        fontSize: 14,
-                        // fontWeight: "bold",
-                      }}
-                    >
-                      Value
-                    </span>
-
-                    <img
-                      src={SelectArrow}
-                      alt=""
-                      style={{
-                        width: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleSort2("value")}
-                    />
-                    <span
-                      style={{
-                        flex: 1,
-                        textAlign: "right",
-                        fontFamily: "Inter",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Value%
-                    </span>
-
-                    <img
-                      src={SelectArrow}
-                      alt=""
-                      style={{
-                        width: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleSort2("value_sum_percentage")}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      height: "400px",
-                      overflow: "auto",
-                    }}
-                    onScroll={handleCityScroll}
-                  >
-                    {/* Table Rows */}
-                    {citySection
-                      .sort((a, b) => {
-                        const aValue = a[sortColumncity];
-                        const bValue = b[sortColumncity];
-
-                        // if (aValue < bValue)
-                        //   return sortDirectioncity === "asc" ? -1 : 1;
-                        // if (aValue > bValue)
-                        //   return sortDirectioncity === "asc" ? 1 : -1;
-                        // return 0;
-                        const isNumber =
-                          !isNaN(parseFloat(aValue)) &&
-                          !isNaN(parseFloat(bValue));
-
-                        if (isNumber) {
-                          return sortDirectioncity === "asc"
-                            ? parseFloat(aValue) - parseFloat(bValue)
-                            : parseFloat(bValue) - parseFloat(aValue);
-                        } else {
-                          return sortDirectioncity === "asc"
-                            ? aValue.localeCompare(bValue)
-                            : bValue.localeCompare(aValue);
-                        }
-                      })
-                      .map((section, index) => {
-                        const qtypacity = calculateOpacity(
-                          section.qty,
-                          minQtycity,
-                          maxQtycity
-                        );
-                        const valueOpacity = calculateOpacity(
-                          section.value,
-                          minValuecity,
-                          maxValuecity
-                        );
-                        const valueSumPercentage = calculateOpacity1(
-                          section.value_sum_percentage,
-                          minPercentagecity,
-                          maxPercentagecity
-                        );
-                        return (
-                          <div
-                            key={index}
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              borderBottom: "1px solid #6b728038",
-                            }}
-                          >
-                            <span
-                              style={{
-                                flex: 1,
-                                textAlign: "left",
-                                fontWeight: "bold",
-                                fontSize: 13,
-                                fontFamily: "Inter",
-                                lineBreak: "anywhere",
-                              }}
-                            >
-                              {section.city}
-                            </span>
-
-                            <span
-                              style={{
-                                flex: 1,
-                                textAlign: "right",
-                                fontWeight: "bold",
-                                fontSize: 13,
-                                fontFamily: "Inter",
-                                backgroundColor: `rgba(4, 126, 163, ${qtypacity})`,
-                                padding: "5px",
-                              }}
-                            >
-                              {formatNumber(section.qty || "")}
-                            </span>
-
-                            <span
-                              style={{
-                                flex: 1,
-                                textAlign: "right",
-                                fontWeight: "bold",
-                                fontSize: 13,
-                                fontFamily: "Inter",
-                                backgroundColor: `rgba(4, 126, 163, ${valueOpacity})`, // Use dynamic background color
-                                padding: "5px",
-                              }}
-                            >
-                              {formatNumber(section.value || "")}
-                            </span>
-
-                            <span
-                              style={{
-                                flex: 1,
-                                textAlign: "right",
-                                fontWeight: "bold",
-                                fontSize: 13,
-                                fontFamily: "Inter",
-                                backgroundColor: `rgba(4, 126, 163, ${valueSumPercentage})`,
-                              }}
-                            >
-                              {section.value_sum_percentage}
-                            </span>
-                          </div>
-                        );
-                      })}
-
-                    {/* Lazy Loader */}
-                    {ByCityloading || Citywiseresponse !== "OK" ? (
-                      <div className="text-center text-gray-600 py-2">
-                        <div
-                          className="spinner-border gray-spinner"
-                          role="status"
-                        >
-                          <span className="sr-only">Loading...</span>
-                        </div>{" "}
-                      </div>
-                    ) : (
-                      <>
-                        {citySection.length === 0 && (
-                          <div className="text-center text-gray-600 py-2">
-                            <p>No data available</p>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
 
             {/* //table */}
 
@@ -3581,14 +2101,14 @@ function AllinoneStock() {
                   style={{
                     display: "flex",
                     backgroundColor: "white",
-                    width: "50%",
+                    width: "33%",
                     border: "1px solid black",
                     height: "433px",
                     borderLeft: "none",
                     borderBottom: "none",
                     borderTop: "none",
                     flexDirection: "column",
-                    height: "382px",
+                    height: "400px",
                     // overflow: "scroll",
                     borderBottom: "1px solid black",
                   }}
@@ -3792,14 +2312,14 @@ function AllinoneStock() {
                   style={{
                     display: "flex",
                     backgroundColor: "white",
-                    width: "50%",
+                    width: "33%",
                     border: "1px solid black",
                     height: "433px",
                     borderLeft: "none",
                     borderBottom: "none",
                     borderTop: "none",
                     flexDirection: "column",
-                    height: "382px",
+                    height: "400px",
                     overflow: "auto",
                     borderBottom: "1px solid black",
                   }}
@@ -3996,32 +2516,18 @@ function AllinoneStock() {
                     )}
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* //table row2*/}
-            <div>
-              <div
-                className="row"
-                style={
-                  {
-                    // height: "433px",
-                  }
-                }
-              >
-                {/* First Row: Three Tables */}
                 <div
                   style={{
                     display: "flex",
                     backgroundColor: "white",
-                    width: "50%",
+                    width: "33%",
                     border: "1px solid black",
                     // height: "433px",
                     borderLeft: "none",
                     borderBottom: "none",
                     borderTop: "none",
                     flexDirection: "column",
-                    height: "382px",
+                    height: "400px",
                     overflow: "auto",
                     borderBottom: "1px solid black",
                   }}
@@ -4044,7 +2550,7 @@ function AllinoneStock() {
                         padding: "10px",
                       }}
                     >
-                      By Section
+                      By Product
                     </span>
                   </div>
                   {/* Table Header */}
@@ -4068,7 +2574,7 @@ function AllinoneStock() {
                         fontWeight: "bold",
                       }}
                     >
-                      Section
+                      Product
                     </span>
                     <img
                       src={SelectArrow}
@@ -4281,566 +2787,38 @@ function AllinoneStock() {
                     )}
                   </div>
                 </div>
-                {/* //second row */}
-                <div
-                  style={{
-                    display: "flex",
-                    backgroundColor: "white",
-                    width: "50%",
-                    border: "1px solid black",
-                    // height: "433px",
-                    borderLeft: "none",
-                    borderBottom: "none",
-                    borderTop: "none",
-                    flexDirection: "column",
-                    height: "382px",
-                    overflow: "auto",
-                    borderBottom: "1px solid black",
-                  }}
-                  // onScroll={(e) => handleScroll(e, "ByItemCategory")}
-                >
-                  {/* Header */}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: 18,
-                        fontFamily: "Inter",
-                        fontWeight: "bold",
-                        color: "black",
-                        padding: "10px",
-                      }}
-                    >
-                      By Item Category
-                    </span>
-                  </div>
-                  {/* Table Header */}
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      fontWeight: "bold",
-                      marginBottom: "10px",
-                      borderBottom: "2px solid black",
-                      paddingBottom: "5px",
-                      paddingTop: "9px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        flex: 1,
-                        textAlign: "center",
-                        fontFamily: "Inter",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Item Category
-                    </span>
-                    <img
-                      src={SelectArrow}
-                      alt=""
-                      style={{
-                        width: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleSort6("item_category")}
-                    />
-
-                    <span
-                      style={{
-                        flex: 1,
-                        textAlign: "right",
-                        fontFamily: "Inter",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Qty
-                    </span>
-                    <img
-                      src={SelectArrow}
-                      alt=""
-                      style={{
-                        width: "10px",
-                      }}
-                      onClick={() => handleSort6("qty")}
-                    />
-
-                    <span
-                      style={{
-                        flex: 1,
-                        textAlign: "right",
-                        fontFamily: "Inter",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Value
-                    </span>
-                    <img
-                      src={SelectArrow}
-                      alt=""
-                      style={{
-                        width: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleSort6("value")}
-                    />
-
-                    <span
-                      style={{
-                        flex: 1,
-                        textAlign: "right",
-                        fontFamily: "Inter",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Value%
-                    </span>
-                    <img
-                      src={SelectArrow}
-                      alt=""
-                      style={{
-                        width: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleSort6("value_sum_percentage")}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      height: "400px",
-                      overflow: "auto",
-                    }}
-                    onScroll={handleItemwiseScroll}
-                  >
-                    {/* Table Rows */}
-                    {sections1
-                      .sort((a, b) => {
-                        const aValue = a[sortColumnitem];
-                        const bValue = b[sortColumnitem];
-
-                        // if (aValue < bValue)
-                        //   return sortDirectionitem === "asc" ? -1 : 1;
-                        // if (aValue > bValue)
-                        //   return sortDirectionitem === "asc" ? 1 : -1;
-                        // return 0;
-                        const isNumber =
-                          !isNaN(parseFloat(aValue)) &&
-                          !isNaN(parseFloat(bValue));
-
-                        if (isNumber) {
-                          return sortDirectionitem === "asc"
-                            ? parseFloat(aValue) - parseFloat(bValue)
-                            : parseFloat(bValue) - parseFloat(aValue);
-                        } else {
-                          return sortDirectionitem === "asc"
-                            ? aValue.localeCompare(bValue)
-                            : bValue.localeCompare(aValue);
-                        }
-                      })
-                      .map((section, index) => {
-                        const qtypacity = calculateOpacity(
-                          section.qty,
-                          minQtyitemcat,
-                          maxQtyitemcat
-                        );
-                        const valueOpacity = calculateOpacity(
-                          section.value,
-                          minValueitemcat,
-                          maxValueitemcat
-                        );
-                        const valueSumPercentage = calculateOpacity1(
-                          section.value_sum_percentage,
-                          minPercentageitemcat,
-                          maxPercentageitemcat
-                        );
-
-                        return (
-                          <div
-                            key={index}
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              borderBottom: "1px solid #6b728038",
-                            }}
-                          >
-                            <span
-                              style={{
-                                flex: 1,
-                                textAlign: "left",
-                                fontWeight: "bold",
-                                fontSize: 13,
-                                fontFamily: "Inter",
-                                fontWeight: "bold",
-                                lineBreak: "anywhere",
-                              }}
-                            >
-                              {section.item_category}
-                            </span>
-
-                            <span
-                              style={{
-                                flex: 1,
-                                textAlign: "right",
-                                fontWeight: "bold",
-                                fontSize: 13,
-                                fontFamily: "Inter",
-                                backgroundColor: `rgba(4, 126, 163, ${qtypacity})`,
-                                padding: "5px",
-                                fontWeight: "bold",
-                              }}
-                            >
-                              {formatNumber(section.qty || "")}
-                            </span>
-
-                            <span
-                              style={{
-                                flex: 1,
-                                textAlign: "right",
-                                fontWeight: "bold",
-                                fontSize: 13,
-                                fontFamily: "Inter",
-                                backgroundColor: `rgba(4, 126, 163, ${valueOpacity})`, // Use dynamic background color
-                                padding: "5px",
-                              }}
-                            >
-                              {formatNumber(section.value || "")}
-                            </span>
-
-                            <span
-                              style={{
-                                flex: 1,
-                                textAlign: "right",
-                                fontWeight: "bold",
-                                fontSize: 13,
-                                fontFamily: "Inter",
-                                backgroundColor: `rgba(4, 126, 163, ${valueSumPercentage})`,
-                              }}
-                            >
-                              {section.value_sum_percentage}
-                            </span>
-                          </div>
-                        );
-                      })}
-
-                    {/* Lazy Loader */}
-                    {ByItemCategoryloading || Itemwiseresponse !== "OK" ? (
-                      <div className="text-center text-gray-600 py-2">
-                        <div
-                          className="spinner-border gray-spinner"
-                          role="status"
-                        >
-                          <span className="sr-only">Loading...</span>
-                        </div>{" "}
-                      </div>
-                    ) : (
-                      <>
-                        {sections1.length === 0 && (
-                          <div className="text-center text-gray-600 py-2">
-                            <p>No data available</p>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
               </div>
             </div>
+
+            {/* //table row2*/}
+
             {/* //table */}
 
             {/* //table row3*/}
+            {/* //table */}
+
+            {/* //table row4*/}
             <div>
-              <div className="row">
-                {/* First Row: Three Tables */}
+              <div
+                className="row"
+                style={
+                  {
+                    // height: "433px",
+                  }
+                }
+              >
                 <div
                   style={{
                     display: "flex",
                     backgroundColor: "white",
-                    width: "50%",
+                    width: "33%",
                     border: "1px solid black",
                     // height: "433px",
                     borderLeft: "none",
                     borderBottom: "none",
                     borderTop: "none",
                     flexDirection: "column",
-                    height: "382px",
-                    overflow: "auto",
-                    borderBottom: "1px solid black",
-                  }}
-                  // onScroll={(e) => handleScroll(e, "ByProduct")}
-                >
-                  {/* Header */}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: 18,
-                        fontFamily: "Inter",
-                        fontWeight: "bold",
-                        color: "black",
-                        padding: "10px",
-                      }}
-                    >
-                      By Product
-                    </span>
-                  </div>
-                  {/* Table Header */}
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      // fontWeight: "bold",
-                      marginBottom: "10px",
-                      borderBottom: "2px solid black",
-                      paddingBottom: "5px",
-                      paddingTop: "9px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        flex: 1,
-                        textAlign: "center",
-                        fontFamily: "Inter",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Product
-                    </span>
-                    <img
-                      src={SelectArrow}
-                      alt=""
-                      style={{
-                        width: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleSort7("product")}
-                    />
-
-                    <span
-                      style={{
-                        flex: 1,
-                        textAlign: "right",
-                        fontFamily: "Inter",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Qty
-                    </span>
-                    <img
-                      src={SelectArrow}
-                      alt=""
-                      style={{
-                        width: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleSort7("qty")}
-                    />
-
-                    <span
-                      style={{
-                        flex: 1,
-                        textAlign: "right",
-                        fontFamily: "Inter",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Value
-                    </span>
-                    <img
-                      src={SelectArrow}
-                      alt=""
-                      style={{
-                        width: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleSort7("value")}
-                    />
-                    <span
-                      style={{
-                        flex: 1,
-                        textAlign: "right",
-                        fontFamily: "Inter",
-                        fontSize: 14,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Value%
-                    </span>
-                    <img
-                      src={SelectArrow}
-                      alt=""
-                      style={{
-                        width: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleSort7("value_sum_percentage")}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      height: "400px",
-                      overflow: "auto",
-                    }}
-                    onScroll={handleProductScroll}
-                  >
-                    {/* Table Rows */}
-                    {sections2
-                      .sort((a, b) => {
-                        const aValue = a[sortColumnproduct];
-                        const bValue = b[sortColumnproduct];
-
-                        // if (aValue < bValue)
-                        //   return sortDirectionproduct === "asc" ? -1 : 1;
-                        // if (aValue > bValue)
-                        //   return sortDirectionproduct === "asc" ? 1 : -1;
-                        // return 0;
-                        const isNumber =
-                          !isNaN(parseFloat(aValue)) &&
-                          !isNaN(parseFloat(bValue));
-
-                        if (isNumber) {
-                          return sortDirectionproduct === "asc"
-                            ? parseFloat(aValue) - parseFloat(bValue)
-                            : parseFloat(bValue) - parseFloat(aValue);
-                        } else {
-                          return sortDirectionproduct === "asc"
-                            ? aValue.localeCompare(bValue)
-                            : bValue.localeCompare(aValue);
-                        }
-                      })
-                      .map((section, index) => {
-                        const qtypacity = calculateOpacity(
-                          section.qty,
-                          minQtyproduct,
-                          maxQtyproduct
-                        );
-                        const valueOpacity = calculateOpacity(
-                          section.value,
-                          minValueproduct,
-                          maxValueproduct
-                        );
-                        const valueSumPercentage = calculateOpacity1(
-                          section.value_sum_percentage,
-                          minPercentageproduct,
-                          maxPercentageproduct
-                        );
-
-                        return (
-                          <div
-                            key={index}
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              borderBottom: "1px solid #6b728038",
-                            }}
-                          >
-                            <span
-                              style={{
-                                flex: 1,
-                                textAlign: "left",
-                                fontWeight: "bold",
-                                fontSize: 13,
-                                fontFamily: "Inter",
-                                lineBreak: "anywhere",
-                              }}
-                            >
-                              {section.product}
-                            </span>
-
-                            <span
-                              style={{
-                                flex: 1,
-                                textAlign: "right",
-                                fontWeight: "bold",
-                                fontSize: 13,
-                                fontFamily: "Inter",
-                                backgroundColor: `rgba(4, 126, 163, ${qtypacity})`, // Apply opacity to backgroundColor
-                                padding: "5px",
-                              }}
-                            >
-                              {formatNumber(section.qty || "")}
-                            </span>
-
-                            <span
-                              style={{
-                                flex: 1,
-                                textAlign: "right",
-                                fontWeight: "bold",
-                                fontSize: 13,
-                                fontFamily: "Inter",
-                                backgroundColor: `rgba(4, 126, 163, ${valueOpacity})`, // Apply opacity to backgroundColor
-                                padding: "5px",
-                              }}
-                            >
-                              {formatNumber(section.value || "")}
-                            </span>
-
-                            <span
-                              style={{
-                                flex: 1,
-                                textAlign: "right",
-                                fontWeight: "bold",
-                                fontSize: 13,
-                                fontFamily: "Inter",
-                                backgroundColor: `rgba(4, 126, 163, ${valueSumPercentage})`,
-                              }}
-                            >
-                              {section.value_sum_percentage}
-                            </span>
-                          </div>
-                        );
-                      })}
-
-                    {/* Lazy Loader */}
-                    {ByProductloading || Productwiseresponse !== "OK" ? (
-                      <div className="text-center text-gray-600 py-2">
-                        <div
-                          className="spinner-border gray-spinner"
-                          role="status"
-                        >
-                          <span className="sr-only">Loading...</span>
-                        </div>{" "}
-                      </div>
-                    ) : (
-                      <>
-                        {sections2.length === 0 && (
-                          <div className="text-center text-gray-600 py-2">
-                            <p>No data available</p>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-                {/* //second row */}
-                <div
-                  style={{
-                    display: "flex",
-                    backgroundColor: "white",
-                    width: "50%",
-                    border: "1px solid black",
-                    // height: "433px",
-                    borderLeft: "none",
-                    borderBottom: "none",
-                    borderTop: "none",
-                    flexDirection: "column",
-                    height: "382px",
+                    height: "400px",
                     overflow: "auto",
                     borderBottom: "1px solid black",
                   }}
@@ -5097,33 +3075,19 @@ function AllinoneStock() {
                     )}
                   </div>
                 </div>
-              </div>
-            </div>
-            {/* //table */}
-
-            {/* //table row4*/}
-            <div>
-              <div
-                className="row"
-                style={
-                  {
-                    // height: "433px",
-                  }
-                }
-              >
                 {/* First Row: Three Tables */}
                 <div
                   style={{
                     display: "flex",
                     backgroundColor: "white",
-                    width: "50%",
+                    width: "33%",
                     border: "1px solid black",
                     // height: "433px",
                     borderLeft: "none",
                     borderBottom: "none",
                     borderTop: "none",
                     flexDirection: "column",
-                    height: "382px",
+                    height: "400px",
                     overflow: "auto",
                     borderBottom: "1px solid black",
                   }}
@@ -5385,14 +3349,14 @@ function AllinoneStock() {
                   style={{
                     display: "flex",
                     backgroundColor: "white",
-                    width: "50%",
+                    width: "33%",
                     border: "1px solid black",
                     // height: "433px",
                     borderLeft: "none",
                     borderBottom: "none",
                     borderTop: "none",
                     flexDirection: "column",
-                    height: "382px",
+                    height: "400px",
                     overflow: "auto",
                     borderBottom: "1px solid black",
                   }}

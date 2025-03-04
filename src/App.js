@@ -4,7 +4,6 @@ import Sidebar from "./layout/Sidebar";
 import Login from "./pages/Login";
 import axios from "axios";
 
-
 // Lazy load components
 const ApproveTransfer = React.lazy(() => import("./pages/ApproveTransfer"));
 const TransferReport = React.lazy(() => import("./pages/TransferReport"));
@@ -37,7 +36,18 @@ const SalesAnalysis = React.lazy(() => import("./pages/SalesAnalysis"));
 const AllinoneStock = React.lazy(() => import("./pages/AllinoneStock"));
 const TargetAchieve = React.lazy(() => import("./pages/TargetAchieve"));
 const BrandAchievement = React.lazy(() => import("./pages/BrandAchievement"));
-
+const AllinoneStockstore = React.lazy(() =>
+  import("./storelogin/AllinoneStock")
+);
+const SalesAnalysisstore = React.lazy(() =>
+  import("./storelogin/SalesAnalysis")
+);
+const PeriodComparsionstore = React.lazy(() =>
+  import("./storelogin/PeriodComparsion")
+);
+const SalesAllinonestore = React.lazy(() =>
+  import("./storelogin/SalesAllinone")
+);
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(sessionStorage.getItem("user"));
 
@@ -51,25 +61,194 @@ function App() {
           <React.Suspense fallback={<div>Loading...</div>}>
             <Routes>
               <Route path="/" element={<Login />} />
-              <Route path="/ApproveTransfer" element={<><Sidebar /> <ApproveTransfer /></>} />
-              <Route path="/TransferReport" element={<><Sidebar /> <TransferReport /></>} />
-              <Route path="/Procurement" element={<><Sidebar /> <Procurement /></>} />
-              <Route path="/StockSummary" element={<><Sidebar /> <StockSummary /></>} />
-              <Route path="/TransferSummary" element={<><Sidebar /> <TransferSummary /></>} />
-              <Route path="/StockAnalysisOverall" element={<><Sidebar /> <StockAnalysisOverall /></>} />
-              <Route path="/StockAnalysisShoplevel" element={<><Sidebar /> <StockAnalysisShoplevel /></>} />
-              <Route path="/TargetMonitoring" element={<><Sidebar /> <TargetMonitoring /></>} />
-              <Route path="/TransferRecieveSummary" element={<><Sidebar /> <TransferRecieveSummary /></>} />
-              <Route path="/TransferSummaryStore" element={<><Sidebar /> <TransferSummaryStore /></>} />
-              <Route path="/StockSummaryStore" element={<><Sidebar /> <StockSummaryStore /></>} />
-              <Route path="/TargetMonitoringStore" element={<><Sidebar /> <TargetMonitoringStore /></>} />
-              <Route path="/ProcurementApproveReport" element={<><Sidebar /> <ProcurementApproveReport /></>} />
-              <Route path="/SalesAllinone" element={<><Sidebar /> <SalesAllinone /></>} />
-              <Route path="/PeriodComparsion" element={<><Sidebar /> <PeriodComparsion /></>} />
-              <Route path="/SalesAnalysis" element={<><Sidebar /> <SalesAnalysis /></>} />
-              <Route path="/AllinoneStock" element={<><Sidebar /> <AllinoneStock /></>} />
-              <Route path="/TargetAchieve" element={<><Sidebar /> <TargetAchieve /></>} />
-              <Route path="/BrandAchievement" element={<><Sidebar /> <BrandAchievement /></>} />
+              <Route
+                path="/ApproveTransfer"
+                element={
+                  <>
+                    <Sidebar /> <ApproveTransfer />
+                  </>
+                }
+              />
+              <Route
+                path="/TransferReport"
+                element={
+                  <>
+                    <Sidebar /> <TransferReport />
+                  </>
+                }
+              />
+              <Route
+                path="/Procurement"
+                element={
+                  <>
+                    <Sidebar /> <Procurement />
+                  </>
+                }
+              />
+              <Route
+                path="/StockSummary"
+                element={
+                  <>
+                    <Sidebar /> <StockSummary />
+                  </>
+                }
+              />
+              <Route
+                path="/TransferSummary"
+                element={
+                  <>
+                    <Sidebar /> <TransferSummary />
+                  </>
+                }
+              />
+              <Route
+                path="/StockAnalysisOverall"
+                element={
+                  <>
+                    <Sidebar /> <StockAnalysisOverall />
+                  </>
+                }
+              />
+              <Route
+                path="/StockAnalysisShoplevel"
+                element={
+                  <>
+                    <Sidebar /> <StockAnalysisShoplevel />
+                  </>
+                }
+              />
+              <Route
+                path="/TargetMonitoring"
+                element={
+                  <>
+                    <Sidebar /> <TargetMonitoring />
+                  </>
+                }
+              />
+              <Route
+                path="/TransferRecieveSummary"
+                element={
+                  <>
+                    <Sidebar /> <TransferRecieveSummary />
+                  </>
+                }
+              />
+              <Route
+                path="/TransferSummaryStore"
+                element={
+                  <>
+                    <Sidebar /> <TransferSummaryStore />
+                  </>
+                }
+              />
+              <Route
+                path="/StockSummaryStore"
+                element={
+                  <>
+                    <Sidebar /> <StockSummaryStore />
+                  </>
+                }
+              />
+              <Route
+                path="/TargetMonitoringStore"
+                element={
+                  <>
+                    <Sidebar /> <TargetMonitoringStore />
+                  </>
+                }
+              />
+              <Route
+                path="/ProcurementApproveReport"
+                element={
+                  <>
+                    <Sidebar /> <ProcurementApproveReport />
+                  </>
+                }
+              />
+              <Route
+                path="/SalesAllinone"
+                element={
+                  <>
+                    <Sidebar /> <SalesAllinone />
+                  </>
+                }
+              />
+              <Route
+                path="/PeriodComparsion"
+                element={
+                  <>
+                    <Sidebar /> <PeriodComparsion />
+                  </>
+                }
+              />
+              <Route
+                path="/SalesAnalysis"
+                element={
+                  <>
+                    <Sidebar /> <SalesAnalysis />
+                  </>
+                }
+              />
+              <Route
+                path="/AllinoneStock"
+                element={
+                  <>
+                    <Sidebar /> <AllinoneStock />
+                  </>
+                }
+              />
+              <Route
+                path="/TargetAchieve"
+                element={
+                  <>
+                    <Sidebar /> <TargetAchieve />
+                  </>
+                }
+              />
+              <Route
+                path="/BrandAchievement"
+                element={
+                  <>
+                    <Sidebar /> <BrandAchievement />
+                  </>
+                }
+              />
+
+              <Route
+                path="/AllinoneStockstore"
+                element={
+                  <>
+                    <Sidebar /> <AllinoneStockstore />
+                  </>
+                }
+              />
+              <Route
+                path="/SalesAnalysisstore"
+                element={
+                  <>
+                    <Sidebar /> <SalesAnalysisstore />
+                  </>
+                }
+              />
+              <Route
+                path="/PeriodComparsionstore"
+                element={
+                  <>
+                    <Sidebar />
+                    <PeriodComparsionstore />
+                  </>
+                }
+              />
+
+              <Route
+                path="/SalesAllinonestore"
+                element={
+                  <>
+                    <Sidebar />
+                    <SalesAllinonestore />
+                  </>
+                }
+              />
             </Routes>
           </React.Suspense>
         </HashRouter>
@@ -90,7 +269,7 @@ function App() {
 }
 
 // axios.defaults.baseURL = "http://localhost:7965";
-// // axios.defaults.baseURL = "http://43.242.122.217:7965"; //pykore
+//axios.defaults.baseURL = "http://43.242.122.217:7965"; //pykore
 axios.defaults.baseURL = "http://103.183.240.178:7965"; //pytcm
 
 // // axios.defaults.baseURL = "https://dceconnect.in/stock-optimization-api";

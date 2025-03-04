@@ -334,7 +334,24 @@ const SalesAnalysis = () => {
   };
   useEffect(() => {
     if (isFiltersUpdated) {
-      setInitialFilters({ filters, period1 });
+      setInitialFilters({
+        filters: {
+          city: "",
+          store_name: "",
+          item_description: "",
+          brand_name: "",
+          product_group: "",
+          section: "",
+          model_no: "",
+          srn_flag: "",
+          demo_flag: "",
+          srnfillter: "",
+          PriceBreakup2: "",
+          sale_type: "",
+          item_category: "",
+        },
+        period1,
+      });
       setSalesContributionPage(1);
       setItemCategoryPage(1);
       setSalesproductPage(1);
@@ -393,6 +410,7 @@ const SalesAnalysis = () => {
       // fetchDropdownData();
 
       // fetchData();
+      setIsFiltersUpdated(false);
     }
   }, [filters, isFiltersUpdated]);
 
@@ -1144,7 +1162,15 @@ const SalesAnalysis = () => {
   //   setIsApplyDisabled(hasFromChanged || hasToChanged);
   // }, [period1.from, period1.to, initialPeriod]);
 
+  const [Dropdownresponse, setDropdownresponse] = useState("");
+  const controllerRef16 = useRef(null);
+
   const fetchDropdownData = async () => {
+    if (controllerRef16.current) {
+      controllerRef16.current.abort();
+    }
+    controllerRef16.current = new AbortController();
+    const signal = controllerRef16.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
@@ -1171,17 +1197,35 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisColumn?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&srn_flag=${encodedFilters.srn_flag}&asm=${asm}`
+        `sales_analysis/salesAnalysisColumn?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&srn_flag=${encodedFilters.srn_flag}&asm=${asm}`,
+        { signal }
       );
+
+      setDropdownresponse(response.statusText);
       setDropdownData(response.data);
     } catch (error) {
-      console.error("Error fetching Stocksummary Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     } finally {
     }
   };
   const [SalesTypeloading, setSalesTypeloading] = useState(false);
+
+  const [Salestyperesponse, setSalestyperesponse] = useState("");
+  const controllerRef15 = useRef(null);
+
   const fetchSalesType = async () => {
     setSalesTypeloading(true);
+    if (controllerRef15.current) {
+      controllerRef15.current.abort();
+    }
+    controllerRef15.current = new AbortController();
+    const signal = controllerRef15.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
@@ -1208,9 +1252,10 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisSalestype?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&srn_flag=${encodedFilters.srn_flag}&asm=${asm}`
+        `sales_analysis/salesAnalysisSalestype?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&srn_flag=${encodedFilters.srn_flag}&asm=${asm}`,
+        { signal }
       );
-
+      setSalestyperesponse(response.statusText);
       if (response.data && Array.isArray(response.data.data)) {
         const sortedData = response.data.data.sort(
           (a, b) => b.total_sales - a.total_sales
@@ -1224,7 +1269,15 @@ const SalesAnalysis = () => {
         console.error("Unexpected data format:", response.data);
       }
     } catch (error) {
-      console.error("Error fetching SalesType Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
+      setSalesTypeloading(false);
+    } finally {
       setSalesTypeloading(false);
     }
   };
@@ -1234,6 +1287,10 @@ const SalesAnalysis = () => {
   const [SalesContributionloading, setSalesContributionloading] =
     useState(false);
   const [hasMoreDataSection, setHasMoreDataSection] = useState(true);
+
+  const [Sectionresponse, setSectionresponse] = useState("");
+  const controllerRef14 = useRef(null);
+
   const fetchSections = async (page = 1, resetData = false) => {
     if (resetData) {
       setSalesContributionPage(1);
@@ -1241,6 +1298,12 @@ const SalesAnalysis = () => {
       setHasMoreDataSection(true);
     }
     setSalesContributionloading(true);
+
+    if (controllerRef14.current) {
+      controllerRef14.current.abort();
+    }
+    controllerRef14.current = new AbortController();
+    const signal = controllerRef14.current.signal;
 
     try {
       const storedAsm = sessionStorage.getItem("asm");
@@ -1268,9 +1331,11 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisSection?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${SalesContributionpage}&limit=${SalesContributionlimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/salesAnalysisSection?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${SalesContributionpage}&limit=${SalesContributionlimit}&srn_flag=${encodedFilters.srn_flag}`,
+        { signal }
       );
       console.log("API Response:", response);
+      setSectionresponse(response.statusText);
 
       if (response.data && Array.isArray(response.data.data)) {
         const sectionsData = response?.data?.data;
@@ -1307,7 +1372,13 @@ const SalesAnalysis = () => {
         setHasMoreDataSection(false);
       }
     } catch (error) {
-      console.error("Error fetching WeekAnalysis data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     } finally {
       setSalesContributionloading(false);
     }
@@ -1317,8 +1388,17 @@ const SalesAnalysis = () => {
   const ItemCategorylimit = 10;
   const [ItemCategoryloading, setItemCategoryloading] = useState(false);
   const [hasMoreDataItemcategory, setHasMoreDataItemcategory] = useState(true);
+
+  const [ItemCategoryresponse, setItemCategoryresponse] = useState("");
+  const controllerRef13 = useRef(null);
+
   const fetchItemCategory = async (page = 1, resetData = false) => {
     setItemCategoryloading(true);
+    if (controllerRef13.current) {
+      controllerRef13.current.abort();
+    }
+    controllerRef13.current = new AbortController();
+    const signal = controllerRef13.current.signal;
 
     try {
       const storedAsm = sessionStorage.getItem("asm");
@@ -1346,9 +1426,10 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisitemCategory?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${ItemCategorypage}&limit=${ItemCategorylimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/salesAnalysisitemCategory?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${ItemCategorypage}&limit=${ItemCategorylimit}&srn_flag=${encodedFilters.srn_flag}`,
+        { signal }
       );
-
+      setItemCategoryresponse(response.statusText);
       if (response.data && Array.isArray(response.data.data)) {
         const newData = response.data.data;
         const sortedData = newData.sort((a, b) => {
@@ -1378,7 +1459,13 @@ const SalesAnalysis = () => {
         setHasMoreDataItemcategory(false);
       }
     } catch (error) {
-      console.error("Error fetching Salesitemcategory Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     } finally {
       setItemCategoryloading(false);
     }
@@ -1389,8 +1476,17 @@ const SalesAnalysis = () => {
   const [SalesContributionProductloading, setSalesContributionProductloading] =
     useState(false);
   const [hasMoreDataProduct, setHasMoreDataProduct] = useState(true);
+
+  const [SalesProductresponse, setSalesProductresponse] = useState("");
+  const controllerRef12 = useRef(null);
+
   const fetchSalesProduct = async (page = 1, resetData = false) => {
     setSalesContributionProductloading(true);
+    if (controllerRef12.current) {
+      controllerRef12.current.abort();
+    }
+    controllerRef12.current = new AbortController();
+    const signal = controllerRef12.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
@@ -1417,8 +1513,11 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisProduct?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${Salesproductpage}&limit=${Salesproductlimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/salesAnalysisProduct?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${Salesproductpage}&limit=${Salesproductlimit}&srn_flag=${encodedFilters.srn_flag}`,
+        { signal }
       );
+
+      setSalesProductresponse(response.statusText);
       if (response.data && Array.isArray(response.data.data)) {
         const newData = response.data.data;
         const sortedData = newData.sort((a, b) => {
@@ -1445,7 +1544,13 @@ const SalesAnalysis = () => {
         setHasMoreDataProduct(false);
       }
     } catch (error) {
-      console.error("Error fetching SalesProduct Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     } finally {
       setSalesContributionProductloading(false);
     }
@@ -1456,8 +1561,17 @@ const SalesAnalysis = () => {
   const [SalesContributionBranchloading, setSalesContributionBranchloading] =
     useState(false);
   const [hasMoreDataBranch, setHasMoreDataBranch] = useState(true);
+
+  const [SalesBranchresponse, setSalesBranchresponse] = useState("");
+  const controllerRef11 = useRef(null);
+
   const fetchSalesBranch = async (page = 1, resetData = false) => {
     setSalesContributionBranchloading(true);
+    if (controllerRef11.current) {
+      controllerRef11.current.abort();
+    }
+    controllerRef11.current = new AbortController();
+    const signal = controllerRef11.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
@@ -1484,8 +1598,10 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisBranch?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${SalesBranchpage}&limit=${SalesBranchlimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/salesAnalysisBranch?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${SalesBranchpage}&limit=${SalesBranchlimit}&srn_flag=${encodedFilters.srn_flag}`,
+        { signal }
       );
+      setSalesBranchresponse(response.statusText);
 
       if (response.data && Array.isArray(response.data.data)) {
         const newData = response.data.data;
@@ -1518,7 +1634,13 @@ const SalesAnalysis = () => {
         setHasMoreDataBranch(false);
       }
     } catch (error) {
-      console.error("Error fetching SalesBranch Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     } finally {
       setSalesContributionBranchloading(false);
     }
@@ -1528,12 +1650,25 @@ const SalesAnalysis = () => {
   const SalesCitylimit = 10;
   const [SalesContributionCityloading, setSalesContributionCityloading] =
     useState(false);
+
   const [hasMoreDataCity, setHasMoreDataCity] = useState(true);
+
+  const [CitySalesresponse, setCitySalesresponse] = useState("");
+  const controllerRef = useRef(null);
+
   const fetchSalesCity = async (page = 1, resetData = false) => {
     setSalesContributionCityloading(true);
+
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
+    controllerRef.current = new AbortController();
+    const signal = controllerRef.current.signal;
+
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -1556,36 +1691,36 @@ const SalesAnalysis = () => {
         item_category: cleanEncode(filters.item_category),
         srn_flag: cleanEncode(filters.srn_flag),
       };
+
       const response = await axios.get(
-        `sales_analysis/salesAnalysisCity?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${SalesCitypage}&limit=${SalesCitylimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/salesAnalysisCity?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${SalesCitypage}&limit=${SalesCitylimit}&srn_flag=${encodedFilters.srn_flag}`,
+        { signal } // Pass the signal to axios
       );
+      setCitySalesresponse(response.statusText);
       if (response.data && Array.isArray(response.data.data)) {
-        const newData = response.data.data;
-        const sortedData = newData.sort((a, b) => {
-          return b.total_sales - a.total_sales;
-        });
-        setSalesCity((prevData) => {
-          const combinedData = resetData
-            ? sortedData
-            : [...prevData, ...sortedData];
+        const newData = response.data.data.sort(
+          (a, b) => b.total_sales - a.total_sales
+        );
+        setSalesCity((prevData) =>
+          resetData ? newData : [...prevData, ...newData]
+        );
 
-          return combinedData.sort((a, b) => b.total_sales - a.total_sales);
-        });
-        if (sortedData.length < SalesCitylimit) {
-          setHasMoreDataCity(false);
-        } else {
-          setHasMoreDataCity(true);
-          setSalesCityPage(page + 1);
-        }
+        setHasMoreDataCity(newData.length >= SalesCitylimit);
+        setSalesCityPage(page + 1);
 
-        // setSalesCityPage((prevPage) => prevPage + 1);
         console.log("SalesCity updated:", newData);
       } else {
         console.error("Unexpected data format:", response.data);
         setHasMoreDataCity(false);
       }
     } catch (error) {
-      console.error("Error fetching SalesCity Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     } finally {
       setSalesContributionCityloading(false);
     }
@@ -1594,9 +1729,19 @@ const SalesAnalysis = () => {
   const [BrandSalepage, setBrandSalePage] = useState(1);
   const BrandSalelimit = 15;
   const [BrandSalesloading, setBrandSalesloading] = useState(false);
+  const [BrandSalesresponse, setBrandSalesresponse] = useState("");
   const [hasMoreDataBrandSale, setHasMoreDataBrandSale] = useState(true);
+
+  const controllerRef1 = useRef(null);
   const fetchBrandSales = async (page = 1, resetData = false) => {
     setBrandSalesloading(true);
+
+    if (controllerRef1.current) {
+      controllerRef1.current.abort();
+    }
+
+    controllerRef1.current = new AbortController();
+    const signal = controllerRef1.current.signal;
 
     try {
       const storedAsm = sessionStorage.getItem("asm");
@@ -1624,9 +1769,12 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisBrandSales?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&limit=${BrandSalelimit}&page=${BrandSalepage}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/salesAnalysisBrandSales?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&limit=${BrandSalelimit}&page=${BrandSalepage}&srn_flag=${encodedFilters.srn_flag}`,
+        { signal }
       );
-
+      console.log("response", response.status);
+      console.log("response", response.statusText);
+      setBrandSalesresponse(response.statusText);
       if (response.data && Array.isArray(response.data.data)) {
         const newData = response.data.data;
 
@@ -1651,7 +1799,13 @@ const SalesAnalysis = () => {
         setHasMoreDataBrandSale(false);
       }
     } catch (error) {
-      console.error("Error fetching Brand Sales Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     } finally {
       setBrandSalesloading(false);
     }
@@ -1661,8 +1815,17 @@ const SalesAnalysis = () => {
   const BrandItemlimit = 15;
   const [ItemSalesloading, setItemSalesloading] = useState(false);
   const [hasMoreDataBrandItem, setHasMoreDataBrandItem] = useState(true);
+
+  const [BrandItemSalesresponse, setBrandItemSalesresponse] = useState("");
+  const controllerRef2 = useRef(null);
+
   const fetchBrandItem = async (page = 1, resetData = false) => {
     setItemSalesloading(true);
+    if (controllerRef2.current) {
+      controllerRef2.current.abort();
+    }
+    controllerRef2.current = new AbortController();
+    const signal = controllerRef2.current.signal;
 
     try {
       const storedAsm = sessionStorage.getItem("asm");
@@ -1690,9 +1853,10 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisItemSales?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&limit=${BrandItemlimit}&page=${BrandItempage}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/salesAnalysisItemSales?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&limit=${BrandItemlimit}&page=${BrandItempage}&srn_flag=${encodedFilters.srn_flag}`,
+        { signal }
       );
-
+      setBrandItemSalesresponse(response.statusText);
       if (response.data && Array.isArray(response.data.data)) {
         const newData = response.data.data;
         setBrandItem((prevData) =>
@@ -1710,7 +1874,13 @@ const SalesAnalysis = () => {
         console.error("Unexpected data format:", response.data);
       }
     } catch (error) {
-      console.error("Error fetching SalesBrand Item Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     } finally {
       setItemSalesloading(false);
     }
@@ -1721,8 +1891,17 @@ const SalesAnalysis = () => {
   const [DiscountAvailedloading, setDiscountAvailedloading] = useState(false);
   const [hasMoreDataDiscountBranch, setHasMoreDataDiscountBranch] =
     useState(true);
+
+  const [BranchDiscSalesresponse, setBranchDiscSalesresponse] = useState("");
+  const controllerRef3 = useRef(null);
+
   const fetchDiscountBranch = async (page = 1, resetData = false) => {
     setDiscountAvailedloading(true);
+    if (controllerRef3.current) {
+      controllerRef3.current.abort();
+    }
+    controllerRef3.current = new AbortController();
+    const signal = controllerRef3.current.signal;
 
     try {
       const storedAsm = sessionStorage.getItem("asm");
@@ -1750,8 +1929,10 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/DiscountAnalysisBranch?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountBranchpage}&limit=${DiscountBranchlimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/DiscountAnalysisBranch?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountBranchpage}&limit=${DiscountBranchlimit}&srn_flag=${encodedFilters.srn_flag}`,
+        { signal }
       );
+      setBranchDiscSalesresponse(response.statusText);
 
       if (response.data && Array.isArray(response.data.data)) {
         const newData = response.data.data;
@@ -1781,7 +1962,13 @@ const SalesAnalysis = () => {
         setHasMoreDataDiscountBranch(false);
       }
     } catch (error) {
-      console.error("Error fetching DiscountAnalysisBranch Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     } finally {
       setDiscountAvailedloading(false);
     }
@@ -1791,8 +1978,18 @@ const SalesAnalysis = () => {
   const DiscountCitylimit = 15;
   const [DiscountCityloading, setDiscountCityloading] = useState(false);
   const [hasMoreDataDiscountCity, setHasMoreDataDiscountCity] = useState(true);
+
+  const [CityDiscSalesresponse, setCityDiscSalesresponse] = useState("");
+  const controllerRef4 = useRef(null);
+
   const fetchDiscountCity = async (page = 1, resetData = false) => {
     setDiscountCityloading(true);
+
+    if (controllerRef4.current) {
+      controllerRef4.current.abort();
+    }
+    controllerRef4.current = new AbortController();
+    const signal = controllerRef4.current.signal;
 
     try {
       const storedAsm = sessionStorage.getItem("asm");
@@ -1820,9 +2017,10 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/DiscountAnalysisCity?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountCitypage}&limit=${DiscountCitylimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/DiscountAnalysisCity?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountCitypage}&limit=${DiscountCitylimit}&srn_flag=${encodedFilters.srn_flag}`,
+        { signal }
       );
-
+      setCityDiscSalesresponse(response.statusText);
       if (response.data && Array.isArray(response.data.data)) {
         const newData = response.data.data;
         const sortedData = newData.sort((a, b) => {
@@ -1846,7 +2044,13 @@ const SalesAnalysis = () => {
         setHasMoreDataDiscountCity(false);
       }
     } catch (error) {
-      console.error("Error fetching DiscountAnalysisCity Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     } finally {
       setDiscountCityloading(false);
     }
@@ -1857,8 +2061,19 @@ const SalesAnalysis = () => {
   const [DiscountSectionloading, setDiscountSectionloading] = useState(false);
   const [hasMoreDataDiscountSection, setHasMoreDataDiscountSection] =
     useState(true);
+
+  const [SectionDiscSalesresponse, setSectionDiscSalesresponse] = useState("");
+  const controllerRef5 = useRef(null);
+
   const fetchDiscountSection = async (page = 1, resetData = false) => {
     setDiscountSectionloading(true);
+
+    if (controllerRef5.current) {
+      controllerRef5.current.abort();
+    }
+    controllerRef5.current = new AbortController();
+    const signal = controllerRef5.current.signal;
+
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
@@ -1885,9 +2100,10 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/DiscountAnalysisSection?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountSectionpage}&limit=${DiscountSectionlimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/DiscountAnalysisSection?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountSectionpage}&limit=${DiscountSectionlimit}&srn_flag=${encodedFilters.srn_flag}`,
+        { signal }
       );
-
+      setSectionDiscSalesresponse(response.statusText);
       if (response.data && Array.isArray(response.data.data)) {
         const newData = response.data.data;
         const sortedData = newData.sort((a, b) => {
@@ -1914,7 +2130,13 @@ const SalesAnalysis = () => {
         setHasMoreDataDiscountSection(false);
       }
     } catch (error) {
-      console.error("Error fetching DiscountAnalysisSection Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     } finally {
       setDiscountSectionloading(false);
     }
@@ -1925,9 +2147,16 @@ const SalesAnalysis = () => {
   const [DiscountBrandloading, setDiscountBrandloading] = useState(false);
   const [hasMoreDataDiscountBrand, setHasMoreDataDiscountBrand] =
     useState(true);
+
+  const [BrandDiscSalesresponse, setBrandDiscSalesresponse] = useState("");
+  const controllerRef6 = useRef(null);
   const fetchDiscountBrand = async (page = 1, resetData = false) => {
     setDiscountBrandloading(true);
-
+    if (controllerRef6.current) {
+      controllerRef6.current.abort();
+    }
+    controllerRef6.current = new AbortController();
+    const signal = controllerRef6.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
@@ -1954,9 +2183,10 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/DiscountAnalysisBrand?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountBrandpage}&limit=${DiscountBrandlimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/DiscountAnalysisBrand?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${DiscountBrandpage}&limit=${DiscountBrandlimit}&srn_flag=${encodedFilters.srn_flag}`,
+        { signal }
       );
-
+      setBrandDiscSalesresponse(response.statusText);
       if (response.data && Array.isArray(response.data.data)) {
         const newData = response.data.data;
         const sortedData = newData.sort((a, b) => {
@@ -1985,7 +2215,13 @@ const SalesAnalysis = () => {
         setHasMoreDataDiscountBrand(false);
       }
     } catch (error) {
-      console.error("Error fetching DiscountBrand Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     } finally {
       setDiscountBrandloading(false);
     }
@@ -1996,9 +2232,15 @@ const SalesAnalysis = () => {
   const [DiscountModelloading, setDiscountModelloading] = useState(false);
   const [hasMoreDataDiscountModel, setHasMoreDataDiscountModel] =
     useState(true);
+  const [ModelnoDiscSalesresponse, setModelnoDiscSalesresponse] = useState("");
+  const controllerRef7 = useRef(null);
   const fetchDiscountModelNo = async (page = 1, resetData = false) => {
     setDiscountModelloading(true);
-
+    if (controllerRef7.current) {
+      controllerRef7.current.abort();
+    }
+    controllerRef7.current = new AbortController();
+    const signal = controllerRef7.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
@@ -2025,9 +2267,10 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/DiscountAnalysisModelNo?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${page}&limit=${DiscountModellimit}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/DiscountAnalysisModelNo?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&page=${page}&limit=${DiscountModellimit}&srn_flag=${encodedFilters.srn_flag}`,
+        { signal }
       );
-
+      setModelnoDiscSalesresponse(response.statusText);
       if (response.data && Array.isArray(response.data.data)) {
         const newData = response.data.data;
         const sortedData = newData.sort((a, b) => {
@@ -2054,7 +2297,13 @@ const SalesAnalysis = () => {
         setHasMoreDataDiscountModel(false);
       }
     } catch (error) {
-      console.error("Error fetching DiscountModelNo Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     } finally {
       setDiscountModelloading(false);
     }
@@ -2171,7 +2420,22 @@ const SalesAnalysis = () => {
   const [salesData1, setsalesData1] = useState();
   const [salesData2, setsalesData2] = useState();
   const [salesData3, setsalesData3] = useState();
+
+  const [Sales1Salesresponse, setSales1Salesresponse] = useState("");
+  const controllerRef8 = useRef(null);
+
+  const [Sales2Salesresponse, setSales2Salesresponse] = useState("");
+  const controllerRef9 = useRef(null);
+
+  const [Sales3Salesresponse, setSales3Salesresponse] = useState("");
+  const controllerRef10 = useRef(null);
+
   const fetchSales1 = async () => {
+    if (controllerRef8.current) {
+      controllerRef8.current.abort();
+    }
+    controllerRef8.current = new AbortController();
+    const signal = controllerRef8.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
@@ -2198,16 +2462,28 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/salesAnalysisSales?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&srn_flag=${encodedFilters.srn_flag}`
+        `sales_analysis/salesAnalysisSales?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&srn_flag=${encodedFilters.srn_flag}`,
+        { signal }
       );
-
+      setSales1Salesresponse(response.statusText);
       setsalesData1(response.data.data);
       console.log("SalesType updated:", response.data.data);
     } catch (error) {
-      console.error("Error fetching SalesType Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     }
   };
   const fetchSales2 = async () => {
+    if (controllerRef9.current) {
+      controllerRef9.current.abort();
+    }
+    controllerRef9.current = new AbortController();
+    const signal = controllerRef9.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
@@ -2233,16 +2509,29 @@ const SalesAnalysis = () => {
         item_category: cleanEncode(filters.item_category),
         srn_flag: cleanEncode(filters.srn_flag),
       };
-      const response = await axios.get(
-        `sales_analysis/DiscountAnalysisDiscount?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&srn_flag=${encodedFilters.srn_flag}`
-      );
 
+      const response = await axios.get(
+        `sales_analysis/DiscountAnalysisDiscount?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&asm=${asm}&srn_flag=${encodedFilters.srn_flag}`,
+        { signal }
+      );
+      setSales2Salesresponse(response.statusText);
       setsalesData2(response.data.data);
     } catch (error) {
-      console.error("Error fetching SalesType Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     }
   };
   const fetchSales3 = async () => {
+    if (controllerRef10.current) {
+      controllerRef10.current.abort();
+    }
+    controllerRef10.current = new AbortController();
+    const signal = controllerRef10.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
@@ -2269,12 +2558,19 @@ const SalesAnalysis = () => {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `sales_analysis/DiscountAnalysisDiscountPercentage?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&srn_flag=${encodedFilters.srn_flag}&asm=${asm}`
+        `sales_analysis/DiscountAnalysisDiscountPercentage?period_from=${period1.from}&period_to=${period1.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&srn_flag=${encodedFilters.srn_flag}&asm=${asm}`,
+        { signal }
       );
-
+      setSales3Salesresponse(response.statusText);
       setsalesData3(response.data.data);
     } catch (error) {
-      console.error("Error fetching SalesType Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     }
   };
   const parseNumber = (value) => {
@@ -2291,9 +2587,21 @@ const SalesAnalysis = () => {
   const handleSort1 = (key) => {
     const direction =
       sortConfig.key === key && sortConfig.direction === "asc" ? "desc" : "asc";
+
     const sortedData = [...Sections].sort((a, b) => {
-      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+      let valueA = a[key];
+      let valueB = b[key];
+      if (
+        key === "total_sales" ||
+        key === "total_sales_percentage" ||
+        key === "asp"
+      ) {
+        valueA = parseFloat(valueA) || 0;
+        valueB = parseFloat(valueB) || 0;
+      }
+
+      if (valueA > valueB) return direction === "asc" ? 1 : -1;
+      if (valueA < valueB) return direction === "asc" ? -1 : 1;
       return 0;
     });
     setSortConfig({ key, direction });
@@ -2308,8 +2616,18 @@ const SalesAnalysis = () => {
         ? "desc"
         : "asc";
     const sortedData = [...ItemCategory].sort((a, b) => {
-      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+      let valueA = a[key];
+      let valueB = b[key];
+      if (
+        key === "total_sales" ||
+        key === "total_sales_percentage" ||
+        key === "asp"
+      ) {
+        valueA = parseFloat(valueA) || 0;
+        valueB = parseFloat(valueB) || 0;
+      }
+      if (valueA > valueB) return direction === "asc" ? 1 : -1;
+      if (valueA < valueB) return direction === "asc" ? -1 : 1;
       return 0;
     });
     setSortConfig1({ key, direction });
@@ -2324,8 +2642,18 @@ const SalesAnalysis = () => {
         ? "desc"
         : "asc";
     const sortedData = [...SalesProduct].sort((a, b) => {
-      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+      let valueA = a[key];
+      let valueB = b[key];
+      if (
+        key === "total_sales" ||
+        key === "total_sales_percentage" ||
+        key === "asp"
+      ) {
+        valueA = parseFloat(valueA) || 0;
+        valueB = parseFloat(valueB) || 0;
+      }
+      if (valueA > valueB) return direction === "asc" ? 1 : -1;
+      if (valueA < valueB) return direction === "asc" ? -1 : 1;
       return 0;
     });
     setSortConfig2({ key, direction });
@@ -2340,8 +2668,20 @@ const SalesAnalysis = () => {
         ? "desc"
         : "asc";
     const sortedData = [...SalesBranch].sort((a, b) => {
-      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+      let valueA = a[key];
+      let valueB = b[key];
+      if (
+        key === "total_sales" ||
+        key === "total_sales_percentage" ||
+        key === "sales_qty" ||
+        key === "sales_qty_percentage" ||
+        key === "asp"
+      ) {
+        valueA = parseFloat(valueA) || 0;
+        valueB = parseFloat(valueB) || 0;
+      }
+      if (valueA > valueB) return direction === "asc" ? 1 : -1;
+      if (valueA < valueB) return direction === "asc" ? -1 : 1;
       return 0;
     });
     setSortConfig3({ key, direction });
@@ -2356,8 +2696,20 @@ const SalesAnalysis = () => {
         ? "desc"
         : "asc";
     const sortedData = [...SalesCity].sort((a, b) => {
-      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+      let valueA = a[key];
+      let valueB = b[key];
+      if (
+        key === "total_sales" ||
+        key === "total_sales_percentage" ||
+        key === "sales_qty" ||
+        key === "sales_qty_percentage" ||
+        key === "asp"
+      ) {
+        valueA = parseFloat(valueA) || 0;
+        valueB = parseFloat(valueB) || 0;
+      }
+      if (valueA > valueB) return direction === "asc" ? 1 : -1;
+      if (valueA < valueB) return direction === "asc" ? -1 : 1;
       return 0;
     });
     setSortConfig4({ key, direction });
@@ -2376,8 +2728,18 @@ const SalesAnalysis = () => {
         ? "desc"
         : "asc";
     const sortedData = [...DiscountBranch].sort((a, b) => {
-      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+      let valueA = a[key];
+      let valueB = b[key];
+      if (
+        key === "disc_amt" ||
+        key === "total_sales" ||
+        key === "disc_amt_percentage"
+      ) {
+        valueA = parseFloat(valueA) || 0;
+        valueB = parseFloat(valueB) || 0;
+      }
+      if (valueA > valueB) return direction === "asc" ? 1 : -1;
+      if (valueA < valueB) return direction === "asc" ? -1 : 1;
       return 0;
     });
     setSortConfig7({ key, direction });
@@ -2392,8 +2754,18 @@ const SalesAnalysis = () => {
         ? "desc"
         : "asc";
     const sortedData = [...DiscountCity].sort((a, b) => {
-      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+      let valueA = a[key];
+      let valueB = b[key];
+      if (
+        key === "disc_amt" ||
+        key === "total_sales" ||
+        key === "disc_amt_percentage"
+      ) {
+        valueA = parseFloat(valueA) || 0;
+        valueB = parseFloat(valueB) || 0;
+      }
+      if (valueA > valueB) return direction === "asc" ? 1 : -1;
+      if (valueA < valueB) return direction === "asc" ? -1 : 1;
       return 0;
     });
     setSortConfig8({ key, direction });
@@ -2408,8 +2780,18 @@ const SalesAnalysis = () => {
         ? "desc"
         : "asc";
     const sortedData = [...DiscountSection].sort((a, b) => {
-      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+      let valueA = a[key];
+      let valueB = b[key];
+      if (
+        key === "disc_amt" ||
+        key === "total_sales" ||
+        key === "disc_amt_percentage"
+      ) {
+        valueA = parseFloat(valueA) || 0;
+        valueB = parseFloat(valueB) || 0;
+      }
+      if (valueA > valueB) return direction === "asc" ? 1 : -1;
+      if (valueA < valueB) return direction === "asc" ? -1 : 1;
       return 0;
     });
     setSortConfig9({ key, direction });
@@ -2427,8 +2809,18 @@ const SalesAnalysis = () => {
         ? "desc"
         : "asc";
     const sortedData = [...DiscountBrand].sort((a, b) => {
-      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+      let valueA = a[key];
+      let valueB = b[key];
+      if (
+        key === "disc_amt" ||
+        key === "total_sales" ||
+        key === "disc_amt_percentage"
+      ) {
+        valueA = parseFloat(valueA) || 0;
+        valueB = parseFloat(valueB) || 0;
+      }
+      if (valueA > valueB) return direction === "asc" ? 1 : -1;
+      if (valueA < valueB) return direction === "asc" ? -1 : 1;
       return 0;
     });
     setSortConfig10({ key, direction });
@@ -2446,8 +2838,18 @@ const SalesAnalysis = () => {
         ? "desc"
         : "asc";
     const sortedData = [...DiscountModelNo].sort((a, b) => {
-      if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-      if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
+      let valueA = a[key];
+      let valueB = b[key];
+      if (
+        key === "disc_amt" ||
+        key === "total_sales" ||
+        key === "disc_amt_percentage"
+      ) {
+        valueA = parseFloat(valueA) || 0;
+        valueB = parseFloat(valueB) || 0;
+      }
+      if (valueA > valueB) return direction === "asc" ? 1 : -1;
+      if (valueA < valueB) return direction === "asc" ? -1 : 1;
       return 0;
     });
     setSortConfig11({ key, direction });
@@ -4496,7 +4898,7 @@ const SalesAnalysis = () => {
                           </div>
                         );
                       })}
-                      {SalesTypeloading ? (
+                      {SalesTypeloading || Salestyperesponse !== "OK" ? (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -4712,7 +5114,7 @@ const SalesAnalysis = () => {
                           })}
                         </tbody>
                       </table>
-                      {SalesContributionloading ? (
+                      {SalesContributionloading || Sectionresponse !== "OK" ? (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -4929,7 +5331,7 @@ const SalesAnalysis = () => {
                           })}
                         </tbody>
                       </table>
-                      {ItemCategoryloading ? (
+                      {ItemCategoryloading || ItemCategoryresponse !== "OK" ? (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -5145,7 +5547,8 @@ const SalesAnalysis = () => {
                           })}
                         </tbody>
                       </table>
-                      {SalesContributionProductloading ? (
+                      {SalesContributionProductloading ||
+                      SalesProductresponse !== "OK" ? (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -5456,7 +5859,8 @@ const SalesAnalysis = () => {
                         })}
                       </tbody>
                     </table>
-                    {SalesContributionBranchloading ? (
+                    {SalesContributionBranchloading ||
+                    SalesBranchresponse !== "OK" ? (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"
@@ -5744,7 +6148,8 @@ const SalesAnalysis = () => {
                         })}
                       </tbody>
                     </table>
-                    {SalesContributionCityloading ? (
+                    {SalesContributionCityloading ||
+                    CitySalesresponse !== "OK" ? (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"
@@ -6050,7 +6455,7 @@ const SalesAnalysis = () => {
                         })}
                       </tbody>
                     </table>
-                    {BrandSalesloading ? (
+                    {BrandSalesloading || BrandSalesresponse !== "OK" ? (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"
@@ -6344,7 +6749,7 @@ const SalesAnalysis = () => {
                         })}
                       </tbody>
                     </table>
-                    {ItemSalesloading ? (
+                    {ItemSalesloading || BrandItemSalesresponse !== "OK" ? (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"
@@ -6789,7 +7194,8 @@ const SalesAnalysis = () => {
                         })}
                       </tbody>
                     </table>
-                    {DiscountAvailedloading ? (
+                    {DiscountAvailedloading ||
+                    BranchDiscSalesresponse !== "OK" ? (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"
@@ -7003,7 +7409,7 @@ const SalesAnalysis = () => {
                         })}
                       </tbody>
                     </table>
-                    {DiscountCityloading ? (
+                    {DiscountCityloading || CityDiscSalesresponse !== "OK" ? (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"
@@ -7227,7 +7633,8 @@ const SalesAnalysis = () => {
                         })}
                       </tbody>
                     </table>
-                    {DiscountSectionloading ? (
+                    {DiscountSectionloading ||
+                    SectionDiscSalesresponse !== "OK" ? (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"
@@ -7444,7 +7851,7 @@ const SalesAnalysis = () => {
                         })}
                       </tbody>
                     </table>
-                    {DiscountBrandloading ? (
+                    {DiscountBrandloading || BrandDiscSalesresponse !== "OK" ? (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"
@@ -7663,7 +8070,8 @@ const SalesAnalysis = () => {
                         })}
                       </tbody>
                     </table>
-                    {DiscountModelloading ? (
+                    {DiscountModelloading ||
+                    ModelnoDiscSalesresponse !== "OK" ? (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"

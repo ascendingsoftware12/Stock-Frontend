@@ -251,10 +251,16 @@ function BrandAchievement() {
   const [shouldRun, setShouldRun] = useState(true);
 
   const lastFetchedPage = useRef(0);
-
+  const [OverALLDetailsresponse, setOverALLDetailsresponse] = useState("");
+  const controllerRef3 = useRef(null);
   const fetchsetOverALLDetails = async (OverAllpage, selectedTimeValue) => {
     console.log("fetchsetOverALLDetails", selectedTimeValue);
     setSummaryloading(true);
+    if (controllerRef3.current) {
+      controllerRef3.current.abort();
+    }
+    controllerRef3.current = new AbortController();
+    const signal = controllerRef3.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
@@ -274,9 +280,10 @@ function BrandAchievement() {
       };
 
       const response = await axios.get(
-        `brand_achievement_analysis/brandachivementsummary?asm=${asm}&page=${OverAllpage}&limit=${Summarylimit}&brand=${encodedFilters.BRAND}&tgt_timeline=${encodedFilters.TGT_TIMELINE}`
+        `brand_achievement_analysis/brandachivementsummary?asm=${asm}&page=${OverAllpage}&limit=${Summarylimit}&brand=${encodedFilters.BRAND}&tgt_timeline=${encodedFilters.TGT_TIMELINE}`,
+        { signal }
       );
-
+      setOverALLDetailsresponse(response.statusText);
       const size = Object.keys(response.data?.values || {}).length;
 
       setoverAllfinalsize8(size);
@@ -297,7 +304,13 @@ function BrandAchievement() {
         setShouldRun(false);
       }
     } catch (error) {
-      console.error("Error fetching OverALLDetails data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     } finally {
       setSummaryloading(false);
     }
@@ -306,9 +319,15 @@ function BrandAchievement() {
   const [BrandWisepage, setBrandWisePage] = useState(1);
   const BrandWiselimit = 8;
   const [BrandWiseloading, setBrandWiseloading] = useState(false);
+  const [setBrandWiseresponse, setsetBrandWiseresponse] = useState("");
+  const controllerRef1 = useRef(null);
   const fetchsetBrandWise = async (brandpage, selectedTimeValue) => {
     setBrandWiseloading(true);
-
+    if (controllerRef1.current) {
+      controllerRef1.current.abort();
+    }
+    controllerRef1.current = new AbortController();
+    const signal = controllerRef1.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
@@ -328,9 +347,10 @@ function BrandAchievement() {
       };
 
       const response = await axios.get(
-        `brand_achievement_analysis/brandachivementbranchwisedetails?asm=${asm}&page=${brandpage}&limit=${BrandWiselimit}&brand=${encodedFilters.BRAND}&tgt_timeline=${encodedFilters.TGT_TIMELINE}&store_name=${encodedFilters.STORE_NAME}`
+        `brand_achievement_analysis/brandachivementbranchwisedetails?asm=${asm}&page=${brandpage}&limit=${BrandWiselimit}&brand=${encodedFilters.BRAND}&tgt_timeline=${encodedFilters.TGT_TIMELINE}&store_name=${encodedFilters.STORE_NAME}`,
+        { signal }
       );
-
+      setsetBrandWiseresponse(response.statusText);
       const size = Object.keys(response.data?.data || {}).length;
       console.log(size);
 
@@ -372,6 +392,13 @@ function BrandAchievement() {
       }
     } catch (error) {
       console.error("Error fetching BrandWise data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     } finally {
       setBrandWiseloading(false);
       setShouldRun(false);
@@ -479,62 +506,73 @@ function BrandAchievement() {
   //       console.error("Error fetching Stocksummary Data:", error);
   //     }
   //   };
-
+  const [DropdownDataresponse, setDropdownDataresponse] = useState("");
+  const controllerRef2 = useRef(null);
   const fetchDropdownData = async (initial1) => {
     setSummaryloading(true);
     setBrandWiseloading(true);
-  
+    if (controllerRef2.current) {
+      controllerRef2.current.abort();
+    }
+    controllerRef2.current = new AbortController();
+    const signal = controllerRef2.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
-  
+
       const response = await axios.get(
-        `/brand_achievement_analysis/brandachivementcolumn?&asm=${asm}&brand=${filters.BRAND}&tgt_timeline=${filters.TGT_TIMELINE}&store_name=${filters.STORE_NAME}`
+        `/brand_achievement_analysis/brandachivementcolumn?&asm=${asm}&brand=${filters.BRAND}&tgt_timeline=${filters.TGT_TIMELINE}&store_name=${filters.STORE_NAME}`,
+        { signal }
       );
-  
+      setDropdownDataresponse(response.statusText);
       console.log("API Response:", response.data);
-  
+
       setDropdownData(response.data);
-  
+
       if (response.data.TGT_TIMELINE?.length > 0) {
         const timelineArray = response.data.TGT_TIMELINE;
         const targetValue = "01 OCT 2024 - 10 NOV 2024";
-        const selectedIndex = timelineArray.findIndex(item => item === targetValue);
-  
-        if (timelineArray.length > 0) {
+        const selectedIndex = timelineArray.findIndex(
+          (item) => item === targetValue
+        );
 
-          if(initial1===true){
+        if (timelineArray.length > 0) {
+          if (initial1 === true) {
             const selectedTimeValue = timelineArray[selectedIndex];
             setSelectedOptiontime({
               label: selectedTimeValue,
               value: selectedTimeValue,
             });
-    
+
             fetchsetOverALLDetails(1, selectedTimeValue);
             fetchsetBrandWise(1, selectedTimeValue);
-          }else{
+          } else {
             const selectedTimeValue = timelineArray;
             setSelectedOptiontime({
               label: selectedTimeValue,
               value: selectedTimeValue,
             });
-    
+
             fetchsetOverALLDetails(1, selectedTimeValue);
             fetchsetBrandWise(1, selectedTimeValue);
           }
-          
-  
-          
         } else {
           console.warn("Target timeline value not found.");
         }
       } else {
         console.warn("TGT_TIMELINE is empty or undefined.");
       }
-  
+
       console.log("Dropdown Data Fetched:", response.data);
     } catch (error) {
       console.error("Error fetching Stocksummary Data:", error);
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
+      } else {
+        console.error("Error fetching SalesCity Data:", error);
+      }
     }
   };
 
@@ -2115,7 +2153,7 @@ function BrandAchievement() {
                             )}
                       </div>
 
-                      {Summaryloading && (
+                      {(Summaryloading||(OverALLDetailsresponse!=="OK")) && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -2873,7 +2911,7 @@ function BrandAchievement() {
                               )}
                         </div>
 
-                        {BrandWiseloading && (
+                        {(BrandWiseloading||(setBrandWiseresponse!=="OK")) && (
                           <div className="text-center text-gray-600 py-2">
                             <div
                               className="spinner-border gray-spinner"

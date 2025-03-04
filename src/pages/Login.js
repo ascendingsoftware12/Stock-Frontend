@@ -30,28 +30,43 @@ const Login = () => {
             sessionStorage.setItem("token", response.data.token);
             console.log(response.data.token);
             // sessionStorage.setItem("asm", response.data.asm);
-            if (response.data.role === "headoffice") {             
-              localStorage.setItem('showStateModal', 'true');
+            if (response.data.role === "headoffice") {
+              localStorage.setItem("showStateModal", "true");
               window.location.href = "#/ApproveTransfer";
               // window.location.reload();
 
               sessionStorage.setItem("flag", 1);
               sessionStorage.setItem("user", response.data.username);
             } else {
-              
-              sessionStorage.setItem("flag", 2);
-              sessionStorage.setItem("asm", response.data.asm);
-              sessionStorage.setItem("user", response.data.username);
-              // sessionStorage.setItem("store", response.data.store);
-              const asm = sessionStorage.getItem("asm");
-              if(asm !== "null"){
-                window.location.href = "#/SalesAllinone";
-                window.location.reload();
-              }else{
-                window.location.href = "#/TransferSummaryStore";
-                window.location.reload();
+              if (response.data.role === "ASM") {
+                sessionStorage.setItem("flag", 2);
+                sessionStorage.setItem("asm", response.data.asm);
+                sessionStorage.setItem("user", response.data.username);
+                // sessionStorage.setItem("store", response.data.store);
+                const asm = sessionStorage.getItem("asm");
+                if (asm !== "null") {
+                  window.location.href = "#/SalesAllinone";
+                  window.location.reload();
+                } else {
+                  window.location.href = "#/TransferSummaryStore";
+                  window.location.reload();
+                }
+              } else {
+                if (response.data.role === "store") {
+                  sessionStorage.setItem("flag", 3);
+                  sessionStorage.setItem("store", response.data.store);
+                  sessionStorage.setItem("user", response.data.username);
+                  // sessionStorage.setItem("store", response.data.store);
+                  const store = sessionStorage.getItem("store");
+                  if (store !== "null") {
+                    window.location.href = "#/AllinoneStockstore";
+                    window.location.reload();
+                  } else {
+                    window.location.href = "#/TransferSummaryStore";
+                    window.location.reload();
+                  }
+                }
               }
-              
             }
           } else {
             Swal.fire({
