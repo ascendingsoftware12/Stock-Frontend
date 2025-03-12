@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
-
 import "flowbite/dist/flowbite.css";
 import "../style/table.css";
 import { Button, Label, TextInput, Table } from "flowbite-react";
@@ -324,7 +323,7 @@ function SalesAllinone() {
 
   const reloadRefresh = () => {
     // console.log("Filters before reload:", filters);
-
+    setPeriod({ from: dateRange.start_date, to: dateRange.end_date });
     const clearedFilters = {
       city: "",
       store_name: "",
@@ -382,7 +381,7 @@ function SalesAllinone() {
     setSelectedOption61("");
     setSelectedOption("");
     setSelectedOptionitem("");
-    setPeriod({ from: "", to: "" });
+
     setrefresh(false);
     // console.log("Reload complete.");
   };
@@ -526,19 +525,100 @@ function SalesAllinone() {
     return { monthRowSpan, yearRowSpan };
   }
 
+  // const hasRun = useRef(false);
+
+  // useEffect(() => {
+  //   if (hasRun.current) return;
+  //   hasRun.current = true;
+
+  //   const storedAsm = sessionStorage.getItem("asm");
+  //   const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+
+  //   // Fetch dropdown data
+  //   liveData();
+  //   fetchDropdownData();
+  //   fetchData();
+  //   if (!mcFlag) fetchMonthlyCalendar();
+  //   if (!pdFlag) fetchProductionDimension(1);
+  //   if (!bdFlag) fetchBrandDimension(1);
+  //   if (!idFlag) fetchItemDimension(1);
+  //   if (!waFlag) fetchWeekAnalysis(1);
+  //   if (!daFlag) fetchDayAnalysis();
+  //   if (!pb1Flag) fetchPriceBreakup1();
+  //   if (!pb2Flag) fetchPriceBreakup2();
+  //   if (!YTDFlag) fetchYTD();
+  //   if (!bdFlag) fetchSectionDimension(1);
+  //   if (!bdFlag) fetchBranchDimension(1);
+  //   if (!bdFlag) fetchCityDimension(1);
+  //   if (!bdFlag) fetchItemCategoryDimension(1);
+  // }, [period.from, period.to]);
+
+  // let currentDate = new Date().toDateString();
+
+  // const checkDateChange = () => {
+  //   const newDate = new Date().toDateString();
+  //   if (newDate !== currentDate) {
+  //     currentDate = newDate;
+  //     setPeriod({ from: "", to: "" });
+  //     fetchData();
+  //     console.log("checking date", currentDate, newDate);
+  //   }
+  //   console.log("checking date", currentDate, newDate);
+  // };
+
+  // setInterval(checkDateChange, 60000);
+
+  useEffect(() => {
+      scheduleDailyRun(0, 0); 
+    }, []);
+  
+    const runDailyTask = async () => {
+      console.log("API Triggered at:", new Date());
+      setPeriod({ from: "", to: "" });
+      fetchData();
+        
+    };
+  
+    const scheduleDailyRun = (hour, minute) => {
+      const now = new Date();
+      const target = new Date();
+  
+      target.setHours(hour, minute, 0, 0); 
+      if (now > target) {
+        console.log("itwork",target);
+        
+        runDailyTask(); 
+        target.setDate(target.getDate() + 1); 
+      }
+      const timeUntilTarget = target - now;
+      console.log("itwork",timeUntilTarget);
+      
+      const timeoutId = setTimeout(() => {
+        runDailyTask();
+        setInterval(runDailyTask, 24 * 60 * 60 * 1000); 
+      }, timeUntilTarget);
+  
+   
+      return () => clearTimeout(timeoutId);
+    };
+  
+
   const hasRun = useRef(false);
 
   useEffect(() => {
     if (hasRun.current) return;
     hasRun.current = true;
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!period.from || !period.to) return;
 
     const storedAsm = sessionStorage.getItem("asm");
     const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
 
-    // Fetch dropdown data
     liveData();
     fetchDropdownData();
-    fetchData();
     if (!mcFlag) fetchMonthlyCalendar();
     if (!pdFlag) fetchProductionDimension(1);
     if (!bdFlag) fetchBrandDimension(1);
@@ -684,6 +764,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
+      setBrandItemSalesresponse7("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -747,6 +828,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
+      setMonthresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -808,7 +890,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setBrandItemSalesresponse5("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -870,7 +952,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setBrandItemSalesresponse6("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -940,11 +1022,11 @@ function SalesAllinone() {
   const [ItemCategorypage, setItemCategorypage] = useState(1);
   const limit = 10;
   const Daylimit = 240;
-  const productlimit = 99;
-  const BrandLimit = 53;
-  const ItemLimit = 63;
-  const SectionLimit = 155;
-  const ItemCategoryLimit = 154;
+  const productlimit = 10;
+  const BrandLimit = 10;
+  const ItemLimit = 10;
+  const SectionLimit = 10;
+  const ItemCategoryLimit = 10;
   let lastScrollTop = 0;
 
   // Week
@@ -1307,7 +1389,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setWeekanaresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1389,6 +1471,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
+      setBrandItemSalesresponse4("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1478,7 +1561,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setProductdimresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1566,7 +1649,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setBranddimresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1659,7 +1742,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setBrandItemSalesresponse1("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1748,7 +1831,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setBrandItemSalesresponse2("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1808,7 +1891,7 @@ function SalesAllinone() {
   const [BranchDimension, setBranchDimension] = useState();
   const [isFetchingBranchloading, setIsFetchingBranchloading] = useState(false);
   const [Branchpage, setBranchpage] = useState(1);
-  const BranchLimit = 250;
+  const BranchLimit = 10;
   const [finalsize2, setfinalsize2] = useState();
 
   const [BrandItemSalesresponse8, setBrandItemSalesresponse8] = useState("");
@@ -1831,7 +1914,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setBrandItemSalesresponse8("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1895,7 +1978,7 @@ function SalesAllinone() {
   const [CityDimension, setCityDimension] = useState();
   const [isFetchingCityloading, setIsFetchingCityloading] = useState(false);
   const [Citypage, setCitypage] = useState(1);
-  const CityLimit = 52;
+  const CityLimit = 10;
   const [finalsize9, setfinalsize9] = useState();
 
   const [BrandItemSalesresponse9, setBrandItemSalesresponse9] = useState("");
@@ -1919,7 +2002,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setBrandItemSalesresponse9("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -2008,7 +2091,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setBrandItemSalesresponse3("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -2063,20 +2146,20 @@ function SalesAllinone() {
     }
   };
 
-  const [isFetching, setIsFetching] = useState(false);
-  const [isFetching1, setIsFetching1] = useState(false);
-  const [isFetching2, setIsFetching2] = useState(false);
-  const [isFetching3, setIsFetching3] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
+  const [isFetching1, setIsFetching1] = useState(true);
+  const [isFetching2, setIsFetching2] = useState(true);
+  const [isFetching3, setIsFetching3] = useState(true);
 
   const [isFetchingSectionloading, setIsFetchingSectionloading] =
-    useState(false);
+    useState(true);
   const [isFetchingcategoryloading, setIsFetchingcategoryloading] =
-    useState(false);
-  const [isFetching4, setIsFetching4] = useState(false);
-  const [isFetching5, setIsFetching5] = useState(false);
-  const [isFetching6, setIsFetching6] = useState(false);
-  const [isFetching7, setIsFetching7] = useState(false);
-  const [isFetching8, setIsFetching8] = useState(false);
+    useState(true);
+  const [isFetching4, setIsFetching4] = useState(true);
+  const [isFetching5, setIsFetching5] = useState(true);
+  const [isFetching6, setIsFetching6] = useState(true);
+  const [isFetching7, setIsFetching7] = useState(true);
+  const [isFetching8, setIsFetching8] = useState(true);
   // const options = filters.store_name
   // ? filters.store_name.split(",").map((flag) => ({
   //     label: flag.trim(),
@@ -3554,8 +3637,20 @@ function SalesAllinone() {
                           WeekAnalysis.years.length > 0 &&
                           Object.keys(WeekAnalysis.values || {}).length > 0 ? (
                             <React.Fragment>
-                              {Object.entries(WeekAnalysis.values).map(
-                                ([week, values]) => {
+                              {Object.entries(WeekAnalysis.values)
+
+                                .sort(([weekA], [weekB]) => {
+                                  const numA = parseInt(
+                                    weekA.replace(/\D/g, ""),
+                                    10
+                                  );
+                                  const numB = parseInt(
+                                    weekB.replace(/\D/g, ""),
+                                    10
+                                  );
+                                  return numA - numB;
+                                })
+                                .map(([week, values]) => {
                                   const allValues = WeekAnalysis.years.map(
                                     (year) => {
                                       // const valueString = String(values[year] || '0');
@@ -3640,8 +3735,7 @@ function SalesAllinone() {
                                       })}
                                     </tr>
                                   );
-                                }
-                              )}
+                                })}
                             </React.Fragment>
                           ) : (
                             <tr>
@@ -4074,40 +4168,26 @@ function SalesAllinone() {
                                   </tr>
                                 );
                               }
-                              const allValues = Object.values(
-                                BranchDimension.values
-                              )
-                                .flatMap((yearsData) =>
-                                  BranchDimension.years.flatMap((year) =>
-                                    months.map((month) => {
-                                      const valueString =
-                                        yearsData[year]?.[month];
-                                      return valueString
-                                        ? parseFloat(valueString.split(" ")[0])
-                                        : 0;
-                                    })
-                                  )
-                                )
-                                .filter((val) => !isNaN(val));
 
-                              const maxValue = Math.max(...allValues);
-                              const minValue = Math.min(...allValues);
-
-                              // console.log('Max Value:', maxValue, 'Min Value:', minValue);
-                              const calculateOpacity = (value) => {
-                                if (maxValue === minValue) return 0.5;
-                                return (
-                                  ((value - minValue) / (maxValue - minValue)) *
-                                    0.9 +
-                                  0.1
-                                );
+                              const calculateYearlyTotal = (
+                                yearsData,
+                                year
+                              ) => {
+                                return months.reduce((total, month) => {
+                                  const valueString = yearsData[year]?.[month];
+                                  const numericValue = valueString
+                                    ? parseFloat(valueString.split(" ")[0])
+                                    : 0;
+                                  return total + numericValue;
+                                }, 0);
                               };
+
                               const sortedRows = Object.entries(
                                 BranchDimension.values
                               )
                                 .map(([brand, yearsData]) => {
                                   const currentMonthValue =
-                                    BranchDimension.years?.reduce(
+                                    BranchDimension.years.reduce(
                                       (max, year) => {
                                         return Math.max(
                                           ...months.map((month) => {
@@ -4129,87 +4209,72 @@ function SalesAllinone() {
                                   (a, b) =>
                                     a.currentMonthValue - b.currentMonthValue
                                 );
+
                               return sortedRows.length > 0 ? (
-                                sortedRows.map(
-                                  ({ brand, currentMonthValue }) => {
-                                    const yearsData =
-                                      BranchDimension.values[brand];
-                                    return (
-                                      <tr key={brand} className="bg-white">
-                                        <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
-                                          {brand}
-                                        </td>
-                                        {BranchDimension.years.map((year) =>
-                                          months.map((month) => {
-                                            if (month === "Total") {
-                                              const totalValue =
-                                                BranchDimension.yearly_totals[
-                                                  brand
-                                                ]?.[year] || 0;
-
-                                              return (
-                                                <td
-                                                  key={`${year}-${month}`}
-                                                  className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                                >
-                                                  {totalValue
-                                                    ? formatNumber(totalValue)
-                                                    : "0"}
-                                                </td>
+                                sortedRows.map(({ brand }) => {
+                                  const yearsData =
+                                    BranchDimension.values[brand];
+                                  return (
+                                    <tr key={brand} className="bg-white">
+                                      <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
+                                        {brand}
+                                      </td>
+                                      {BranchDimension.years.map((year) =>
+                                        months.map((month) => {
+                                          if (month === "Total") {
+                                            const totalValue =
+                                              calculateYearlyTotal(
+                                                yearsData,
+                                                year
                                               );
-                                            }
-
-                                            const valueString =
-                                              yearsData[year]?.[month];
-                                            const numericValue = valueString
-                                              ? parseFloat(
-                                                  valueString
-                                                    .replace("(0.0%)")
-                                                    .split(" ")[0]
-                                                ) ||
-                                                valueString
-                                                  .replace("(0.0%)")
-                                                  .split(" ")[0]
-                                              : 0;
-                                            const formattedValue =
-                                              formatNumber(numericValue);
-                                            const isNegativeZero = Object.is(
-                                              numericValue,
-                                              -0
-                                            );
-                                            const opacity = isNegativeZero
-                                              ? 0.1
-                                              : calculateOpacity(numericValue);
-                                            // const opacity = calculateOpacity(numericValue);
-                                            const backgroundColor =
-                                              Object.is(numericValue, -0) ||
-                                              numericValue !== 0 ||
-                                              (valueString &&
-                                                valueString.includes("-0"))
-                                                ? `rgba(5, 127, 163, ${opacity})`
-                                                : "transparent";
-
-                                            // console.log(`Value: ${numericValue}, Opacity: ${opacity}, Background: ${backgroundColor}`);
-
                                             return (
                                               <td
                                                 key={`${year}-${month}`}
                                                 className="px-2 py-2 border-b border-gray-200 text-sm text-center"
-                                                style={{ backgroundColor }}
                                               >
-                                                {valueString
-                                                  ? `${formattedValue} ${
-                                                      valueString?.split(" ")[1]
-                                                    }`
+                                                {totalValue
+                                                  ? formatNumber(totalValue)
                                                   : "0"}
                                               </td>
                                             );
-                                          })
-                                        )}
-                                      </tr>
-                                    );
-                                  }
-                                )
+                                          }
+
+                                          const valueString =
+                                            yearsData[year]?.[month];
+                                          const numericValue = valueString
+                                            ? parseFloat(
+                                                valueString.split(" ")[0]
+                                              )
+                                            : 0;
+                                          const formattedValue =
+                                            formatNumber(numericValue);
+                                          const opacity = Math.max(
+                                            numericValue / 100,
+                                            0.1
+                                          );
+                                          const backgroundColor =
+                                            numericValue !== 0
+                                              ? `rgba(5, 127, 163, ${opacity})`
+                                              : "transparent";
+
+                                          return (
+                                            <td
+                                              key={`${year}-${month}`}
+                                              className="px-2 py-2 border-b border-gray-200 text-sm text-center"
+                                              style={{ backgroundColor }}
+                                            >
+                                              {valueString
+                                                ? `${formattedValue} ${
+                                                    valueString.split(" ")[1]
+                                                  }`
+                                                : "0"}
+                                            </td>
+                                          );
+                                        })
+                                      )}
+                                    </tr>
+                                  );
+                                })
                               ) : (
                                 <tr>
                                   <td
@@ -4326,6 +4391,19 @@ function SalesAllinone() {
                                 return Math.min(Math.max(opacity, 0.1), 1);
                               };
 
+                              const calculateYearlyTotal = (
+                                yearsData,
+                                year
+                              ) => {
+                                return months.reduce((total, month) => {
+                                  const valueString = yearsData[year]?.[month];
+                                  const numericValue = valueString
+                                    ? parseFloat(valueString.split(" ")[0])
+                                    : 0;
+                                  return total + numericValue;
+                                }, 0);
+                              };
+
                               const sortedEntries = Object.entries(
                                 CityDimension.values
                               ).sort(([, yearsDataA], [, yearsDataB]) => {
@@ -4358,18 +4436,13 @@ function SalesAllinone() {
                                   {CityDimension.years.map((year) =>
                                     months.map((month) => {
                                       if (month === "Total") {
-                                        const totalValue =
-                                          CityDimension.yearly_totals[item]?.[
-                                            year
-                                          ];
-                                        const numericValue = totalValue
-                                          ? parseFloat(totalValue)
-                                          : 0;
-                                        const opacity =
-                                          !isNaN(numericValue) &&
-                                          numericValue !== 0
-                                            ? calculateOpacity(numericValue)
-                                            : 0.1;
+                                        const totalValue = calculateYearlyTotal(
+                                          yearsData,
+                                          year
+                                        );
+                                        const opacity = totalValue
+                                          ? calculateOpacity(totalValue)
+                                          : 0.1;
                                         const backgroundColor = totalValue
                                           ? `rgba(5, 127, 163, ${opacity})`
                                           : "transparent";
@@ -4381,7 +4454,7 @@ function SalesAllinone() {
                                             style={{ backgroundColor }}
                                           >
                                             {totalValue
-                                              ? formatNumber(numericValue)
+                                              ? formatNumber(totalValue)
                                               : "0"}
                                           </td>
                                         );
@@ -4392,11 +4465,9 @@ function SalesAllinone() {
                                       const numericValue = valueString
                                         ? parseFloat(valueString.split(" ")[0])
                                         : 0;
-                                      const opacity =
-                                        !isNaN(numericValue) &&
-                                        numericValue !== 0
-                                          ? calculateOpacity(numericValue)
-                                          : 0.1;
+                                      const opacity = numericValue
+                                        ? calculateOpacity(numericValue)
+                                        : 0.1;
                                       const backgroundColor = valueString
                                         ? `rgba(5, 127, 163, ${opacity})`
                                         : "transparent";
@@ -4561,6 +4632,17 @@ function SalesAllinone() {
                                   0
                                 );
                               };
+
+                              const calculateTotalForYear = (yearsData) => {
+                                return months.reduce((total, month) => {
+                                  const monthValue = yearsData[month];
+                                  const numericValue = monthValue
+                                    ? parseFloat(monthValue.split(" ")[0])
+                                    : 0;
+                                  return total + numericValue;
+                                }, 0);
+                              };
+
                               const calculateMaxValue = (yearsData) => {
                                 return SectionDimension.years?.reduce(
                                   (highest, year) => {
@@ -4576,6 +4658,7 @@ function SalesAllinone() {
                                   0
                                 );
                               };
+
                               const sortedItems = Object.entries(
                                 SectionDimension.values
                               ).sort(
@@ -4583,7 +4666,7 @@ function SalesAllinone() {
                                   calculateMaxValue(yearsDataB) -
                                   calculateMaxValue(yearsDataA)
                               );
-                              // console.log(sortedItems);
+
                               const currentMonth =
                                 months[new Date().getMonth()];
                               const sortedByCurrentMonth = sortedItems
@@ -4613,12 +4696,13 @@ function SalesAllinone() {
                                     <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
                                       {brand}
                                     </td>
-                                    {SectionDimension?.years?.map((year) =>
-                                      months?.map((month) => {
+                                    {SectionDimension?.years?.map((year) => {
+                                      const totalValue = calculateTotalForYear(
+                                        yearsData[year] || {}
+                                      );
+                                      return months?.map((month) => {
                                         const valueString =
                                           yearsData[year]?.[month];
-                                        // console.log(valueString);
-
                                         const numericValue = valueString
                                           ? parseFloat(
                                               valueString?.split(" ")[0]
@@ -4631,26 +4715,14 @@ function SalesAllinone() {
                                           : "transparent";
 
                                         if (month === "Total") {
-                                          const totalValue =
-                                            SectionDimension.yearly_totals[
-                                              brand
-                                            ]?.[year] || 0;
-
                                           return (
                                             <td
                                               key={`${year}-${month}`}
                                               className="px-2 py-2 border-b border-gray-200 text-sm text-center"
                                             >
-                                              {/* {totalValue
-                                                ? formatValueString(totalValue.toFixed(2))
-                                                : "0"} */}
-
-                                              {!isNaN(Number(totalValue)) &&
-                                              totalValue !== null
+                                              {totalValue
                                                 ? formatValueString(
-                                                    Number(totalValue).toFixed(
-                                                      2
-                                                    )
+                                                    totalValue.toFixed(2)
                                                   )
                                                 : "0"}
                                             </td>
@@ -4673,8 +4745,8 @@ function SalesAllinone() {
                                               : "0"}
                                           </td>
                                         );
-                                      })
-                                    )}
+                                      });
+                                    })}
                                   </tr>
                                 )
                               );

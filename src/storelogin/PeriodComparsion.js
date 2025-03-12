@@ -584,6 +584,59 @@ function PeriodComparsionstore() {
 
   ////////////////////////dkcodeend///////////////////////////////////////////////////
 
+  // let currentDate = new Date().toDateString();
+
+  // const checkDateChange = () => {
+  //   const newDate = new Date().toDateString();
+  //   if (newDate !== currentDate) {
+  //     currentDate = newDate;
+  //     setCustomperiod1({ from: "", to: "" });
+  //     setCustomperiod2({ from: "", to: "" });
+  //     fetchData();
+  //     reloadRefresh();
+
+  //     console.log("checking date", currentDate, newDate);
+  //   }
+  //   console.log("checking date", currentDate, newDate);
+  // };
+
+  // setInterval(checkDateChange, 60000);
+
+  useEffect(() => {
+      scheduleDailyRun(0, 0); 
+    }, []);
+  
+    const runDailyTask = async () => {
+      console.log("API Triggered at:", new Date());
+        setCustomperiod1({ from: "", to: "" });
+        setCustomperiod2({ from: "", to: "" });
+        fetchData();
+        reloadRefresh();
+    };
+  
+    const scheduleDailyRun = (hour, minute) => {
+      const now = new Date();
+      const target = new Date();
+  
+      target.setHours(hour, minute, 0, 0); 
+      if (now > target) {
+        console.log("itwork",target);
+        
+        runDailyTask(); 
+        target.setDate(target.getDate() + 1); 
+      }
+      const timeUntilTarget = target - now;
+      console.log("itwork",timeUntilTarget);
+      
+      const timeoutId = setTimeout(() => {
+        runDailyTask();
+        setInterval(runDailyTask, 24 * 60 * 60 * 1000); 
+      }, timeUntilTarget);
+  
+   
+      return () => clearTimeout(timeoutId);
+    };
+
   const handleButtonClick1 = () => {
     setIsApplyDisabled(false);
     setTempPeriod1({ from: "", to: "" });
@@ -983,7 +1036,7 @@ function PeriodComparsionstore() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setSalesDataresponse("");
       const encodedFilters = {
         sale_type: cleanEncode(filters.sale_type),
 
@@ -1063,7 +1116,7 @@ function PeriodComparsionstore() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setSalesQtyresponse("");
       const encodedFilters = {
         sale_type: cleanEncode(filters.sale_type),
 
@@ -1159,6 +1212,7 @@ function PeriodComparsionstore() {
         }
         return encodeURIComponent(decodedValue);
       };
+      setASPresponse("");
       const encodedFilters = {
         sale_type: cleanEncode(filters.sale_type),
 
@@ -1252,6 +1306,7 @@ function PeriodComparsionstore() {
         }
         return encodeURIComponent(decodedValue);
       };
+      setDiscAmtresponse("");
       const encodedFilters = {
         sale_type: cleanEncode(filters.sale_type),
         brand_name: cleanEncode(filters.brand_name),
@@ -1336,6 +1391,7 @@ function PeriodComparsionstore() {
         }
         return encodeURIComponent(decodedValue);
       };
+      setDisresponse("");
       const encodedFilters = {
         sale_type: cleanEncode(filters.sale_type),
         brand_name: cleanEncode(filters.brand_name),
@@ -1679,7 +1735,7 @@ function PeriodComparsionstore() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setSectionwiseresponse("");
       const encodedFilters = {
         sale_type: cleanEncode(filters.sale_type),
         brand_name: cleanEncode(filters.brand_name),
@@ -1695,7 +1751,7 @@ function PeriodComparsionstore() {
         `period_comparison_kore/periodComparisonKoreSectionwiseAnalysis?period1_from=${period1.from}&period1_to=${period1.to}&period2_from=${period2.from}&period2_to=${period2.to}&sales_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&gstfilter=${encodedFilters.gstfillter}&storecode=${storecode}&page=${Sectionpage}&limit=${Sectionlimit}&srn_flag=${encodedFilters.srn_flag}`,
         { signal }
       );
-      setSectionwiseresponse(response.statusText);
+      setSectionwiseresponse(response.statusText || "OK");
       const data = response?.data?.data;
 
       if (Array.isArray(data) && data.length > 0) {
@@ -2048,7 +2104,7 @@ function PeriodComparsionstore() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setBrandAnaresponse("");
       const encodedFilters = {
         sale_type: cleanEncode(filters.sale_type),
         brand_name: cleanEncode(filters.brand_name),
@@ -2064,7 +2120,7 @@ function PeriodComparsionstore() {
         `period_comparison_kore/periodComparisonKoreBrandwiseAnalysis?period1_from=${period1.from}&period1_to=${period1.to}&period2_from=${period2.from}&period2_to=${period2.to}&sales_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&gstfilter=${encodedFilters.gstfillter}&storecode=${storecode}&page=${BrandAnalysispage}&limit=${BrandAnalysislimit}&srn_flag=${encodedFilters.srn_flag}`,
         { signal }
       );
-      setBrandAnaresponse(response.statusText);
+      setBrandAnaresponse(response.statusText || "OK");
       console.log(response);
       if (response?.data?.data && Array.isArray(response.data.data)) {
         const fetchedData = response.data.data;
@@ -2146,7 +2202,7 @@ function PeriodComparsionstore() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setItemAnasresponse("");
       const encodedFilters = {
         sale_type: cleanEncode(filters.sale_type),
         brand_name: cleanEncode(filters.brand_name),
@@ -2162,7 +2218,8 @@ function PeriodComparsionstore() {
         `period_comparison_kore/periodComparisonKoreItemwiseAnalysis?period1_from=${period1.from}&period1_to=${period1.to}&period2_from=${period2.from}&period2_to=${period2.to}&sales_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&gstfilter=${encodedFilters.gstfillter}&storecode=${storecode}&page=${page}&limit=${ItemAnalysislimit}&srn_flag=${encodedFilters.srn_flag}`,
         { signal }
       );
-      setItemAnasresponse(response.statusText);
+      // setItemAnasresponse(response.statusText);
+      setItemAnasresponse(response.statusText || "OK");
       if (response?.data?.data && Array.isArray(response.data.data)) {
         const responseData = response.data.data;
 
@@ -2241,7 +2298,7 @@ function PeriodComparsionstore() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setPriceAnaresponse("");
       const encodedFilters = {
         sale_type: cleanEncode(filters.sale_type),
         brand_name: cleanEncode(filters.brand_name),
@@ -2257,7 +2314,8 @@ function PeriodComparsionstore() {
         `period_comparison_kore/periodComparisonKorePricewiseAnalysis?period1_from=${period1.from}&period1_to=${period1.to}&period2_from=${period2.from}&period2_to=${period2.to}&sales_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&gstfilter=${encodedFilters.gstfillter}&storecode=${storecode}&srn_flag=${encodedFilters.srn_flag}`,
         { signal }
       );
-      setPriceAnaresponse(response.statusText);
+      // setPriceAnaresponse(response.statusText);
+      setPriceAnaresponse(response.statusText || "OK");
       console.log(response, "price");
 
       if (response && response.data && response.data.values) {
@@ -3446,9 +3504,19 @@ function PeriodComparsionstore() {
       : null
   );
   const dropdownValuemodelno = selectedOptionmodel || filters.model_no;
+  // const optionsmodel = Array.isArray(dropdownData?.model_no)
+  //   ? dropdownData.model_no
+  //       .slice() // Create a copy to avoid mutating the original array
+  //       .sort((a, b) => a.localeCompare(b))
+  //       .map((store) => ({
+  //         label: store,
+  //         value: store,
+  //       }))
+  //   : [];
   const optionsmodel = Array.isArray(dropdownData?.model_no)
     ? dropdownData.model_no
-        .slice() // Create a copy to avoid mutating the original array
+        .filter((item) => item !== null && item !== undefined)
+        .slice()
         .sort((a, b) => a.localeCompare(b))
         .map((store) => ({
           label: store,
@@ -3759,7 +3827,7 @@ function PeriodComparsionstore() {
                       width: "116",
                       height: "31",
                       clipPath:
-                        "polygon(-3% 5%, 88% 4%, 101% 56%, 88% 97%, -5% 95%, 11% 57%)",
+                        "polygon(0% 4%, 88% 4%, 100% 56%, 88% 97%, 0% 96%, 11% 57%)",
                       border: "none",
                       outline: "none",
                       cursor: "pointer",
@@ -3876,7 +3944,7 @@ function PeriodComparsionstore() {
                     {[
                       // { key: "totalsales", value: "totalsales" },
                       { key: "salesqty", value: "salesqty" },
-                      { key: "dis", value: "dis" },
+                      { key: "Discount", value: "Discount" },
                     ].map((item, index) => (
                       <option key={index} value={item.value}>
                         {item.key}
@@ -5639,7 +5707,10 @@ function PeriodComparsionstore() {
                               fontWeight: "bold",
                               fontSize: 12,
                               fontFamily: "Inter",
-                              maxWidth: "106px",
+                              display: "flex",
+                              justifyContent: "flex-start",
+                              alignItems: "center",
+                              // maxWidth: "106px",
                               // overflowWrap: "break-word",
                               lineBreak: "anywhere",
                             }}
@@ -5652,6 +5723,9 @@ function PeriodComparsionstore() {
                               textAlign: "right",
                               fontWeight: "bold",
                               fontSize: 13,
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              alignItems: "center",
                               fontFamily: "Inter",
                               backgroundColor: `rgba(4, 126, 163, ${period1Opacity})`, // Apply opacity dynamically
                               padding: "5px",
@@ -5668,6 +5742,9 @@ function PeriodComparsionstore() {
                               fontFamily: "Inter",
                               backgroundColor: `rgba(175, 83, 42, ${period2Opacity})`, // Apply opacity dynamically
                               padding: "5px",
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              alignItems: "center",
                             }}
                           >
                             {formatNumber(section.period2)}
@@ -5679,6 +5756,9 @@ function PeriodComparsionstore() {
                               fontWeight: "bold",
                               fontSize: 13,
                               fontFamily: "Inter",
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              alignItems: "center",
                             }}
                           >
                             {formatNumber1(section.growth)}{" "}
@@ -5909,7 +5989,10 @@ function PeriodComparsionstore() {
                               fontSize: 12,
                               fontFamily: "Inter",
                               padding: "5px",
-                              maxWidth: "106px",
+                              display: "flex",
+                              justifyContent: "flex-start",
+                              alignItems: "center",
+                              // maxWidth: "106px",
                               // overflowWrap: "break-word",
                               lineBreak: "anywhere",
                             }}
@@ -5925,6 +6008,9 @@ function PeriodComparsionstore() {
                               fontFamily: "Inter",
                               backgroundColor: `rgba(4, 126, 163, ${period1Opacity})`,
                               padding: "5px",
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              alignItems: "center",
                             }}
                           >
                             {formatNumber(section.period1)}
@@ -5937,6 +6023,9 @@ function PeriodComparsionstore() {
                               fontSize: 13,
                               fontFamily: "Inter",
                               backgroundColor: `rgba(175, 83, 42, ${period2Opacity})`,
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              alignItems: "center",
                             }}
                           >
                             {formatNumber(section.period2)}
@@ -5948,6 +6037,9 @@ function PeriodComparsionstore() {
                               fontWeight: "bold",
                               fontSize: 13,
                               fontFamily: "Inter",
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              alignItems: "center",
                             }}
                           >
                             {formatNumber1(section.growth)}{" "}
@@ -6186,9 +6278,12 @@ function PeriodComparsionstore() {
                               fontWeight: "bold",
                               fontSize: 12,
                               fontFamily: "Inter",
-                              maxWidth: "106px",
+                              // maxWidth: "106px",
                               // overflowWrap: "break-word",
                               lineBreak: "anywhere",
+                              display: "flex",
+                              justifyContent: "flex-start",
+                              alignItems: "center",
                             }}
                           >
                             {section.name}
@@ -6203,6 +6298,9 @@ function PeriodComparsionstore() {
                               fontFamily: "Inter",
                               backgroundColor: `rgba(4, 126, 163, ${period1Opacity})`,
                               padding: "5px",
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              alignItems: "center",
                             }}
                           >
                             {formatNumber(section.period1)}
@@ -6216,6 +6314,9 @@ function PeriodComparsionstore() {
                               fontFamily: "Inter",
                               backgroundColor: `rgba(175, 83, 42, ${period2Opacity})`,
                               padding: "5px",
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              alignItems: "center",
                             }}
                           >
                             {formatNumber(section.period2)}
@@ -6227,6 +6328,9 @@ function PeriodComparsionstore() {
                               fontWeight: "bold",
                               fontSize: 13,
                               fontFamily: "Inter",
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              alignItems: "center",
                             }}
                           >
                             {formatNumber1(section.growth)}{" "}
@@ -6420,8 +6524,11 @@ function PeriodComparsionstore() {
                                   fontWeight: "bold",
                                   fontSize: 12,
                                   fontFamily: "Inter",
-                                  maxWidth: "106px",
+                                  // maxWidth: "106px",
                                   overflowWrap: "break-word",
+                                  display: "flex",
+                                  justifyContent: "flex-start",
+                                  alignItems: "center",
                                 }}
                               >
                                 {section.name}
@@ -6435,6 +6542,9 @@ function PeriodComparsionstore() {
                                   fontFamily: "Inter",
                                   backgroundColor: `rgba(4, 126, 163, ${period1Opacity})`,
                                   padding: "5px",
+                                  display: "flex",
+                                  justifyContent: "flex-end",
+                                  alignItems: "center",
                                 }}
                               >
                                 {formatNumber(section.period1)}
@@ -6448,6 +6558,9 @@ function PeriodComparsionstore() {
                                   fontFamily: "Inter",
                                   backgroundColor: `rgba(175, 83, 42, ${period2Opacity})`,
                                   padding: "5px",
+                                  display: "flex",
+                                  justifyContent: "flex-end",
+                                  alignItems: "center",
                                 }}
                               >
                                 {formatNumber(section.period2)}
@@ -6459,6 +6572,9 @@ function PeriodComparsionstore() {
                                   fontWeight: "bold",
                                   fontSize: 13,
                                   fontFamily: "Inter",
+                                  display: "flex",
+                                  justifyContent: "flex-end",
+                                  alignItems: "center",
                                 }}
                               >
                                 {formatNumber1(section.growth)}{" "}

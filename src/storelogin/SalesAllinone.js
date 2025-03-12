@@ -9,6 +9,7 @@ import Select from "react-select";
 import "../style/overall.css";
 import { parse } from "postcss";
 import { filter } from "d3";
+import { CgLaptop } from "react-icons/cg";
 
 function SalesAllinone() {
   const generateMonths = () => {
@@ -324,7 +325,7 @@ function SalesAllinone() {
 
   const reloadRefresh = () => {
     // console.log("Filters before reload:", filters);
-
+    setPeriod({ from: dateRange.start_date, to: dateRange.end_date });
     const clearedFilters = {
       city: "",
       store_name: "",
@@ -382,7 +383,7 @@ function SalesAllinone() {
     setSelectedOption61("");
     setSelectedOption("");
     setSelectedOptionitem("");
-    setPeriod({ from: "", to: "" });
+    // setPeriod({ from: "", to: "" });
     setrefresh(false);
     // console.log("Reload complete.");
   };
@@ -480,6 +481,55 @@ function SalesAllinone() {
     years: [2025, 2024],
   };
 
+  // let currentDate = new Date().toDateString();
+
+  // const checkDateChange = () => {
+  //   const newDate = new Date().toDateString();
+  //   if (newDate !== currentDate) {
+  //     currentDate = newDate;
+  //     setPeriod({ from: "", to: "" });
+  //     fetchData();
+  //     console.log("checking date", currentDate, newDate);
+  //   }
+  //   console.log("checking date", currentDate, newDate);
+  // };
+
+  // setInterval(checkDateChange, 60000);
+
+   useEffect(() => {
+        scheduleDailyRun(0, 0); 
+      }, []);
+    
+      const runDailyTask = async () => {
+        console.log("API Triggered at:", new Date());
+        setPeriod({ from: "", to: "" });
+        fetchData();
+          
+      };
+    
+      const scheduleDailyRun = (hour, minute) => {
+        const now = new Date();
+        const target = new Date();
+    
+        target.setHours(hour, minute, 0, 0); 
+        if (now > target) {
+          console.log("itwork",target);
+          
+          runDailyTask(); 
+          target.setDate(target.getDate() + 1); 
+        }
+        const timeUntilTarget = target - now;
+        console.log("itwork",timeUntilTarget);
+        
+        const timeoutId = setTimeout(() => {
+          runDailyTask();
+          setInterval(runDailyTask, 24 * 60 * 60 * 1000); 
+        }, timeUntilTarget);
+    
+     
+        return () => clearTimeout(timeoutId);
+      };
+
   function calculateRowSpan(data) {
     if (!Array.isArray(data)) {
       // console.error("Expected an array, but received:", data);
@@ -528,19 +578,51 @@ function SalesAllinone() {
 
   const hasRun = useRef(false);
 
+  // useEffect(() => {
+  //   if (hasRun.current) return;
+  //   hasRun.current = true;
+
+  //   const storedAsm = sessionStorage.getItem("asm");
+  //   const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
+
+  //   // Fetch dropdown data
+  //   liveData();
+  //   fetchDropdownData();
+  //   fetchData();
+  //   if (!mcFlag) fetchMonthlyCalendar();
+  //   // if (!pdFlag) fetchProductionDimension(1);
+  //   if (!bdFlag) fetchBrandDimension(1);
+  //   if (!idFlag) fetchItemDimension(1);
+  //   if (!waFlag) fetchWeekAnalysis(1);
+  //   if (!daFlag) fetchDayAnalysis();
+  //   if (!pb1Flag) fetchPriceBreakup1();
+  //   if (!pb2Flag) fetchPriceBreakup2();
+  //   if (!YTDFlag) fetchYTD();
+  //   if (!bdFlag) fetchSectionDimension(1);
+  //   // if (!bdFlag) fetchBranchDimension(1);
+  //   // if (!bdFlag) fetchCityDimension(1);
+
+  //   // if (!bdFlag) fetchItemCategoryDimension(1);
+  // }, [period.from, period.to]);
+
+  // const hasRun = useRef(false);
+
   useEffect(() => {
     if (hasRun.current) return;
     hasRun.current = true;
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!period.from || !period.to) return;
 
     const storedAsm = sessionStorage.getItem("asm");
     const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
 
-    // Fetch dropdown data
     liveData();
     fetchDropdownData();
-    fetchData();
     if (!mcFlag) fetchMonthlyCalendar();
-    // if (!pdFlag) fetchProductionDimension(1);
+
     if (!bdFlag) fetchBrandDimension(1);
     if (!idFlag) fetchItemDimension(1);
     if (!waFlag) fetchWeekAnalysis(1);
@@ -549,10 +631,8 @@ function SalesAllinone() {
     if (!pb2Flag) fetchPriceBreakup2();
     if (!YTDFlag) fetchYTD();
     if (!bdFlag) fetchSectionDimension(1);
-    // if (!bdFlag) fetchBranchDimension(1);
-    // if (!bdFlag) fetchCityDimension(1);
 
-    // if (!bdFlag) fetchItemCategoryDimension(1);
+    if (!bdFlag) fetchItemCategoryDimension(1);
   }, [period.from, period.to]);
 
   // Fetch Data
@@ -687,6 +767,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
+      setYTDresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -748,6 +829,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
+      setMonthlyCalendarresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -867,7 +949,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setPriceBreakup2response("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -934,12 +1016,12 @@ function SalesAllinone() {
   const [Itempage, setItempage] = useState(1);
   const [ItemCategorypage, setItemCategorypage] = useState(1);
   const limit = 10;
-  const Daylimit = 240;
-  const productlimit = 99;
-  const BrandLimit = 53;
-  const ItemLimit = 63;
-  const SectionLimit = 155;
-  const ItemCategoryLimit = 154;
+  const Daylimit = 10;
+  const productlimit = 10;
+  const BrandLimit = 10;
+  const ItemLimit = 10;
+  const SectionLimit = 10;
+  const ItemCategoryLimit = 10;
   let lastScrollTop = 0;
 
   // Week
@@ -1276,7 +1358,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setWeekAnalysisresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1360,6 +1442,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
+      setDayAnalysisresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1515,7 +1598,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setBrandDimensionresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1546,12 +1629,16 @@ function SalesAllinone() {
             setBrandDimension({
               ...response.data,
               values: Object.fromEntries(
-                Object.entries(response.data.values).map(([brand, yearlyData]) => [
-                  brand,
-                  Object.fromEntries(
-                    Object.entries(yearlyData).sort(([yearA], [yearB]) => yearB - yearA) // Sort years in descending order
-                  ),
-                ])
+                Object.entries(response.data.values).map(
+                  ([brand, yearlyData]) => [
+                    brand,
+                    Object.fromEntries(
+                      Object.entries(yearlyData).sort(
+                        ([yearA], [yearB]) => yearB - yearA
+                      ) // Sort years in descending order
+                    ),
+                  ]
+                )
               ),
               years: response.data.years.sort((a, b) => b - a), // Ensure the 'years' array is sorted
             });
@@ -1564,16 +1651,19 @@ function SalesAllinone() {
                   Object.entries(values).map(([brand, yearlyData]) => [
                     brand,
                     Object.fromEntries(
-                      Object.entries(yearlyData).sort(([yearA], [yearB]) => yearB - yearA)
+                      Object.entries(yearlyData).sort(
+                        ([yearA], [yearB]) => yearB - yearA
+                      )
                     ),
                   ])
                 ),
               },
-              years: [...new Set([...prevData.years, ...response.data.years])].sort((a, b) => b - a), // Merge and sort years
+              years: [
+                ...new Set([...prevData.years, ...response.data.years]),
+              ].sort((a, b) => b - a), // Merge and sort years
             }));
           }
-          
-          
+
           setbdFlag(true);
         } else {
           console.error(
@@ -1628,7 +1718,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setItemDimensionresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1718,7 +1808,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setSectionDimensionresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1800,7 +1890,7 @@ function SalesAllinone() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setBranchDimensionresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1998,20 +2088,20 @@ function SalesAllinone() {
     }
   };
 
-  const [isFetching, setIsFetching] = useState(false);
-  const [isFetching1, setIsFetching1] = useState(false);
-  const [isFetching2, setIsFetching2] = useState(false);
-  const [isFetching3, setIsFetching3] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
+  const [isFetching1, setIsFetching1] = useState(true);
+  const [isFetching2, setIsFetching2] = useState(true);
+  const [isFetching3, setIsFetching3] = useState(true);
 
   const [isFetchingSectionloading, setIsFetchingSectionloading] =
-    useState(false);
+    useState(true);
   const [isFetchingcategoryloading, setIsFetchingcategoryloading] =
-    useState(false);
-  const [isFetching4, setIsFetching4] = useState(false);
-  const [isFetching5, setIsFetching5] = useState(false);
-  const [isFetching6, setIsFetching6] = useState(false);
-  const [isFetching7, setIsFetching7] = useState(false);
-  const [isFetching8, setIsFetching8] = useState(false);
+    useState(true);
+  const [isFetching4, setIsFetching4] = useState(true);
+  const [isFetching5, setIsFetching5] = useState(true);
+  const [isFetching6, setIsFetching6] = useState(true);
+  const [isFetching7, setIsFetching7] = useState(true);
+  const [isFetching8, setIsFetching8] = useState(true);
   // const options = filters.store_name
   // ? filters.store_name.split(",").map((flag) => ({
   //     label: flag.trim(),
@@ -3195,7 +3285,7 @@ function SalesAllinone() {
                         </tbody>
                       </table>
 
-                      {(isFetching5||(YTDresponse!=="OK")) && (
+                      {(isFetching5 || YTDresponse !== "OK") && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -3320,7 +3410,7 @@ function SalesAllinone() {
                           )}
                         </tbody>
                       </table>
-                      {(isFetching6||(MonthlyCalendarresponse!=="OK")) && (
+                      {(isFetching6 || MonthlyCalendarresponse !== "OK") && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -3378,8 +3468,19 @@ function SalesAllinone() {
                           WeekAnalysis.years.length > 0 &&
                           Object.keys(WeekAnalysis.values || {}).length > 0 ? (
                             <React.Fragment>
-                              {Object.entries(WeekAnalysis.values).map(
-                                ([week, values]) => {
+                              {Object.entries(WeekAnalysis.values)
+                                .sort(([weekA], [weekB]) => {
+                                  const numA = parseInt(
+                                    weekA.replace(/\D/g, ""),
+                                    10
+                                  );
+                                  const numB = parseInt(
+                                    weekB.replace(/\D/g, ""),
+                                    10
+                                  );
+                                  return numA - numB;
+                                })
+                                .map(([week, values]) => {
                                   const allValues = WeekAnalysis.years.map(
                                     (year) => {
                                       // const valueString = String(values[year] || '0');
@@ -3464,8 +3565,7 @@ function SalesAllinone() {
                                       })}
                                     </tr>
                                   );
-                                }
-                              )}
+                                })}
                             </React.Fragment>
                           ) : (
                             <tr>
@@ -3486,7 +3586,7 @@ function SalesAllinone() {
                       </table>
 
                       {/* Lazy Loader */}
-                      {(isFetching||(WeekAnalysisresponse!=="OK")) && (
+                      {(isFetching || WeekAnalysisresponse !== "OK") && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -3771,7 +3871,7 @@ function SalesAllinone() {
                       </table>
 
                       {/* Lazy Loader */}
-                      {(isFetching1||(DayAnalysisresponse!=="OK")) && (
+                      {(isFetching1 || DayAnalysisresponse !== "OK") && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -3898,6 +3998,17 @@ function SalesAllinone() {
                                   0
                                 );
                               };
+
+                              const calculateTotalForYear = (yearsData) => {
+                                return months.reduce((total, month) => {
+                                  const monthValue = yearsData[month];
+                                  const numericValue = monthValue
+                                    ? parseFloat(monthValue.split(" ")[0])
+                                    : 0;
+                                  return total + numericValue;
+                                }, 0);
+                              };
+
                               const calculateMaxValue = (yearsData) => {
                                 return SectionDimension.years?.reduce(
                                   (highest, year) => {
@@ -3913,6 +4024,7 @@ function SalesAllinone() {
                                   0
                                 );
                               };
+
                               const sortedItems = Object.entries(
                                 SectionDimension.values
                               ).sort(
@@ -3920,7 +4032,7 @@ function SalesAllinone() {
                                   calculateMaxValue(yearsDataB) -
                                   calculateMaxValue(yearsDataA)
                               );
-                              // console.log(sortedItems);
+
                               const currentMonth =
                                 months[new Date().getMonth()];
                               const sortedByCurrentMonth = sortedItems
@@ -3950,12 +4062,13 @@ function SalesAllinone() {
                                     <td className="px-2 py-2 border-b border-gray-200 bg-white text-sm text-center">
                                       {brand}
                                     </td>
-                                    {SectionDimension?.years?.map((year) =>
-                                      months?.map((month) => {
+                                    {SectionDimension?.years?.map((year) => {
+                                      const totalValue = calculateTotalForYear(
+                                        yearsData[year] || {}
+                                      );
+                                      return months?.map((month) => {
                                         const valueString =
                                           yearsData[year]?.[month];
-                                        // console.log(valueString);
-
                                         const numericValue = valueString
                                           ? parseFloat(
                                               valueString?.split(" ")[0]
@@ -3968,26 +4081,14 @@ function SalesAllinone() {
                                           : "transparent";
 
                                         if (month === "Total") {
-                                          const totalValue =
-                                            SectionDimension.yearly_totals[
-                                              brand
-                                            ]?.[year] || 0;
-
                                           return (
                                             <td
                                               key={`${year}-${month}`}
                                               className="px-2 py-2 border-b border-gray-200 text-sm text-center"
                                             >
-                                              {/* {totalValue
-                                                ? formatValueString(totalValue.toFixed(2))
-                                                : "0"} */}
-
-                                              {!isNaN(Number(totalValue)) &&
-                                              totalValue !== null
+                                              {totalValue
                                                 ? formatValueString(
-                                                    Number(totalValue).toFixed(
-                                                      2
-                                                    )
+                                                    totalValue.toFixed(2)
                                                   )
                                                 : "0"}
                                             </td>
@@ -4010,8 +4111,8 @@ function SalesAllinone() {
                                               : "0"}
                                           </td>
                                         );
-                                      })
-                                    )}
+                                      });
+                                    })}
                                   </tr>
                                 )
                               );
@@ -4035,7 +4136,8 @@ function SalesAllinone() {
                           )}
                         </tbody>
                       </table>
-                      {(isFetchingSectionloading||(SectionDimensionresponse!=="OK")) && (
+                      {(isFetchingSectionloading ||
+                        SectionDimensionresponse !== "OK") && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -4334,7 +4436,7 @@ function SalesAllinone() {
                           )}
                         </tbody>
                       </table>
-                      {(isFetching3||(BrandDimensionresponse!=="OK")) && (
+                      {(isFetching3 || BrandDimensionresponse !== "OK") && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -4422,10 +4524,9 @@ function SalesAllinone() {
                             (() => {
                               const currentYear = new Date().getFullYear();
                               const currentMonthName =
-                                months[new Date().getMonth()]; // Get the name of the current month
+                                months[new Date().getMonth()];
                               const allValues = [];
 
-                              // Collect all numeric values to determine the true global maximum for opacity scaling
                               Object.values(ItemDimension.values).forEach(
                                 (yearsData) => {
                                   Object.values(yearsData).forEach(
@@ -4445,7 +4546,7 @@ function SalesAllinone() {
                                 }
                               );
 
-                              const trueMaxValue = Math.max(...allValues, 1); // Prevent division by zero
+                              const trueMaxValue = Math.max(...allValues, 1);
 
                               const calculateOpacity = (value) => {
                                 console.log(value);
@@ -4459,7 +4560,6 @@ function SalesAllinone() {
                                 ItemDimension.values || {}
                               )
                                 .map(([item, yearsData]) => {
-                                  // Get highest value for the current year and month
                                   const currentMonthValue = (() => {
                                     const yearData = yearsData[currentYear];
                                     if (yearData && currentMonthName) {
@@ -4473,7 +4573,6 @@ function SalesAllinone() {
                                     return 0;
                                   })();
 
-                                  // Calculate overall highest value across all months and years
                                   const highestMonthValues = months.map(
                                     (month) => {
                                       let highestValue = 0;
@@ -4502,7 +4601,7 @@ function SalesAllinone() {
                                     highestValueForItem,
                                   };
                                 })
-                                // First sort by current month value, then fallback to overall highest value
+
                                 .sort(
                                   (a, b) =>
                                     b.currentMonthValue - a.currentMonthValue ||
@@ -4609,7 +4708,7 @@ function SalesAllinone() {
                           )}
                         </tbody>
                       </table>
-                      {(isFetching4||(ItemDimensionresponse!=="OK")) && (
+                      {(isFetching4 || ItemDimensionresponse !== "OK") && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -4770,7 +4869,7 @@ function SalesAllinone() {
                           )}
                         </tbody>
                       </table>
-                      {(isFetching7||(PriceBreakup1response!=="OK")) && (
+                      {(isFetching7 || PriceBreakup1response !== "OK") && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -4893,7 +4992,7 @@ function SalesAllinone() {
                           )}
                         </tbody>
                       </table>
-                      {(isFetching8||(PriceBreakup2response!=="OK")) && (
+                      {(isFetching8 || PriceBreakup2response !== "OK") && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"

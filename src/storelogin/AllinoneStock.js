@@ -224,7 +224,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setAgeingresponse("");
       const encodedFilters = {
         item_name: cleanEncode(filters.item_name),
 
@@ -300,7 +300,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setPriceresponse("");
       const encodedFilters = {
         item_name: cleanEncode(filters.item_name),
 
@@ -375,7 +375,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setSectionwiseresponse("");
       const encodedFilters = {
         item_name: cleanEncode(filters.item_name),
 
@@ -448,7 +448,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setBrandAnaresponse("");
       const encodedFilters = {
         item_name: cleanEncode(filters.item_name),
 
@@ -525,7 +525,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setItemAnasresponse("");
       const encodedFilters = {
         item_name: cleanEncode(filters.item_name),
 
@@ -602,7 +602,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setPriceAnaresponse("");
       const encodedFilters = {
         item_name: cleanEncode(filters.item_name),
 

@@ -196,13 +196,15 @@ function TargetAchieve() {
   const [overallpage, setOverallPage] = useState(1);
   const [OverallDashboardloading, setOverallDashboardloading] = useState(1);
   const overalllimit = 500;
-  const [setOverALLDetailsresponse, setsetOverALLDetailsresponse] = useState("");
+  const [setOverALLDetailsresponse, setsetOverALLDetailsresponse] =
+    useState("");
   const controllerRef3 = useRef(null);
   const fetchsetOverALLDetails = async (updatedFilters) => {
     setOverallDashboardloading(true);
     if (controllerRef3.current) {
       controllerRef3.current.abort();
-    } controllerRef3.current = new AbortController();
+    }
+    controllerRef3.current = new AbortController();
     const signal = controllerRef3.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
@@ -215,6 +217,7 @@ function TargetAchieve() {
         }
         return encodeURIComponent(decodedValue);
       };
+      setsetOverALLDetailsresponse("");
       const currentfilter = updatedFilters ?? filters;
       const encodedFilters = {
         store_name: cleanEncode(currentfilter.store_name),
@@ -224,7 +227,8 @@ function TargetAchieve() {
 
       console.log("Decoded and Encoded Filters:", encodedFilters);
       const response = await axios.get(
-        `target_achievement_analysis/targetachievementOverallDetails??&asm=${asm}&tgt_timeline=${encodedFilters.tgt_timeline}&section=${encodedFilters.section}`,{signal}
+        `target_achievement_analysis/targetachievementOverallDetails??&asm=${asm}&tgt_timeline=${encodedFilters.tgt_timeline}&section=${encodedFilters.section}`,
+        { signal }
       );
       setsetOverALLDetailsresponse(response.statusText);
       const data = response.data.data;
@@ -282,7 +286,9 @@ function TargetAchieve() {
       console.error("Error fetching data:", error);
       setShouldRun1(false);
       if (axios.isCancel(error)) {
-        console.warn("Previous request aborted. Only the last request is processed.");
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
       } else {
         console.error("Error fetching SalesCity Data:", error);
       }
@@ -343,7 +349,8 @@ function TargetAchieve() {
     setBrandWiseloading(true);
     if (controllerRef1.current) {
       controllerRef1.current.abort();
-    } controllerRef1.current = new AbortController();
+    }
+    controllerRef1.current = new AbortController();
     const signal = controllerRef1.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
@@ -357,7 +364,7 @@ function TargetAchieve() {
         return encodeURIComponent(decodedValue);
       };
       const currentfilter = updatedFilters ?? filters;
-
+      setBrandWiseresponse("");
       const encodedFilters = {
         store_name: cleanEncode(currentfilter.store_name),
         section: cleanEncode(currentfilter.section),
@@ -366,7 +373,8 @@ function TargetAchieve() {
 
       console.log("Decoded and Encoded Filters:", encodedFilters);
       const response = await axios.get(
-        `target_achievement_analysis/targetachievementBranchWiseDetails?&asm=${asm}&page=${pagenum1}&limit=${BrandWiselimit}&tgt_timeline=${encodedFilters.tgt_timeline}&store_name=${encodedFilters.store_name}&section=${encodedFilters.section}`,{signal}
+        `target_achievement_analysis/targetachievementBranchWiseDetails?&asm=${asm}&page=${pagenum1}&limit=${BrandWiselimit}&tgt_timeline=${encodedFilters.tgt_timeline}&store_name=${encodedFilters.store_name}&section=${encodedFilters.section}`,
+        { signal }
       );
       setBrandWiseresponse(response.statusText);
       const data = response.data.data;
@@ -475,7 +483,9 @@ function TargetAchieve() {
       console.error("Error fetching data:", error);
       setShouldRun2(false);
       if (axios.isCancel(error)) {
-        console.warn("Previous request aborted. Only the last request is processed.");
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
       } else {
         console.error("Error fetching SalesCity Data:", error);
       }
@@ -566,12 +576,13 @@ function TargetAchieve() {
     setBrandWiseGrowthloading(true);
     if (controllerRef2.current) {
       controllerRef2.current.abort();
-    } controllerRef2.current = new AbortController();
+    }
+    controllerRef2.current = new AbortController();
     const signal = controllerRef2.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
-
+      setBrandWiseGrowthresponse("");
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -589,7 +600,8 @@ function TargetAchieve() {
       console.log("Decoded and Encoded Filters:", encodedFilters);
 
       const response = await axios.get(
-        `target_achievement_analysis/targetachievementBranchWiseGrowth?&asm=${asm}&page=${pagenum}&limit=${BrandWiseGrowthlimit}&tgt_timeline=${encodedFilters.tgt_timeline}&store_name=${encodedFilters.store_name}&section=${encodedFilters.section}`,{signal}
+        `target_achievement_analysis/targetachievementBranchWiseGrowth?&asm=${asm}&page=${pagenum}&limit=${BrandWiseGrowthlimit}&tgt_timeline=${encodedFilters.tgt_timeline}&store_name=${encodedFilters.store_name}&section=${encodedFilters.section}`,
+        { signal }
       );
       setBrandWiseGrowthresponse(response.statusText);
       const data = response.data.data;
@@ -742,7 +754,7 @@ function TargetAchieve() {
     }
     controllerRef4.current = new AbortController();
     const signal = controllerRef4.current.signal;
-  
+
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
@@ -753,7 +765,7 @@ function TargetAchieve() {
         }
         return encodeURIComponent(decodedValue);
       };
-  
+
       const encodedFilters = isinitialfetch
         ? { store_name: "", section: "", tgt_timeline: "" }
         : {
@@ -761,91 +773,110 @@ function TargetAchieve() {
             section: cleanEncode(filters.section),
             tgt_timeline: cleanEncode(filters.tgt_timeline),
           };
-  
+
       console.log("Decoded and Encoded Filters:", encodedFilters);
-  
+
       const response = await axios.get(
         `/target_achievement_analysis/targetachievementColumn?asm=${asm}&tgt_timeline=${encodedFilters.tgt_timeline}&store_name=${encodedFilters.store_name}&section=${encodedFilters.section}`,
         { signal }
       );
-  
+
       setDropdownDataresponse(response.statusText);
       setDropdownData(response.data);
-  
+
       if (isinitialfetch) {
         const parseDate = (dateStr) => {
-          const match = dateStr.match(/(\d{1,2})?[- ]?(\d{1,2})? ([A-Z]{3}) (\d{4})/);
+          const match = dateStr.match(
+            /(\d{1,2})?[- ]?(\d{1,2})? ([A-Z]{3}) (\d{4})/
+          );
           if (!match) return null;
-  
+
           const [_, startDay, endDay, month, year] = match;
           const monthIndex = {
-            JAN: 0, FEB: 1, MAR: 2, APR: 3, MAY: 4, JUN: 5,
-            JUL: 6, AUG: 7, SEP: 8, OCT: 9, NOV: 10, DEC: 11,
+            JAN: 0,
+            FEB: 1,
+            MAR: 2,
+            APR: 3,
+            MAY: 4,
+            JUN: 5,
+            JUL: 6,
+            AUG: 7,
+            SEP: 8,
+            OCT: 9,
+            NOV: 10,
+            DEC: 11,
           }[month];
-  
+
           if (monthIndex === undefined) return null;
           return {
             original: dateStr,
-            parsedDate: new Date(parseInt(year), monthIndex, endDay ? parseInt(endDay) : 1),
+            parsedDate: new Date(
+              parseInt(year),
+              monthIndex,
+              endDay ? parseInt(endDay) : 1
+            ),
             year: parseInt(year),
             month: monthIndex,
           };
         };
-  
+
         // Parse available dates
         const sortedDates = response.data.tgt_timeline
           .map(parseDate)
           .filter((item) => item !== null)
           .sort((a, b) => b.parsedDate - a.parsedDate); // Sort by newest first
-  
+
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();
-  
+
         // Check for current month-year first
         let selectedDate = sortedDates.find(
           (item) => item.month === currentMonth && item.year === currentYear
         );
-  
+
         // If not found, check for the same month in previous years
         if (!selectedDate) {
-          selectedDate = sortedDates.find((item) => item.month === currentMonth);
+          selectedDate = sortedDates.find(
+            (item) => item.month === currentMonth
+          );
         }
-  
+
         // If still not found, take the latest available date
         if (!selectedDate && sortedDates.length > 0) {
           selectedDate = sortedDates[0];
         }
-  
+
         if (selectedDate) {
           const latestDate = selectedDate.original;
-  
+
           setSelectedOptionperiod({
             label: latestDate,
             value: latestDate,
           });
-  
+
           handleperiodChange([{ value: latestDate, label: latestDate }]);
           setfirsttym(true);
           setBrandWise([]);
           setBrandWiseGrowth([]);
-  
+
           await fetchsetBrandWiseGrowth(1, { tgt_timeline: latestDate });
           await fetchsetBrandWise(1, { tgt_timeline: latestDate });
           await fetchsetOverALLDetails({ tgt_timeline: latestDate });
           await fetchQuantityData({ tgt_timeline: latestDate });
         }
       }
-  
+
       console.log("dropdown", response.data);
     } catch (error) {
       if (axios.isCancel(error)) {
-        console.warn("Previous request aborted. Only the last request is processed.");
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
       } else {
         console.error("Error fetching SalesCity Data:", error);
       }
     }
   };
-  
 
   const [refresh, setrefresh] = useState(false);
   const reloadRefresh = () => {
@@ -2362,7 +2393,8 @@ function TargetAchieve() {
                       ) : (
                         <div></div>
                       )}
-                      {(OverallDashboardloading||(setOverALLDetailsresponse!=="OK")) && (
+                      {(OverallDashboardloading ||
+                        setOverALLDetailsresponse !== "OK") && (
                         <div style={{ textAlign: "center", padding: "10px" }}>
                           <div
                             class="spinner-border gray-spinner"
@@ -3023,7 +3055,7 @@ function TargetAchieve() {
                         <div></div>
                       )}
 
-                      {(BrandWiseloading||(BrandWiseresponse!=="OK")) && (
+                      {(BrandWiseloading || BrandWiseresponse !== "OK") && (
                         <div style={{ textAlign: "center", padding: "10px" }}>
                           <div
                             class="spinner-border gray-spinner"
@@ -3675,7 +3707,8 @@ function TargetAchieve() {
                       ) : (
                         <div></div>
                       )}
-                      {(BrandWiseGrowthloading||(BrandWiseGrowthresponse!=="OK")) && (
+                      {(BrandWiseGrowthloading ||
+                        BrandWiseGrowthresponse !== "OK") && (
                         <div style={{ textAlign: "center", padding: "10px" }}>
                           <div
                             class="spinner-border gray-spinner"

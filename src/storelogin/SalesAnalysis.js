@@ -518,6 +518,59 @@ const SalesAnalysis = () => {
   };
   //sort
 
+  // let currentDate = new Date().toDateString();
+
+  // const checkDateChange = () => {
+  //   const newDate = new Date().toDateString();
+  //   if (newDate !== currentDate) {
+  //     currentDate = newDate;
+  //     setTempCustom({ from: "", to: "" });
+  //     setDateRange({ from: "", to: "" });
+  //     fetchData();
+  //     reloadRefresh();
+
+  //     console.log("checking date", currentDate, newDate);
+  //   }
+  //   console.log("checking date", currentDate, newDate);
+  // };
+
+  // setInterval(checkDateChange, 60000);
+
+  useEffect(() => {
+      scheduleDailyRun(0, 0); 
+    }, []);
+  
+    const runDailyTask = async () => {
+      console.log("API Triggered at:", new Date());
+            setTempCustom({ from: "", to: "" });
+        setDateRange({ from: "", to: "" });
+        fetchData();
+        reloadRefresh();
+    };
+  
+    const scheduleDailyRun = (hour, minute) => {
+      const now = new Date();
+      const target = new Date();
+  
+      target.setHours(hour, minute, 0, 0); 
+      if (now > target) {
+        console.log("itwork",target);
+        
+        runDailyTask(); 
+        target.setDate(target.getDate() + 1); 
+      }
+      const timeUntilTarget = target - now;
+      console.log("itwork",timeUntilTarget);
+      
+      const timeoutId = setTimeout(() => {
+        runDailyTask();
+        setInterval(runDailyTask, 24 * 60 * 60 * 1000); 
+      }, timeUntilTarget);
+  
+   
+      return () => clearTimeout(timeoutId);
+    };
+
   //itemcat
   const minQtyitem = Math.min(
     ...Sections.map((section) => section.total_sales)
@@ -1033,6 +1086,7 @@ const SalesAnalysis = () => {
 
         srn_flag: cleanEncode(filters.srn_flag),
       };
+      setSalesTyperesponse("");
       const response = await axios.get(
         `sales_analysis_kore/salesAnalysisKoreSalestype?period_from=${period1.from}&period_to=${period1.to}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&srn_flag=${encodedFilters.srn_flag}&storecode=${storecode}`,
         { signal }
@@ -1052,8 +1106,9 @@ const SalesAnalysis = () => {
       }
     } catch (error) {
       console.error("Error fetching SalesType Data:", error);
-      setSalesTypeloading(false);
+      setSalesTypeloading(true);
       if (axios.isCancel(error)) {
+        setSalesTypeloading(true);
         console.warn(
           "Previous request aborted. Only the last request is processed."
         );
@@ -1107,6 +1162,7 @@ const SalesAnalysis = () => {
 
         srn_flag: cleanEncode(filters.srn_flag),
       };
+      setSectionsresponse("");
       const response = await axios.get(
         `sales_analysis_kore/salesAnalysisKoreSection?period_from=${period1.from}&period_to=${period1.to}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&storecode=${storecode}&page=${SalesContributionpage}&limit=${SalesContributionlimit}&srn_flag=${encodedFilters.srn_flag}`,
         { signal }
@@ -1409,6 +1465,7 @@ const SalesAnalysis = () => {
 
         srn_flag: cleanEncode(filters.srn_flag),
       };
+      setBrandSalesresponse("");
       const response = await axios.get(
         `sales_analysis_kore/salesAnalysisKoreBrandSales?period_from=${period1.from}&period_to=${period1.to}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&storecode=${storecode}&limit=${BrandSalelimit}&page=${BrandSalepage}&srn_flag=${encodedFilters.srn_flag}`,
         { signal }
@@ -1486,6 +1543,7 @@ const SalesAnalysis = () => {
 
         srn_flag: cleanEncode(filters.srn_flag),
       };
+      setBrandItemresponse("");
       const response = await axios.get(
         `sales_analysis_kore/salesAnalysisKoreItemSales?period_from=${period1.from}&period_to=${period1.to}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&storecode=${storecode}&limit=${BrandItemlimit}&page=${BrandItempage}&srn_flag=${encodedFilters.srn_flag}`,
         { signal }
@@ -1693,6 +1751,7 @@ const SalesAnalysis = () => {
 
         srn_flag: cleanEncode(filters.srn_flag),
       };
+      setDiscountSectionresponse("");
       const response = await axios.get(
         `sales_analysis_kore/DiscountAnalysisKoreSection?period_from=${period1.from}&period_to=${period1.to}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&storecode=${storecode}&page=${DiscountSectionpage}&limit=${DiscountSectionlimit}&srn_flag=${encodedFilters.srn_flag}`,
         { signal }
@@ -1773,6 +1832,7 @@ const SalesAnalysis = () => {
 
         srn_flag: cleanEncode(filters.srn_flag),
       };
+      setDiscountBrandresponse("");
       const response = await axios.get(
         `sales_analysis_kore/DiscountAnalysisKoreBrand?period_from=${period1.from}&period_to=${period1.to}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&storecode=${storecode}&page=${DiscountBrandpage}&limit=${DiscountBrandlimit}&srn_flag=${encodedFilters.srn_flag}`,
         { signal }
@@ -1855,6 +1915,7 @@ const SalesAnalysis = () => {
 
         srn_flag: cleanEncode(filters.srn_flag),
       };
+      setDiscountModelNoresponse("");
       const response = await axios.get(
         `sales_analysis_kore/DiscountAnalysisKoreModelNo?period_from=${period1.from}&period_to=${period1.to}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&storecode=${storecode}&page=${page}&limit=${DiscountModellimit}&srn_flag=${encodedFilters.srn_flag}`,
         { signal }
@@ -2032,6 +2093,7 @@ const SalesAnalysis = () => {
 
         srn_flag: cleanEncode(filters.srn_flag),
       };
+
       const response = await axios.get(
         `sales_analysis_kore/salesAnalysisKoreSales?period_from=${period1.from}&period_to=${period1.to}&sale_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&storecode=${storecode}&srn_flag=${encodedFilters.srn_flag}`
       );
@@ -2880,7 +2942,7 @@ const SalesAnalysis = () => {
                     width: "116",
                     height: "31",
                     clipPath:
-                      "polygon(-3% 5%, 88% 4%, 101% 56%, 88% 97%, -5% 95%, 11% 57%)",
+                      "polygon(0% 4%, 88% 4%, 100% 56%, 88% 97%, 0% 96%, 11% 57%)",
                     border: "none",
                     outline: "none",
                     cursor: "pointer",

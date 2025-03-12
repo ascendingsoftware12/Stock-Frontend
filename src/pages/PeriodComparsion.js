@@ -584,6 +584,61 @@ function PeriodComparsion() {
 
   ////////////////////////dkcodeend///////////////////////////////////////////////////
 
+  // let currentDate = new Date().toDateString();
+
+  // const checkDateChange = () => {
+  //   const newDate = new Date().toDateString();
+  //   if (newDate !== currentDate) {
+  //     currentDate = newDate;
+  //     setCustomperiod1({ from: "", to: "" });
+  //     setCustomperiod2({ from: "", to: "" });
+  //     fetchData();
+  //     reloadRefresh();
+
+  //     console.log("checking date",currentDate,newDate);
+  //   }
+  //   console.log("checking date",currentDate,newDate);
+
+  // };
+
+  // setInterval(checkDateChange, 60000);
+
+  useEffect(() => {
+    scheduleDailyRun(0, 0); 
+  }, []);
+
+  const runDailyTask = async () => {
+    console.log("API Triggered at:", new Date());
+      setCustomperiod1({ from: "", to: "" });
+      setCustomperiod2({ from: "", to: "" });
+      fetchData();
+      reloadRefresh();
+  };
+
+  const scheduleDailyRun = (hour, minute) => {
+    const now = new Date();
+    const target = new Date();
+
+    target.setHours(hour, minute, 0, 0); 
+    if (now > target) {
+      console.log("itwork",target);
+      
+      runDailyTask(); 
+      target.setDate(target.getDate() + 1); 
+    }
+    const timeUntilTarget = target - now;
+    console.log("itwork",timeUntilTarget);
+    
+    const timeoutId = setTimeout(() => {
+      runDailyTask();
+      setInterval(runDailyTask, 24 * 60 * 60 * 1000); 
+    }, timeUntilTarget);
+
+ 
+    return () => clearTimeout(timeoutId);
+  };
+
+
   const handleButtonClick1 = () => {
     setIsApplyDisabled(false);
     setTempPeriod1({ from: "", to: "" });
@@ -983,7 +1038,7 @@ function PeriodComparsion() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setSalesDataresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1062,7 +1117,7 @@ function PeriodComparsion() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setSalesQtyresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1158,6 +1213,7 @@ function PeriodComparsion() {
         }
         return encodeURIComponent(decodedValue);
       };
+      setASPresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1251,6 +1307,7 @@ function PeriodComparsion() {
         }
         return encodeURIComponent(decodedValue);
       };
+      setDiscAmtresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1337,6 +1394,7 @@ function PeriodComparsion() {
         }
         return encodeURIComponent(decodedValue);
       };
+      setDisresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1421,6 +1479,7 @@ function PeriodComparsion() {
         }
         return encodeURIComponent(decodedValue);
       };
+      setStoreCtresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1612,6 +1671,7 @@ function PeriodComparsion() {
         }
         return encodeURIComponent(decodedValue);
       };
+      setBrandwiseresponse("");
 
       const encodedFilters = {
         city: cleanEncode(filters.city),
@@ -1709,7 +1769,7 @@ function PeriodComparsion() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setSectionwiseresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1811,7 +1871,7 @@ function PeriodComparsion() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setItemwiseresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -1929,7 +1989,7 @@ function PeriodComparsion() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setProductwiseresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -2025,7 +2085,7 @@ function PeriodComparsion() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setCitywiseresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -2123,7 +2183,7 @@ function PeriodComparsion() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setBrandAnaresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -2222,7 +2282,7 @@ function PeriodComparsion() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setItemAnasresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -2319,7 +2379,7 @@ function PeriodComparsion() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setPriceAnaresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         store_name: cleanEncode(filters.store_name),
@@ -2836,7 +2896,8 @@ function PeriodComparsion() {
     // }
     if (controllerRef15.current) {
       controllerRef15.current.abort();
-    } controllerRef15.current = new AbortController();
+    }
+    controllerRef15.current = new AbortController();
     const signal = controllerRef15.current.signal;
     try {
       const storedAsm = sessionStorage.getItem("asm");
@@ -2865,9 +2926,10 @@ function PeriodComparsion() {
         srn_flag: cleanEncode(filters.srn_flag),
       };
       const response = await axios.get(
-        `period_comparison/periodComparisonallincolumn?period1_from=${period1.from}&period1_to=${period1.to}&period2_from=${period2.from}&period2_to=${period2.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sales_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&gstfilter=${encodedFilters.gstfillter}&asm=${asm}&srn_flag=${encodedFilters.srn_flag}`,{signal}
+        `period_comparison/periodComparisonallincolumn?period1_from=${period1.from}&period1_to=${period1.to}&period2_from=${period2.from}&period2_to=${period2.to}&city=${encodedFilters.city}&store_name=${encodedFilters.store_name}&sales_type=${encodedFilters.sale_type}&section=${encodedFilters.section}&item_category=${encodedFilters.item_category}&product_group=${encodedFilters.product_group}&brand_name=${encodedFilters.brand_name}&demo_flag=${encodedFilters.demo_flag}&PriceBreakup2=${encodedFilters.PriceBreakup2}&model_no=${encodedFilters.model_no}&item_description=${encodedFilters.item_description}&gstfilter=${encodedFilters.gstfillter}&asm=${asm}&srn_flag=${encodedFilters.srn_flag}`,
+        { signal }
       );
-     setDropdownDataresponse(response.statusText);
+      setDropdownDataresponse(response.statusText);
       const data = response.data;
       console.log("dropdown", data);
 
@@ -2875,13 +2937,14 @@ function PeriodComparsion() {
       localStorage.setItem("dropdownData", JSON.stringify(data));
       console.log("dropdown");
     } catch (error) {
-   if (axios.isCancel(error)) {
-        console.warn("Previous request aborted. Only the last request is processed.");
+      if (axios.isCancel(error)) {
+        console.warn(
+          "Previous request aborted. Only the last request is processed."
+        );
       } else {
         console.error("Error fetching SalesCity Data:", error);
       }
     } finally {
-      console.error("Error fetching SalesCity Data:", error);
     }
   };
 
@@ -3518,9 +3581,19 @@ function PeriodComparsion() {
       : null
   );
   const dropdownValuemodelno = selectedOptionmodel || filters.model_no;
+  // const optionsmodel = Array.isArray(dropdownData?.model_no)
+  //   ? dropdownData.model_no
+  //       .slice()
+  //       .sort((a, b) => a.localeCompare(b))
+  //       .map((store) => ({
+  //         label: store,
+  //         value: store,
+  //       }))
+  //   : [];
   const optionsmodel = Array.isArray(dropdownData?.model_no)
     ? dropdownData.model_no
-        .slice() // Create a copy to avoid mutating the original array
+        .filter((item) => item !== null && item !== undefined)
+        .slice()
         .sort((a, b) => a.localeCompare(b))
         .map((store) => ({
           label: store,
@@ -5182,7 +5255,7 @@ function PeriodComparsion() {
                             Growth%
                           </strong>
                         </div>
-                        {(isLoadingsales||(SalesDataresponse!=="OK")) ? (
+                        {isLoadingsales || SalesDataresponse !== "OK" ? (
                           <div className="text-center text-gray-600 py-2">
                             <div
                               className="spinner-border gray-spinner"
@@ -5310,7 +5383,7 @@ function PeriodComparsion() {
                             Growth%
                           </strong>
                         </div>
-                        {(isLoadingsalesqty||(SalesQtyresponse!=="OK")) ? (
+                        {isLoadingsalesqty || SalesQtyresponse !== "OK" ? (
                           <div className="text-center text-gray-600 py-2">
                             <div
                               className="spinner-border gray-spinner"
@@ -5437,7 +5510,7 @@ function PeriodComparsion() {
                             Growth%
                           </strong>
                         </div>
-                        {(isLoadingasp||(ASPresponse!=="OK")) ? (
+                        {isLoadingasp || ASPresponse !== "OK" ? (
                           <div className="text-center text-gray-600 py-2">
                             <div
                               className="spinner-border gray-spinner"
@@ -5566,7 +5639,7 @@ function PeriodComparsion() {
                             Growth%
                           </strong>
                         </div>
-                        {(isLoadingdisamt||(DiscAmtresponse!=="OK")) ? (
+                        {isLoadingdisamt || DiscAmtresponse !== "OK" ? (
                           <div className="text-center text-gray-600 py-2">
                             <div
                               className="spinner-border gray-spinner"
@@ -5693,7 +5766,7 @@ function PeriodComparsion() {
                             Growth%
                           </strong>
                         </div>
-                        {(isLoadingdis||(Disresponse!=="OK")) ? (
+                        {isLoadingdis || Disresponse !== "OK" ? (
                           <div className="text-center text-gray-600 py-2">
                             <div
                               className="spinner-border gray-spinner"
@@ -5820,7 +5893,7 @@ function PeriodComparsion() {
                             Growth%
                           </strong>
                         </div>
-                        {(isLoadingstorect||(StoreCtresponse!=="OK")) ? (
+                        {isLoadingstorect || StoreCtresponse !== "OK" ? (
                           <div className="text-center text-gray-600 py-2">
                             <div
                               className="spinner-border gray-spinner"
@@ -6129,7 +6202,7 @@ function PeriodComparsion() {
                       );
                     })}
                     {/* Lazy Loader */}
-                    {(Brandwiseloading||(Brandwiseresponse!=="OK")) && (
+                    {/* {(Brandwiseloading || Brandwiseresponse !== "OK") && (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"
@@ -6143,6 +6216,24 @@ function PeriodComparsion() {
                       <div className="text-center text-gray-600 py-2">
                         <p>No data available</p>
                       </div>
+                    )} */}
+                    {Brandwiseloading || Brandwiseresponse !== "OK" ? (
+                      <div className="text-center text-gray-600 py-2">
+                        <div
+                          className="spinner-border gray-spinner"
+                          role="status"
+                        >
+                          <span className="sr-only">Loading...</span>
+                        </div>{" "}
+                      </div>
+                    ) : (
+                      <>
+                        {sortedSectionsBrand.length === 0 && (
+                          <div className="text-center text-gray-600 py-2">
+                            <p>No data available</p>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -6363,7 +6454,7 @@ function PeriodComparsion() {
                     })}
 
                     {/* Lazy Loader */}
-                    {(Citywiseloading||(Citywiseresponse!=="OK")) && (
+                    {/* {(Citywiseloading || Citywiseresponse !== "OK") && (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"
@@ -6378,6 +6469,24 @@ function PeriodComparsion() {
                       <div className="text-center text-gray-600 py-2">
                         <p>No data available</p>
                       </div>
+                    )} */}
+                    {Citywiseloading || Citywiseresponse !== "OK" ? (
+                      <div className="text-center text-gray-600 py-2">
+                        <div
+                          className="spinner-border gray-spinner"
+                          role="status"
+                        >
+                          <span className="sr-only">Loading...</span>
+                        </div>{" "}
+                      </div>
+                    ) : (
+                      <>
+                        {sortedCityBrand.length === 0 && (
+                          <div className="text-center text-gray-600 py-2">
+                            <p>No data available</p>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -6607,7 +6716,7 @@ function PeriodComparsion() {
                     })}
 
                     {/* Lazy Loader */}
-                    {(SectionWiseLoading||(Sectionwiseresponse!=="OK")) && (
+                    {/* {(SectionWiseLoading || Sectionwiseresponse !== "OK") && (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"
@@ -6622,6 +6731,24 @@ function PeriodComparsion() {
                       <div className="text-center text-gray-600 py-2">
                         <p>No data available</p>
                       </div>
+                    )} */}
+                    {SectionWiseLoading || Sectionwiseresponse !== "OK" ? (
+                      <div className="text-center text-gray-600 py-2">
+                        <div
+                          className="spinner-border gray-spinner"
+                          role="status"
+                        >
+                          <span className="sr-only">Loading...</span>
+                        </div>{" "}
+                      </div>
+                    ) : (
+                      <>
+                        {sortedSections.length === 0 && (
+                          <div className="text-center text-gray-600 py-2">
+                            <p>No data available</p>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -6838,7 +6965,7 @@ function PeriodComparsion() {
                     })}
 
                     {/* Lazy Loader */}
-                    {(ItemwisecategoryLoading||(Itemwiseresponse!=="OK")) && (
+                    {/* {(ItemwisecategoryLoading || Itemwiseresponse !== "OK") && (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"
@@ -6852,6 +6979,24 @@ function PeriodComparsion() {
                       <div className="text-center text-gray-600 py-2">
                         <p>No data available</p>
                       </div>
+                    )} */}
+                    {ItemwisecategoryLoading || Itemwiseresponse !== "OK" ? (
+                      <div className="text-center text-gray-600 py-2">
+                        <div
+                          className="spinner-border gray-spinner"
+                          role="status"
+                        >
+                          <span className="sr-only">Loading...</span>
+                        </div>{" "}
+                      </div>
+                    ) : (
+                      <>
+                        {sortSections1.length === 0 && (
+                          <div className="text-center text-gray-600 py-2">
+                            <p>No data available</p>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -7068,7 +7213,7 @@ function PeriodComparsion() {
                     })}
 
                     {/* Lazy Loader */}
-                    {(ProductwiseLoading||(Productwiseresponse!=="OK")) && (
+                    {/* {(ProductwiseLoading || Productwiseresponse !== "OK") && (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"
@@ -7082,6 +7227,24 @@ function PeriodComparsion() {
                       <div className="text-center text-gray-600 py-2">
                         <p>No data available</p>
                       </div>
+                    )} */}
+                    {ProductwiseLoading || Productwiseresponse !== "OK" ? (
+                      <div className="text-center text-gray-600 py-2">
+                        <div
+                          className="spinner-border gray-spinner"
+                          role="status"
+                        >
+                          <span className="sr-only">Loading...</span>
+                        </div>{" "}
+                      </div>
+                    ) : (
+                      <>
+                        {sortSections2.length === 0 && (
+                          <div className="text-center text-gray-600 py-2">
+                            <p>No data available</p>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -7327,7 +7490,7 @@ function PeriodComparsion() {
                     })}
 
                     {/* Lazy Loader */}
-                    {(Brandloading||(BrandAnaresponse!=="OK")) && (
+                    {/* {(Brandloading || BrandAnaresponse !== "OK") && (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"
@@ -7341,6 +7504,24 @@ function PeriodComparsion() {
                       <div className="text-center text-gray-600 py-2">
                         <p>No data available</p>
                       </div>
+                    )} */}
+                    {Brandloading || BrandAnaresponse !== "OK" ? (
+                      <div className="text-center text-gray-600 py-2">
+                        <div
+                          className="spinner-border gray-spinner"
+                          role="status"
+                        >
+                          <span className="sr-only">Loading...</span>
+                        </div>{" "}
+                      </div>
+                    ) : (
+                      <>
+                        {sortSections3.length === 0 && (
+                          <div className="text-center text-gray-600 py-2">
+                            <p>No data available</p>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -7578,7 +7759,7 @@ function PeriodComparsion() {
 
                     {/* Lazy Loader */}
 
-                    {(ItemCategoryLoading||(ItemAnasresponse!=="OK")) ? (
+                    {ItemCategoryLoading || ItemAnasresponse !== "OK" ? (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"
@@ -7790,7 +7971,7 @@ function PeriodComparsion() {
                           );
                         })}
 
-                    {(PriceBreakupLoading||(PriceAnaresponse!=="OK")) && (
+                    {/* {(PriceBreakupLoading || PriceAnaresponse !== "OK") && (
                       <div className="text-center text-gray-600 py-2">
                         <div
                           className="spinner-border gray-spinner"
@@ -7804,6 +7985,24 @@ function PeriodComparsion() {
                       <div className="text-center text-gray-600 py-2">
                         <p>No data available</p>
                       </div>
+                    )} */}
+                    {PriceBreakupLoading || PriceAnaresponse !== "OK" ? (
+                      <div className="text-center text-gray-600 py-2">
+                        <div
+                          className="spinner-border gray-spinner"
+                          role="status"
+                        >
+                          <span className="sr-only">Loading...</span>
+                        </div>{" "}
+                      </div>
+                    ) : (
+                      <>
+                        {sortSections5.length === 0 && (
+                          <div className="text-center text-gray-600 py-2">
+                            <p>No data available</p>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>

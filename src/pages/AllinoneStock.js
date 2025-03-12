@@ -347,7 +347,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setBrandwiseresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         branch_name: cleanEncode(filters.branch_name),
@@ -419,7 +419,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setCitywiseresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         branch_name: cleanEncode(filters.branch_name),
@@ -491,7 +491,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setAgeingresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         branch_name: cleanEncode(filters.branch_name),
@@ -567,7 +567,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setPriceresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         branch_name: cleanEncode(filters.branch_name),
@@ -641,7 +641,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setSectionwiseresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         branch_name: cleanEncode(filters.branch_name),
@@ -714,7 +714,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setItemwiseresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         branch_name: cleanEncode(filters.branch_name),
@@ -791,7 +791,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setProductwiseresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         branch_name: cleanEncode(filters.branch_name),
@@ -868,7 +868,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setBrandAnaresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         branch_name: cleanEncode(filters.branch_name),
@@ -945,7 +945,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setItemAnasresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         branch_name: cleanEncode(filters.branch_name),
@@ -1022,7 +1022,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setPriceAnaresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         branch_name: cleanEncode(filters.branch_name),
@@ -1478,7 +1478,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setQuantityDataresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         branch_name: cleanEncode(filters.branch_name),
@@ -1529,7 +1529,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setValueDataresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         branch_name: cleanEncode(filters.branch_name),
@@ -1580,7 +1580,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setBrandDataresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         branch_name: cleanEncode(filters.branch_name),
@@ -1631,7 +1631,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setItemDataresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         branch_name: cleanEncode(filters.branch_name),
@@ -1682,7 +1682,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setAgeingDataresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         branch_name: cleanEncode(filters.branch_name),
@@ -1733,7 +1733,7 @@ function AllinoneStock() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setHoldingDataresponse("");
       const encodedFilters = {
         city: cleanEncode(filters.city),
         branch_name: cleanEncode(filters.branch_name),

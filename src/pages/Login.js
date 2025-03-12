@@ -41,6 +41,7 @@ const Login = () => {
               if (response.data.role === "ASM") {
                 sessionStorage.setItem("flag", 2);
                 sessionStorage.setItem("asm", response.data.asm);
+
                 sessionStorage.setItem("user", response.data.username);
                 // sessionStorage.setItem("store", response.data.store);
                 const asm = sessionStorage.getItem("asm");

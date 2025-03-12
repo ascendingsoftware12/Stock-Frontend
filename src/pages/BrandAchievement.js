@@ -272,7 +272,7 @@ function BrandAchievement() {
         }
         return encodeURIComponent(decodedValue);
       };
-
+      setOverALLDetailsresponse("");
       const encodedFilters = {
         STORE_NAME: cleanEncode(filters.STORE_NAME),
         TGT_TIMELINE: cleanEncode(filters.TGT_TIMELINE || selectedTimeValue),
@@ -331,7 +331,7 @@ function BrandAchievement() {
     try {
       const storedAsm = sessionStorage.getItem("asm");
       const asm = storedAsm === "null" || storedAsm === null ? "" : storedAsm;
-
+      setsetBrandWiseresponse("");
       const cleanEncode = (value) => {
         let decodedValue = value || "";
         while (decodedValue !== decodeURIComponent(decodedValue)) {
@@ -2153,7 +2153,7 @@ function BrandAchievement() {
                             )}
                       </div>
 
-                      {(Summaryloading||(OverALLDetailsresponse!=="OK")) && (
+                      {(Summaryloading || OverALLDetailsresponse !== "OK") && (
                         <div className="text-center text-gray-600 py-2">
                           <div
                             className="spinner-border gray-spinner"
@@ -2911,7 +2911,8 @@ function BrandAchievement() {
                               )}
                         </div>
 
-                        {(BrandWiseloading||(setBrandWiseresponse!=="OK")) && (
+                        {(BrandWiseloading ||
+                          setBrandWiseresponse !== "OK") && (
                           <div className="text-center text-gray-600 py-2">
                             <div
                               className="spinner-border gray-spinner"
